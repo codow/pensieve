@@ -26,9 +26,12 @@
         </div>
       </div>
     </el-header>
-    <el-main style="padding: 0px;">
-      <router-view v-if="viewVisible && routeTabs.length"
-                   :key="activeRouteTab"></router-view>
+    <el-main ref="routerContainer"
+             style="padding: 0px;">
+      <keep-alive :include="$store.state.Route.cacheViewsName"
+                  :max="20">
+        <router-view v-if="viewVisible && routeTabs.length"></router-view>
+      </keep-alive>
     </el-main>
   </el-container>
 </template>
@@ -50,8 +53,25 @@
   width: 100%;
 }
 
+.fr-route-views-tabs .el-tabs__nav-wrap {
+  min-height: 40px;
+}
+
 .fr-route-views-tabs .el-tabs__content {
   display: none;
+}
+
+.fr-route-views-tabs.el-tabs > .el-tabs__header .el-tabs__item {
+  height: 32px;
+  line-height: 30px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.fr-route-views-tabs.el-tabs > .el-tabs__header .el-tabs__item.is-active {
+  border-color: #0063ff;
 }
 
 .fr-route-views-tabs-operation {
@@ -68,7 +88,12 @@
   border-bottom: 1px solid #e4e7ed;
   border-radius: 0;
   padding: 12px 0;
-  height: 39px;
+  height: 40px;
+}
+
+.fr-route-views-tabs .el-tabs__nav-next,
+.fr-route-views-tabs .el-tabs__nav-prev {
+  line-height: 40px;
 }
 </style>
 
@@ -85,7 +110,7 @@ export default {
       return this.$store.state.Route.activeRouteTab
     },
     currentRouteTab () {
-      return this.routeTabs.find(item => item.id === this.activeRouteTab)
+      return this.routeTabs.find(item => item.id === this.activeRouteTab) || {}
     },
     routeTabs () {
       return this.$store.state.Route.routeTabs
@@ -121,44 +146,29 @@ export default {
       }]
     }
   },
-  watch: {
-    $route: {
-      handler (route) {
-        // 如果是错误页面
-        if (route.path === this.$store.state.Route.unknownPath) {
-          return
-        }
-        // 判断当前的route是否在routeTab中
-        const tab = this.routeTabs.find(item => item.id === route.fullPath)
-        if (!tab) {
-          // 创建一个新的tab
-          this.$store.commit('addRouteTab', {
-            id: route.fullPath,
-            title: (route.meta && route.meta.title) || route.name,
-            path: route.path,
-            query: route.query,
-            params: route.params
-          })
-        } else if (this.activeRouteTab !== route.fullPath) {
-          // 设置
-          this.$store.commit('setActiveRouteTab', route.fullPath)
-        }
-      },
-      immediate: true
-    }
-  },
   data () {
     return {
       viewVisible: true,
     }
   },
+  created () {
+    this.initRouteTab()
+  },
   methods: {
+    initRouteTab () {
+      const route = this.$route
+      // 如果是错误页面
+      if (route.fullPath === this.$store.state.Route.unknownPath) {
+        return
+      }
+      this.$router.replace(route)
+    },
     handleRouteTabClick (tab) {
       let tabId = tab.name
       if (this.activeRouteTab === tabId) {
         return
       }
-      this.$store.commit('openRouteTab', tabId)
+      this.$store.commit('Route/openRouteTab', tabId)
     },
     handleRouteTabRemove (tabId) {
       this.closeRouteTab(tabId)
@@ -168,6 +178,7 @@ export default {
         this.refresh()
       } else if (command === 'close') {
         this.closeRouteTab(this.activeRouteTab)
+
       } else if (command === 'close-right') {
         let index = this.routeTabs.findIndex(item => item.id === this.activeRouteTab)
         let tabs = []
@@ -196,10 +207,10 @@ export default {
       }
     },
     closeRouteTab (tabId) {
-      this.$store.commit('closeRouteTab', tabId)
+      this.$store.commit('Route/closeRouteTab', tabId)
     },
     closeRouteTabs (tabIds) {
-      this.$store.commit('closeRouteTabs', tabIds)
+      this.$store.commit('Route/closeRouteTabs', tabIds)
     },
     refresh () {
       this.viewVisible = false

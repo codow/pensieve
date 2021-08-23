@@ -22,13 +22,7 @@ export default [{
     id: "10103",
     label: '表单设计器',
     icon: '',
-    url: '/demo/designer',
-    target: '_blank'
-  }, {
-    id: "10104",
-    label: '颜色编辑器',
-    icon: '',
-    url: '/demo/color-editor'
+    url: '/demo/designer'
   }, {
     id: "10105",
     label: 'Vue嵌套插槽',
@@ -80,7 +74,55 @@ export default [{
     label: '虚拟滚动表格',
     icon: '',
     url: '/demo/virtual-scroll-table'
+  }, {
+    id: "10112",
+    label: '拖拽功能',
+    icon: '',
+    url: '/demo/drag'
   }]
+}, {
+  id: '998',
+  label: '常用工具',
+  icon: '',
+  url: '/common/utils',
+  children: [
+    {
+      id: "99801",
+      label: '编辑器',
+      icon: '',
+      url: '/common/utils/editor',
+      children: [{
+        id: "9980101",
+        label: '颜色编辑器',
+        icon: '',
+        url: '/common/utils/editor/color'
+      }]
+    },
+    {
+      id: "99802",
+      label: 'Excel工具',
+      icon: '',
+      url: '/common/utils/excel',
+      children: [{
+        id: "9980201",
+        label: 'Excel SQL拼接语句生成',
+        icon: '',
+        url: '/common/utils/excel/sql/concat/generate'
+      }]
+    },
+    {
+      id: "99803",
+      label: '数据工具',
+      icon: '',
+      url: '/common/utils/data',
+      children: [{
+        id: "9980301",
+        label: '字符串数据过滤',
+        icon: '',
+        url: '/common/utils/data/string/filter'
+      }]
+    }
+  ]
 }, {
   id: "999",
   label: '系统管理',

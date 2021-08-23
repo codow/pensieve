@@ -1,404 +1,44 @@
-.sp-multiple-menu .el-menu {
-  border-right: none;
-}
-
-.sp-multiple-menu__item .sp-icon__img {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-  padding-right: 24px;
-  border-radius: 3px;
-}
-
-.sp-multiple-menu__item li:hover {
-  color: #606266;
-  font-weight: bold;
-}
-
-/**折叠功能**/
-
-.sp-absolute {
-  position: absolute;
-}
-
-.sp-relative {
-  position: relative;
-}
-
-.sp-aside-menu-collapse {
-  width: 12px;
-  height: 66px;
-  transition: all 0.12s ease;
-  -webkit-transition: all 0.12s ease;
-}
-
-.sp-aside-menu-collapse .product-navbar-collapse-div-bg {
-  transition: all 0.12s ease;
-  -webkit-transition: all 0.12s ease;
-  height: 66px;
-  left: 0;
-  right: auto;
-  border-bottom: 8px solid transparent;
-  border-right: none;
-  border-left: 12px solid #ebebeb;
-  border-top: 8px solid transparent;
-}
-
-.sp-aside-menu-collapse .product-navbar-collapse-div {
-  height: 66px;
-  left: 0;
-  right: auto;
-}
-
-.sp-aside-menu-collapse:hover {
-  transform: scale(1.05) translateY(2px);
-}
-
-.sp-aside-menu-collapse:hover .product-navbar-collapse-div-bg {
-  left: 0;
-  right: auto;
-  border-bottom: 7px solid transparent;
-  border-right: none;
-  border-left: 14px solid #dedede;
-  border-top: 7px solid transparent;
-}
-
-.sp-aside-menu-collapse:hover .icon-collapse-left:before {
-  border-left: 8px #888 solid;
-}
-
-.sp-aside-menu-collapse:hover .icon-collapse-left:after {
-  left: -2px;
-  border-left: 8px #dedede solid;
-}
-
-.sp-aside-menu-collapse:hover .icon-collapse-right:before {
-  border-left: 8px #888 solid;
-}
-
-.sp-aside-menu-collapse:hover .icon-collapse-right:after {
-  left: -2px;
-  border-left: 8px #dedede solid;
-}
-
-.sp-aside-menu-collapse .icon-collapse-left,
-.sp-aside-menu-collapse .icon-collapse-right {
-  position: absolute;
-  left: 3px;
-  top: 32px;
-  transition: all 0.12s ease;
-  -webkit-transition: all 0.12s ease;
-}
-
-.sp-aside-menu-collapse .icon-collapse-left:before,
-.sp-aside-menu-collapse .icon-collapse-left:after,
-.sp-aside-menu-collapse .icon-collapse-right:before,
-.sp-aside-menu-collapse .icon-collapse-right:after {
-  position: absolute;
-  content: "";
-  border: 8px transparent dashed;
-}
-
-.sp-aside-menu-collapse .icon-collapse-left {
-  transform: rotate(180deg);
-  left: 10px;
-  top: 49px;
-}
-
-.sp-aside-menu-collapse .icon-collapse-left:before {
-  border-left: 8px #c1c1c1 solid;
-}
-
-.sp-aside-menu-collapse .icon-collapse-left:after {
-  left: -2px;
-  border-left: 8px #ebebeb solid;
-}
-
-.sp-aside-menu-collapse .icon-collapse-right:before {
-  border-left: 8px #c1c1c1 solid;
-}
-
-.sp-aside-menu-collapse .icon-collapse-right:after {
-  left: -2px;
-  border-left: 8px #ebebeb solid;
-}
-
-/* 侧边栏菜单 */
-.sp-aside-menu {
-  width: 220px;
-  // height: 100%;
-  height: 100vh; //兼容谷歌低版本浏览器
-  position: relative;
-  border-right: 1px solid #e7e8eb;
-  -webkit-box-shadow: 1px 1px 1px #e7e8eb;
-  box-shadow: 1px 1px 1px #e7e8eb;
-}
-
-.sp-aside-menu__header {
-  padding-bottom: 60px;
+/** --- 常用样式 START --- **/
+// 宽高
+.width__full {
   width: 100%;
 }
-
-.sp-aside-menu__header li {
-  height: 80px;
-  line-height: 80px;
+// padding
+.padding__medium {
+  padding: 20px;
 }
 
-.sp-aside-menu__header li,
-.sp-aside-menu__header li a {
-  color: #ffffff;
+.padding__small {
+  padding: 10px;
 }
 
-.sp-aside-menu__footer {
-  position: absolute;
-  bottom: 80px;
-  width: 100%;
+.padding__mini {
+  padding: 5px;
 }
 
-/* 关闭的菜单 */
-.sp-aside-menu.is-closed {
-  width: 80px;
-  color: #fff;
-  background-color: #0063ff;
+// margin
+.margin__medium {
+  margin: 20px;
+}
+.margin__small {
+  margin: 10px;
+}
+.margin__mini {
+  margin: 5px;
+}
+.margin-top__medium {
+  margin-top: 20px;
+}
+.margin-horizontal__medium {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.margin-horizontal__auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.sp-aside-menu.is-closed li {
-  float: left;
+.align__center {
   text-align: center;
-  font-size: 12px;
-  height: 80px;
-  line-height: 80px;
-  cursor: pointer;
 }
-
-.sp-aside-menu.is-closed li:after {
-  content: "";
-  height: 100%;
-}
-
-.sp-aside-menu.is-closed li:after,
-.sp-aside-menu.is-closed li a {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.sp-aside-menu.is-closed li a {
-  line-height: normal;
-  color: #8cc5ff;
-  cursor: pointer;
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.sp-aside-menu.is-closed .sp-aside-menu__icon {
-  font-size: 32px;
-  cursor: pointer;
-  padding: 20px 20px 0 20px;
-}
-
-.sp-aside-menu.is-closed .sp-aside-menu__label {
-  display: inline-block;
-  cursor: pointer;
-}
-
-.sp-aside-menu.is-closed li .el-icon-caret-left {
-  color: transparent;
-  position: absolute;
-  font-size: 28px;
-  line-height: 80px;
-  right: -11px;
-  top: 0;
-}
-
-.sp-aside-menu.is-closed li:hover,
-.sp-aside-menu.is-closed li a:hover {
-  color: #fff;
-  background-color: #3382ff;
-}
-
-.sp-aside-menu.is-closed li .is-active {
-  background-color: #3382ff;
-  color: #fff;
-}
-
-.sp-aside-menu.is-closed li .is-active .el-icon-caret-left {
-  color: #fff;
-}
-
-/* 展开的菜单 */
-.sp-aside-menu.is-expand {
-  padding: 0;
-}
-
-.sp-aside-menu.is-expand li a {
-  display: block;
-  line-height: 40px;
-  font-size: 14px;
-  padding: 10px 20px;
-  border-right: 4px solid #fff;
-  margin-bottom: 2px;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-}
-
-.sp-aside-menu.is-expand li a .sp-aside-menu__icon {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 10px;
-  vertical-align: top;
-  margin-right: 10px;
-  text-align: center;
-  /*  color: #fff;
-  font-size: 18px; */
-}
-
-.sp-aside-menu-iconsize__18 {
-  color: #fff;
-  font-size: 18px;
-}
-
-.sp-aside-menu-iconsize__46 {
-  font-size: 46px;
-  margin-left: -3px;
-}
-
-.sp-aside-menu.is-expand .sp-aside-menu__label {
-  color: #606266;
-  cursor: pointer;
-}
-
-.sp-aside-menu.is-expand li:hover,
-.sp-aside-menu.is-expand li a:hover,
-.sp-aside-menu.is-expand li a:hover .sp-aside-menu__label {
-  background-color: #fff;
-  background: #f2f6fc;
-}
-
-.sp-aside-menu.is-expand li a:hover {
-  padding-left: 40px;
-}
-
-.sp-aside-menu.is-expand li .is-active {
-  background-color: #fff;
-  background: #f2f6fc;
-  border-right: 3px solid #3382ff;
-}
-
-.sp-aside-menu.is-expand li a:hover .sp-aside-menu__label,
-.sp-aside-menu.is-expand li .is-active .sp-aside-menu__label {
-  color: #303133;
-  font-weight: bold;
-}
-
-// 新版样式
-.sp-menu {
-  box-sizing: border-box;
-}
-
-.sp-menu.el-menu .sp-icon__img {
-  margin-right: 0px;
-}
-
-.sp-menu-content {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: calc(100% - 24px);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-left: 10px;
-  box-sizing: border-box;
-}
-
-.sp-menu-content.sp-menu-content__with-badge {
-  max-width: calc(100% - 64px);
-  padding-right: 5px;
-}
-
-.el-submenu__title > .sp-menu-content {
-  max-width: calc(100% - 44px);
-}
-
-.el-submenu__title .sp-menu-content.sp-menu-content__with-badge {
-  max-width: calc(100% - 84px);
-  padding-right: 0px;
-}
-
-.el-badge.sp-menu-content__badge {
-  vertical-align: middle;
-}
-
-.el-badge.sp-menu-content__badge > .el-badge__content {
-  vertical-align: middle;
-}
-
-.sp-menu__item .el-submenu__icon-arrow {
-  margin-top: -3px;
-}
-
-.el-menu--collapse .el-badge.sp-menu-content__badge {
-  display: none;
-}
-
-.el-tooltip__popper .sp-menu-content,
-.el-tooltip__popper .sp-menu-content.sp-menu-content__with-badge {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: none;
-  padding-right: 5px;
-}
-
-.sp-menu .el-menu-item {
-  height: 54px;
-  line-height: 54px;
-}
-
-.el-menu-item {
-  box-sizing: border-box;
-  padding-right: 20px;
-}
-
-.el-submenu .el-menu-item {
-  padding-right: 20px;
-}
-
-.el-menu--collapse
-  > .el-scrollbar
-  > .el-scrollbar__wrap
-  > .el-scrollbar__view
-  > .el-menu-item
-  .el-submenu__icon-arrow,
-.el-menu--collapse
-  > .el-scrollbar
-  > .el-scrollbar__wrap
-  > .el-scrollbar__view
-  > .el-submenu
-  > .el-submenu__title
-  .el-submenu__icon-arrow {
-  display: none;
-}
-
-.el-menu--collapse
-  > .el-scrollbar
-  > .el-scrollbar__wrap
-  > .el-scrollbar__view
-  > .el-menu-item
-  span,
-.el-menu--collapse
-  > .el-scrollbar
-  > .el-scrollbar__wrap
-  > .el-scrollbar__view
-  > .el-submenu
-  > .el-submenu__title
-  span {
-  height: 0;
-  width: 0;
-  overflow: hidden;
-  visibility: hidden;
-  display: inline-block;
-}
+/** --- 常用样式 END --- **/

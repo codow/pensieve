@@ -24,3 +24,30 @@ export function uuid (retainDashed, smallLetter) {
   }
   return id
 }
+
+/**
+ * 填充字符串
+ * @param {*} src 
+ * @param {*} length 
+ * @param {*} char 
+ * @param {*} direction 
+ * @return 填充后的字符串
+ */
+export function fillStr (src, length, char, direction) {
+  src = src || ''
+  length = length || src.length
+  char = char || ''
+  direction = direction || 'left'
+  if (src.length > length) {
+    return src
+  }
+  let isLeft = direction === 'left'
+  for (let i = 0, l = length - src.length; i < l; i++) {
+    if (isLeft) {
+      src = char + src
+    } else {
+      src += char
+    }
+  }
+  return src
+}

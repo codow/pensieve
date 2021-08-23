@@ -8,98 +8,173 @@ export default [
       name: 'index',
       path: '/index',
       meta: {
-        title: '首页'
+        title: '首页',
+        keepAlive: true
       },
       component: () => import('@/views/home')
-    }, {
-      name: 'demo',
-      path: '/demo',
-      component: () => import('@/views/demo'),
+    },
+    {
+      name: 'demo-computed-attr',
+      path: '/demo/computed-attr',
+      component: () => import('@/views/demo/computed-attr'),
+      meta: {
+        title: 'Vue计算属性',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-dynamic-watch',
+      path: '/demo/dynamic-watch',
+      component: () => import('@/views/demo/dynamic-watch'),
+      meta: {
+        title: 'Vue动态监听',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-designer',
+      path: '/demo/designer',
+      component: () => import('@/views/demo/designer'),
+      meta: {
+        title: '表单设计器',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-deep-nested-slot',
+      path: '/demo/deep-nested-slot',
+      component: () => import('@/views/demo/deep-nested-slot'),
+      meta: {
+        title: 'Vue嵌套插槽',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-table',
+      path: '/demo/table',
+      component: () => import('@/views/demo/table'),
       children: [
         {
           path: '',
-          redirect: 'computed-attr'
-        },
-        {
-          name: 'demo-computed-attr',
-          path: 'computed-attr',
-          component: () => import('@/views/demo/computed-attr')
-        },
-        {
-          name: 'demo-dynamic-watch',
-          path: 'dynamic-watch',
-          component: () => import('@/views/demo/dynamic-watch')
-        },
-        // {
-        //   name: 'demo-designer',
-        //   path: 'designer',
-        //   component: () => import('@/views/demo/designer')
-        // },
-        {
-          name: 'demo-color-editor',
-          path: 'color-editor',
-          component: () => import('@/views/demo/color-editor')
-        },
-        {
-          name: 'demo-deep-nested-slot',
-          path: 'deep-nested-slot',
-          component: () => import('@/views/demo/deep-nested-slot')
-        },
-        {
-          name: 'demo-table',
-          path: 'table',
-          component: () => import('@/views/demo/table'),
-          children: [
-            {
-              path: '',
-              component: () => import('@/views/demo/table/src/index-new')
-            }, {
-              name: 'demo-table-new',
-              path: 'new',
-              component: () => import('@/views/demo/table/src/index-new')
-            }, {
-              name: 'demo-table-old',
-              path: 'old',
-              component: () => import('@/views/demo/table/src/index-old')
-            }, {
-              name: 'demo-table-data',
-              path: 'data',
-              component: () => import('@/views/demo/table/src/index-table')
-            }
-          ]
-        },
-        {
-          name: 'demo-c-container',
-          path: 'c-container',
-          component: () => import('@/views/demo/c-container')
-        },
-        {
-          name: 'demo-el-table',
-          path: 'el-table',
-          component: () => import('@/views/demo/el-table')
-        },
-        {
-          name: 'demo-ag-grid',
-          path: 'ag-grid',
-          component: () => import('@/views/demo/ag-grid')
-        },
-        {
-          name: 'demo-input-multilingual',
-          path: 'input-multilingual',
-          component: () => import('@/views/demo/multilingual')
-        },
-        {
-          name: 'demo-virtual-scroll-table',
-          path: 'virtual-scroll-table',
-          component: () => import('@/views/demo/virtual-scroll-table')
-        },
-        {
-          name: 'demo-virtual-scroll-table-detail',
-          path: 'virtual-scroll-table-detail',
-          component: () => import('@/views/demo/virtual-scroll-table/detail')
+          redirect: 'new'
+        }, {
+          name: 'demo-table-new',
+          path: 'new',
+          component: () => import('@/views/demo/table/src/index-new'),
+          meta: {
+            title: '表格设计器（新）',
+            keepAlive: true
+          }
+        }, {
+          name: 'demo-table-old',
+          path: 'old',
+          component: () => import('@/views/demo/table/src/index-old'),
+          meta: {
+            title: '表格设计器（旧）',
+            keepAlive: true
+          }
+        }, {
+          name: 'demo-table-data',
+          path: 'data',
+          component: () => import('@/views/demo/table/src/index-table'),
+          meta: {
+            title: '表格数据',
+            keepAlive: true
+          }
         }
       ]
+    },
+    {
+      name: 'demo-c-container',
+      path: '/demo/c-container',
+      component: () => import('@/views/demo/c-container'),
+      meta: {
+        title: '自定义组件封装',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-el-table',
+      path: '/demo/el-table',
+      component: () => import('@/views/demo/el-table'),
+      meta: {
+        title: 'EL表格',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-ag-grid',
+      path: '/demo/ag-grid',
+      component: () => import('@/views/demo/ag-grid'),
+      meta: {
+        title: 'AG表格',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-input-multilingual',
+      path: '/demo/input-multilingual',
+      component: () => import('@/views/demo/multilingual'),
+      meta: {
+        title: '多语言文本框',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-virtual-scroll-table',
+      path: '/demo/virtual-scroll-table',
+      component: () => import('@/views/demo/virtual-scroll-table'),
+      meta: {
+        title: '虚拟滚动表格',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-virtual-scroll-table-detail',
+      path: '/demo/virtual-scroll-table-detail',
+      component: () => import('@/views/demo/virtual-scroll-table/detail'),
+      meta: {
+        title: '表格设计器（新）',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-drag',
+      path: '/demo/drag',
+      component: () => import('@/views/demo/drag'),
+      meta: {
+        title: '拖拽功能',
+        keepAlive: true
+      }
+    },
+    // 常用工具
+    {
+      name: 'common-utils-color-editor',
+      path: '/common/utils/editor/color',
+      component: () => import('@/views/common-utils/editor/color'),
+      meta: {
+        title: '颜色编辑器',
+        keepAlive: true
+      }
     }, {
+      name: 'common-utils-excel-sql-concat-generate',
+      path: '/common/utils/excel/sql/concat/generate',
+      component: () => import('@/views/common-utils/excel/sql-concat-generate'),
+      meta: {
+        title: 'Excel SQL拼接语句生成',
+        keepAlive: true
+      }
+    }, {
+      name: 'common-utils-data-filter',
+      path: '/common/utils/data/string/filter',
+      component: () => import('@/views/common-utils/data/string-filter'),
+      meta: {
+        title: '数据过滤',
+        keepAlive: true
+      }
+    },
+    // 错误页面
+    {
       name: '404',
       path: '/404',
       meta: {
@@ -107,9 +182,5 @@ export default [
       },
       component: () => import('@/views/error/404')
     }]
-  }, {
-    name: 'demo-designer',
-    path: '/demo/designer',
-    component: () => import('@/views/demo/designer')
   }
 ]
