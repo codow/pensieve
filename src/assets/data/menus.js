@@ -120,6 +120,11 @@ export default [{
         label: '字符串数据过滤',
         icon: '',
         url: '/common/utils/data/string/filter'
+      }, {
+        id: "9980302",
+        label: '树型数据处理',
+        icon: '',
+        url: '/common/utils/data/tree/handler'
       }]
     }
   ]

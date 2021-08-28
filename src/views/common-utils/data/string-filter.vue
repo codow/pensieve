@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <el-form class="padding__medium"
-             label-position="top">
+  <div class="padding__medium">
+    <el-form label-position="top">
       <el-row>
         <el-col :span="10">
           <el-form-item label="输入">
@@ -21,6 +20,14 @@
               <el-button type="primary"
                          @click="toCamelCase">驼峰命名</el-button>
             </div>
+            <div class="margin-top__medium margin-horizontal__medium align__center">
+              <el-button type="primary"
+                         @click="sortASC">正向排序</el-button>
+            </div>
+            <div class="margin-top__medium margin-horizontal__medium align__center">
+              <el-button type="primary"
+                         @click="sortDESC">逆向排序</el-button>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="10">
@@ -34,7 +41,6 @@
       </el-row>
     </el-form>
     <el-form :model="options"
-             class="padding__medium"
              label-position="right"
              label-width="100px">
       <el-collapse v-model="activeName"
@@ -142,10 +148,10 @@ export default {
       const originalData = this.getOriginalData()
       if (!originalData) return;
       let { baseNumber, remainder } = this.options
-      baseNumber = +baseNumber;
-      baseNumber = !baseNumber ? 1 : baseNumber;
-      remainder = +remainder;
-      remainder = !remainder ? 0 : remainder;
+      baseNumber = +baseNumber
+      baseNumber = !baseNumber ? 1 : baseNumber
+      remainder = +remainder
+      remainder = !remainder ? 0 : remainder
       //格式化数据
       const originaDataArray = originalData.split("\n");
       const exportDataArray = originaDataArray.filter((item, i) => {
@@ -161,26 +167,26 @@ export default {
       let { regexStr, replaceStr, splitStr, replaceFuncStr } = this.options
       if (!regexStr) return;
       //处理正则表达式
-      const opt = 'gi';
+      const opt = 'gi'
       let strArray = []
       let splitArray = []
       if (splitStr) {
         // 创建分割正则表达式
-        const splitRegexObj = eval("new RegExp('" + splitStr + "', '" + opt + "')");
+        const splitRegexObj = eval("new RegExp('" + splitStr + "', '" + opt + "')")
         // 记录分割符
         splitArray = [].concat(originalData.match(splitRegexObj))
         // 替换分隔符
         strArray = [].concat(originalData.split(splitRegexObj))
       }
-      const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')");
+      const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')")
       // 处理替换的字符串
-      replaceStr = eval("'" + replaceStr + "'");
+      replaceStr = eval("'" + replaceStr + "'")
       var replaceFunc = null
       if (replaceFuncStr) {
         replaceFunc = eval("(function() {return " + replaceFuncStr + "})()")
       }
       strArray = strArray.map(function (subStr) {
-        return subStr.replace(regexObj, replaceFunc || replaceStr);
+        return subStr.replace(regexObj, replaceFunc || replaceStr)
       })
       let exportData = ""
       strArray.forEach((subStr, index) => {
@@ -194,14 +200,14 @@ export default {
       let { regexStr, screenStr } = this.options
       if (!regexStr) return
       //处理正则表达式
-      const opt = 'g';
-      regexStr = regexStr.replace("\\", "\\\\");
-      const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')");
+      const opt = 'g'
+      regexStr = regexStr.replace("\\", "\\\\")
+      const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')")
       // 处理替换的字符串
-      screenStr = eval("'" + screenStr + "'");
+      screenStr = eval("'" + screenStr + "'")
       //执行match
-      const resultArray = originalData.match(regexObj) || [];
-      this.exportData = resultArray.join(screenStr);
+      const resultArray = originalData.match(regexObj) || []
+      this.exportData = resultArray.join(screenStr)
     },
     eliminateDuplication () {
       const originalData = this.getOriginalData() //原始数据
@@ -218,6 +224,25 @@ export default {
         }
       })
       this.exportData = resultArray.join(str)
+    },
+    sortASC () {
+      const originalData = this.getOriginalData()
+      if (!originalData) return
+      // 分割数据
+      let originaDataArray = originalData.split('\n')
+      // 排序
+      originaDataArray = originaDataArray.sort()
+      this.exportData = originaDataArray.join('\n')
+    },
+    sortDESC () {
+      const originalData = this.getOriginalData()
+      if (!originalData) return
+      // 分割数据
+      let originaDataArray = originalData.split('\n')
+      originaDataArray = originaDataArray.sort((a, b) => {
+        return -a.localeCompare(b)
+      })
+      this.exportData = originaDataArray.join('\n')
     }
   }
 }

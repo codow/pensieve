@@ -34,9 +34,9 @@ export function uuid (retainDashed, smallLetter) {
  * @return 填充后的字符串
  */
 export function fillStr (src, length, char, direction) {
-  src = src || ''
+  src = (src || '') + ''
   length = length || src.length
-  char = char || ''
+  char = (char || '') + ''
   direction = direction || 'left'
   if (src.length > length) {
     return src

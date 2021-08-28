@@ -165,9 +165,17 @@ export default [
         keepAlive: true
       }
     }, {
-      name: 'common-utils-data-filter',
+      name: 'common-utils-data-string-filter',
       path: '/common/utils/data/string/filter',
       component: () => import('@/views/common-utils/data/string-filter'),
+      meta: {
+        title: '数据过滤',
+        keepAlive: true
+      }
+    }, {
+      name: 'common-utils-data-tree-handler',
+      path: '/common/utils/data/tree/handler',
+      component: () => import('@/views/common-utils/data/tree-handler'),
       meta: {
         title: '数据过滤',
         keepAlive: true

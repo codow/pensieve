@@ -11,9 +11,11 @@
       </div>
     </div>
     <div class="margin-top__medium">
-      <!-- <el-input type="textarea"
+      <el-input v-if="inputElVisible"
+                ref="inputEl"
+                type="textarea"
                 rows="5"
-                v-model="sortListStr"></el-input> -->
+                v-model="sortListStr"></el-input>
 
     </div>
   </div>
@@ -27,7 +29,7 @@ export default {
   data () {
     return {
       sortInstance: null,
-      sortListStr: null
+      inputElVisible: true
     }
   },
   created () {
@@ -62,11 +64,6 @@ export default {
       const _vm = this
       this.sortInstance = new Sortable(sortArea, {
         animation: 150,
-        // 开始拖拽的时候
-        onStart: function (evt) {
-          console.log('onStart', evt, evt.oldIndex)
-        },
-
         // 结束拖拽
         onEnd: function (evt) {
           // 替换
@@ -87,6 +84,8 @@ export default {
     },
     updateSortListStr () {
       this.sortListStr = JSON.stringify(this.sortList)
+      const { inputEl } = this.$refs
+      inputEl && inputEl.$forceUpdate()
     }
   }
 }
