@@ -42,7 +42,11 @@ export default {
     attributes: Object,
     events: Object,
     componentName: String,
-    componentValue: {}
+  },
+  data () {
+    return {
+      componentValue: {}
+    }
   }
 }
 </script>

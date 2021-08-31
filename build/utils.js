@@ -1,8 +1,10 @@
 'use strict'
 const path = require('path')
-const config = require('../config')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
 const packageConfig = require('../package.json')
+const config = require('../config')
+
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const fs = require('fs')
 
 exports.assetsPath = function (_path) {
@@ -43,13 +45,9 @@ exports.cssLoaders = function (options) {
       })
     }
 
-    // Extract CSS when that option is specified
-    // (which is the case during production build)
     if (options.extract) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: 'vue-style-loader'
-      })
+      // 提取css文件到单独的文件中
+      return [MiniCssExtractPlugin.loader].concat(loaders)
     } else {
       return ['vue-style-loader'].concat(loaders)
     }
@@ -107,29 +105,28 @@ exports.createNotifierCallback = () => {
 * @param {*} type
 */
 exports.readdirSync = function (dirPath, type) {
- // 调用读取目录子文件名的方法，等待执行返回
- let filePaths = fs.readdirSync(dirPath)
- type = type || 'file'
- let filePath
- let fileStat
- let result = []
- // 
- let allowFile = type === 'file' || type === 'all'
- let allowDir = type === 'dir' || type === 'all'
- // 批量调用获取文件状态的方法
- for (let i = 0; i < filePaths.length; i++) {
-   filePath = path.join(dirPath, filePaths[i])
-   fileStat = fs.statSync(filePath)
-   if (allowFile && fileStat.isFile())  {
-     result.push(filePath)
-   } else if (allowDir && fileStat.isDirectory()) {
-     result.push(filePath)
-   }
- }
- return result
+  // 调用读取目录子文件名的方法，等待执行返回
+  let filePaths = fs.readdirSync(dirPath)
+  type = type || 'file'
+  let filePath
+  let fileStat
+  let result = []
+  // 
+  let allowFile = type === 'file' || type === 'all'
+  let allowDir = type === 'dir' || type === 'all'
+  // 批量调用获取文件状态的方法
+  for (let fieldPath of filePaths) {
+    filePath = path.join(dirPath, fieldPath)
+    fileStat = fs.statSync(filePath)
+    if ((allowFile && fileStat.isFile())
+      || (allowDir && fileStat.isDirectory())) {
+      result.push(filePath)
+    }
+  }
+  return result
 }
 
 // 判断路径是否存在
-exports.exists = function (path) {
-  return fs.existsSync(path)
-}  
+exports.exists = function (_path) {
+  return fs.existsSync(_path)
+}

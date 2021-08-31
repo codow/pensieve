@@ -11,18 +11,10 @@
 </template>
 
 <script>
-import VueDraggable from 'vuedraggable'
-import DemoTableLayout from './components/table'
-
 import draggable from './directives/draggable'
 
 export default {
   name: 'demo-table',
-
-  components: {
-    VueDraggable,
-    DemoTableLayout
-  },
 
   directives: {
     draggable

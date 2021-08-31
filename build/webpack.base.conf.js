@@ -1,47 +1,16 @@
 'use strict'
 const path = require('path')
 const utils = require('./utils')
+// 导入配置
 const config = require('../config')
-const merge = require('webpack-merge')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const vueLoaderConfig = require('./vue-loader.conf')
-// 导入通用配置
-const baseConfig = require('../config/base')
+// 
+const Webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin-webpack5')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
-}
-
-// 查询所有需要合并的目录
-const copyPathList = []
-const staticPath = process.env.NODE_ENV === 'production' ? config.build.assetsSubDirectory : config.dev.assetsSubDirectory
-const yingtianAppPath = resolve("node_modules/@yingtian")
-console.log('yingtianAppPath', yingtianAppPath)
-// 设置静态资源目录合并
-if (utils.exists(yingtianAppPath)) {
-  utils.readdirSync(yingtianAppPath, 'dir').forEach((item) => {
-    if (!item) return
-    // 获取static目录
-    let copyPath = item + '/static'
-    if (!utils.exists(copyPath)) return
-    // 构建复制对象
-    copyPathList.push({
-      from: copyPath,
-      to: staticPath,
-      ignore: ['.*']
-    })
-  })
-}
-
-// 配置当前项目的静态资源
-let p = resolve('static')
-if (utils.exists(p)) {
-  copyPathList.push({
-    from: p,
-    to: staticPath,
-    ignore: ['.*'],
-    force: true // 强制覆盖之前的资源
-  })
 }
 
 const createLintingRule = () => ({
@@ -55,27 +24,41 @@ const createLintingRule = () => ({
   }
 })
 
-const webpackConfig = merge({
+const webpackConfig = {
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
   },
   output: {
+    clean: true,
     path: config.build.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production' ?
       config.build.assetsPublicPath : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.ts', '.tsx', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+    },
+    // v5 调整
+    fallback: {
+      dgram: false,
+      fs: false,
+      net: false,
+      tls: false,
+      child_process: false
     }
   },
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -84,49 +67,64 @@ const webpackConfig = merge({
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        // resolve('node_modules/webpack-dev-server/client')
+        include: [resolve('src'), resolve('test')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]')
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000
+          }
+        },
+        generator: {
+          filename: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('media/[name].[hash:7].[ext]')
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000
+          }
+        },
+        generator: {
+          filename: utils.assetsPath('media/[name].[hash:7].[ext]')
         }
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000
+          }
+        },
+        generator: {
+          filename: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
     ]
   },
-  node: {
-    // prevent webpack from injecting useless setImmediate polyfill because Vue
-    // source contains it (although only uses it if it's native).
-    setImmediate: false,
-    // prevent webpack from injecting mocks to Node native modules
-    // that does not make sense for the client
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  },
   plugins: [
-    new CopyWebpackPlugin(copyPathList)
+    // 复制静态资源文件
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'static',
+          to: 'static/'
+        }
+      ]
+    }),
+    // v5 新增
+    new VueLoaderPlugin(),
+    // 全局注入 Vue, 避免在每个 .vue 文件中重复引入
+    new Webpack.ProvidePlugin({
+      Vue: ['vue/dist/vue.esm.js', 'default'],
+    })
   ]
-}, baseConfig)
+}
 
 module.exports = webpackConfig

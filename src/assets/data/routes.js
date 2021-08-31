@@ -147,6 +147,15 @@ export default [
         keepAlive: true
       }
     },
+    {
+      name: 'demo-ts-hello',
+      path: '/demo/ts/hello',
+      component: () => import('@/views/ts/hello.ts'),
+      meta: {
+        title: '拖拽功能',
+        keepAlive: true
+      }
+    },
     // 常用工具
     {
       name: 'common-utils-color-editor',

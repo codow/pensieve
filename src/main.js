@@ -1,5 +1,3 @@
-// 入口文件
-import Vue from 'vue'
 // 第三方插件
 import store from './store'
 import router from './router'

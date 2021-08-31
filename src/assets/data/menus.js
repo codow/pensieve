@@ -79,6 +79,19 @@ export default [{
     label: '拖拽功能',
     icon: '',
     url: '/demo/drag'
+  }, {
+    id: "10113",
+    label: 'TS测试',
+    icon: '',
+    url: '/demo/ts',
+    children: [
+      {
+        id: '1011301',
+        label: 'TS hello',
+        icon: '',
+        url: '/demo/ts/hello'
+      }
+    ]
   }]
 }, {
   id: '998',
