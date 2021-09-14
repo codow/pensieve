@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="padding__small">
     <div>测试el-table</div>
     <div>
       <el-table :data="list">
@@ -37,7 +37,8 @@
       <el-table v-if="loaded"
                 ref="table3"
                 :data="list"
-                header-row-class-name="drag-row">
+                header-row-class-name="drag-row"
+                @row-contextmenu="handleRowContextMenu">
         <el-table-column v-for="(column, i) in columns"
                          :key="column.id"
                          :type="column.type"
@@ -54,6 +55,16 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <!-- 菜单弹框 -->
+    <div ref="menu"
+         class="table-cell-menu">
+      <div v-for="item in menuInfo.menus"
+           :key="item.value"
+           class="table-cell-menu-item padding-horizontal__small"
+           @click="handleCellMenuClick(item)">
+        {{item.label}}
+      </div>
     </div>
   </div>
 </template>
@@ -90,6 +101,27 @@
 }
 .drop-in-right {
   border-right: 1px solid #0063ff;
+}
+
+.table-cell-menu {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 240px;
+  position: absolute;
+  z-index: 1;
+  display: none;
+  font-size: 14px;
+  color: #909399;
+}
+
+.table-cell-menu-item {
+  line-height: 26px;
+}
+
+.table-cell-menu-item:hover {
+  color: #fff;
+  background-color: orange;
 }
 </style>
 
@@ -130,16 +162,22 @@ export default {
       }, {
         id: 2,
         label: '合同ID',
-        value: 'contract_id'
+        value: 'contract_id',
+        value_type: 'int'
       }, {
         id: 3,
         label: '合同名称',
-        value: 'contract_name'
+        value: 'contract_name',
+        value_type: 'varchar2'
       }, {
         id: 4,
         label: '签约时间',
-        value: 'create_time'
-      }]
+        value: 'create_time',
+        value_type: 'datetime'
+      }],
+      menuInfo: {
+        menus: []
+      }
     }
   },
 
@@ -147,10 +185,13 @@ export default {
     setTimeout(() => {
       this.initDragArea()
     })
+    this.initMenu()
   },
 
   destroyed () {
     this.destroyDragArea()
+
+    this.destroyMenu()
   },
 
   methods: {
@@ -180,6 +221,7 @@ export default {
             _vm.dragItem = dragItem
             table3El.addEventListener('mousemove', _vm.handleMouseMove)
             table3El.addEventListener('mouseleave', _vm.handleMouseLeave)
+            window.addEventListener('mousemove', _vm.handleGlobalMouseMove)
           },
           onChange (evt) {
             // 获取当前元素对应的列
@@ -202,39 +244,6 @@ export default {
               }
             })
           },
-          onAdd (evt) {
-            // // 获取当前元素对应的列
-            // const { item, from, to } = evt
-            // // 不需要交换
-            // if (from === to) return
-            // // 获取列ID
-            // let id = item.getAttribute('column-id')
-            // // 获取相邻的列
-            // const { childNodes } = to
-            // let otherItem, otherId
-            // let type
-            // if (childNodes[0] === item) {
-            //   type = 'left'
-            //   otherItem = childNodes[1]
-            // } else {
-            //   type = 'right'
-            //   otherItem = childNodes[0]
-            // }
-            // otherId = otherItem.getAttribute('column-id')
-            // // 获取列配置中的排序
-            // let index = columns.findIndex(col => col.id + '' === id)
-            // let otherIndex = columns.findIndex(col => col.id + '' === otherId)
-            // // 排除不需要重新排序的情况
-            // if (type === 'left' && index + 1 === otherIndex) return
-            // if (type === 'right' && index - 1 === otherIndex) return
-            // let newIndex = otherIndex
-            // if (type === 'left' && index < otherIndex) {
-            //   newIndex = otherIndex - 1
-            // }
-            // // 交换顺序
-            // columns.splice(newIndex, 0, columns.splice(index, 1)[0])
-            // _vm.refresh()
-          },
           onMove (evt) {
             // 判断是否交换了容器
             const { from, to, dragged } = evt
@@ -248,6 +257,7 @@ export default {
             _vm.clearDropClass()
             table3El.removeEventListener('mousemove', _vm.handleMouseMove)
             table3El.removeEventListener('mouseleave', _vm.handleMouseLeave)
+            window.removeEventListener('mousemove', _vm.handleGlobalMouseMove)
             // 删除复制的元素
             const { clone, item, from, to } = evt
             // 数据交换处理
@@ -319,12 +329,33 @@ export default {
       this.dragInstances = null
     },
 
+    initMenu () {
+      const { menu } = this.$refs
+      this.menuEl = menu
+      // 移动到body上
+      window.document.body.append(menu)
+    },
+
+    destroyMenu () {
+      this.menuEl.destroy()
+      this.menuEl = null
+    },
+
     clearDropClass () {
       const table3El = this.$refs.table3.$el
       let els = table3El.querySelectorAll('.drop-in-left')
       els.forEach(el => delClass(el, 'drop-in-left'))
       els = table3El.querySelectorAll('.drop-in-right')
       els.forEach(el => delClass(el, 'drop-in-right'))
+    },
+    
+    handleGlobalMouseMove (evt) {
+      // 更新拖拽元素的定位
+      const { dragItem } = this
+      const { style } = dragItem
+      let left = Number.parseFloat(style.left)
+      let top = Number.parseFloat(style.top)
+      style.transform = `matrix(1, 0, 0, 1, ${evt.x - left - 5}, ${evt.y - top - 5})`
     },
 
     handleMouseMove (evt) {
@@ -348,6 +379,84 @@ export default {
       const iconEl = this.dragItem.querySelector('.drag-icon')
       iconEl.className = 'drag-icon el-icon-turn-off'
       this.dropType = 'remove'
+    },
+
+    handleRowContextMenu (row, column, event) {
+      // 避免冒泡和默认事件
+      event.stopPropagation()
+      event.preventDefault()
+      // property
+      let property = column.property
+      // 没有显示数据的列，不提供菜单
+      if (!property) return
+      let cellValue = row[property]
+      // 查询配置
+      let col = this.columns.find(item => item.value === property)
+      const commonMenus = [
+        { value: 'EQUAL', label: '等于...', sort: 21 },
+        { value: 'UNEQUAL', label: '不等于...', sort: 22 },
+        { value: 'IS_NULL', label: '没有值...', sort: 81 },
+        { value: 'IS_NOT_NULL', label: '有值...', sort: 82 }
+      ]
+      const stringMenus = [
+        { value: 'LIKE', label: '包含...', sort: 11 },
+        { value: 'NOT_LIKE', label: '不包含...', sort: 12 },
+        { value: 'LIKE_RIGHT', label: '开始以...', sort: 51 },
+        { value: 'NOT_LIKE_RIGHT', label: '开始不是以...', sort: 52 },
+        { value: 'LIKE_LEFT', label: '结束以...', sort: 53 },
+        { value: 'NOT_LIKE_LEFT', label: '结束不是以...', sort: 54 },
+      ]
+
+      const numberMenus = [
+        { value: 'GT', label: '大于...', sort: 31 },
+        { value: 'LT', label: '小于...', sort: 32 },
+        { value: 'GT_EQUAL', label: '大于等于...', sort: 33 },
+        { value: 'LT_EQUAL', label: '小于等于...', sort: 34 }
+      ]
+
+      const numberTypes = ['numeric', 'int', 'tinyint', 'smallint', 'bigint', 'double', 'decimal']
+      const dateTypes = ['date', 'datetime', 'timestamp']
+      const stringStypes = ['varchar', 'varchar2', 'char', 'text', 'mediumtext', 'longtext']
+
+      const valueType = (col.value_type || '').toLowerCase()
+      // 根据数据类型判断打开什么菜单
+      let menus = [].concat(commonMenus)
+      if (numberTypes.includes(valueType) || dateTypes.includes(valueType)) {
+        menus = menus.concat(numberMenus)
+      } else if (stringStypes.includes(valueType)) {
+        menus = menus.concat(stringMenus)
+      }
+      // 排序
+      menus.sort((a, b) => a.sort - b.sort)
+
+      // 记录选择的单元格
+      this.menuInfo = {
+        row: row,
+        column: column,
+        cellValue: cellValue,
+        menus: menus
+      }
+      // 打开弹框
+      this.openMenu(event.x, event.y)
+    },
+
+    handleCellMenuClick (menu) {
+      // 设置过滤信息
+      let filterType = menu.value
+      let filterValue = this.menuInfo.cellValue
+      this.closeMenu()
+      alert('查询满足 ' + menu.label.replace('...', this.menuInfo.cellValue) + ' 的数据')
+    },
+
+    openMenu (x, y) {
+      this.menuEl.style = `display: block; position: absolute; left: ${x - 5}px; top: ${y - 5}px;`
+      // 监听全局按键
+      window.addEventListener('click', this.closeMenu)
+    },
+
+    closeMenu () {
+      this.menuEl.style = ''
+      window.removeEventListener('click', this.closeMenu)
     },
 
     refresh () {
