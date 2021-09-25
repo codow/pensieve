@@ -58,6 +58,7 @@
     </div>
     <!-- 菜单弹框 -->
     <div ref="menu"
+         :id="menuId"
          class="table-cell-menu">
       <div v-for="item in menuInfo.menus"
            :key="item.value"
@@ -139,6 +140,9 @@ const delClass = function (el, className) {
   el.classList.remove(className)
 }
 
+// 全局ID
+let uid = 1
+
 export default {
   name: 'demo-el-table',
 
@@ -175,6 +179,7 @@ export default {
         value: 'create_time',
         value_type: 'datetime'
       }],
+      menuId: 'table-cell-menu-' + uid++,
       menuInfo: {
         menus: []
       }
@@ -337,7 +342,7 @@ export default {
     },
 
     destroyMenu () {
-      this.menuEl.destroy()
+      this.menuEl.remove()
       this.menuEl = null
     },
 
@@ -348,7 +353,7 @@ export default {
       els = table3El.querySelectorAll('.drop-in-right')
       els.forEach(el => delClass(el, 'drop-in-right'))
     },
-    
+
     handleGlobalMouseMove (evt) {
       // 更新拖拽元素的定位
       const { dragItem } = this
