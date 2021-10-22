@@ -70,7 +70,7 @@
     "html-webpack-plugin": "^5.3.2",
     "less": "^3.11.1",
     "less-loader": "^4.1.0",
-    "mini-css-extract-plugin": "^2.2.0",
+    "mini-css-extract-plugin": "^2.4.2",
     "node-notifier": "^5.1.2",
     "optimize-css-assets-webpack-plugin": "^6.0.1",
     "ora": "^1.2.0",

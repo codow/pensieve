@@ -92,6 +92,16 @@ export default [{
         url: '/demo/ts/hello'
       }
     ]
+  }, {
+    id: "10114",
+    label: '响应式和Table布局示例',
+    icon: '',
+    url: '/demo/table/div'
+  }, {
+    id: "10115",
+    label: 'Flex布局示例',
+    icon: '',
+    url: '/demo/flex'
   }]
 }, {
   id: '998',

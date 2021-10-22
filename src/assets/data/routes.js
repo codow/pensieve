@@ -156,6 +156,24 @@ export default [
         keepAlive: true
       }
     },
+    {
+      name: 'demo-table-div',
+      path: '/demo/table/div',
+      component: () => import('@/views/demo/table-div/index.vue'),
+      meta: {
+        title: '响应式和Table布局',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-flex',
+      path: '/demo/flex',
+      component: () => import('@/views/demo/flex/index.vue'),
+      meta: {
+        title: 'Flex布局',
+        keepAlive: true
+      }
+    },
     // 常用工具
     {
       name: 'common-utils-color-editor',
