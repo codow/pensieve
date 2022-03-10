@@ -18,6 +18,10 @@
                 v-model="sortListStr"></el-input>
 
     </div>
+    <div>
+      <div>输入框测试</div>
+      <el-input-number v-model="formData.number"></el-input-number>
+    </div>
   </div>
 </template>
 
@@ -28,6 +32,7 @@ export default {
   name: 'demo-drag',
   data () {
     return {
+      formData: { number: null },
       sortInstance: null,
       inputElVisible: true
     }

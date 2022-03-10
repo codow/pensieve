@@ -229,6 +229,14 @@ export default [
         title: '测试数据生成',
         keepAlive: true
       }
+    }, {
+      name: 'system-org-manage',
+      path: '/system/org/manage',
+      component: () => import('@/views/common-utils/data/big-data-generate'),
+      meta: {
+        title: '机构管理',
+        keepAlive: true
+      }
     },
     // 错误页面
     {

@@ -10,6 +10,12 @@
   </el-menu>
 </template>
 
+<style>
+.sp-menu, .sp-menu__item, .sp-menu .el-menu {
+  background-color: inherit;
+}
+</style>
+
 <script>
 import FrMenuItem from './menu-item'
 import { isNotEmpty } from '../../utils/packages/validator'

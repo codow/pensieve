@@ -24,9 +24,6 @@ export default {
         height: this.$store.state.Canvas.screen.height + 'px'
       }
     }
-  },
-  mounted () {
-    window.document.querySelector("#systemLoading").style.display = 'none'
   }
 }
 </script>

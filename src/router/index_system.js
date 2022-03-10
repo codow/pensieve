@@ -1,9 +1,6 @@
 /* eslint-disable no-eval */
-import Vue from 'vue'
 import Router from 'vue-router'
-import routes from '../assets/data/routes'
-
-Vue.use(Router)
+import routes from '../assets/data/routes_system'
 
 // 当前项目自己使用，不用动态路由
 const router = new Router({
@@ -17,7 +14,7 @@ const router = new Router({
 const _init = router.init
 
 router.init = function (app) {
-  console.log('router init', app)
+  console.log('router systems init', app)
   _init.call(this, app)
 }
 

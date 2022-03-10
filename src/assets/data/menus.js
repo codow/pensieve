@@ -102,6 +102,11 @@ export default [{
     label: 'Flex布局示例',
     icon: '',
     url: '/demo/flex'
+  }, {
+    id: "10116",
+    label: '富文本框（TinyMCE）',
+    icon: '',
+    url: '/demo/rich-editor'
   }]
 }, {
   id: '998',
@@ -148,6 +153,11 @@ export default [{
         label: '树型数据处理',
         icon: '',
         url: '/common/utils/data/tree/handler'
+      }, {
+        id: "9980303",
+        label: '测试数据生成',
+        icon: '',
+        url: '/common/utils/big/data/generate'
       }]
     }
   ]

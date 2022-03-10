@@ -122,7 +122,8 @@ export default {
       exportData: null,
       options: {
         remainder: 0,
-        baseNumber: 1
+        baseNumber: 1,
+        eliminateDuplicationStr: '\\n'
       }
     }
   },
@@ -177,10 +178,16 @@ export default {
         splitArray = [].concat(originalData.match(splitRegexObj))
         // 替换分隔符
         strArray = [].concat(originalData.split(splitRegexObj))
+      } else {
+        strArray = [originalData]
       }
       const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')")
       // 处理替换的字符串
-      replaceStr = eval("'" + replaceStr + "'")
+      if (!replaceStr) {
+        replaceStr = ''
+      } else {
+        replaceStr = eval("'" + replaceStr + "'")
+      }
       var replaceFunc = null
       if (replaceFuncStr) {
         replaceFunc = eval("(function() {return " + replaceFuncStr + "})()")
@@ -223,7 +230,7 @@ export default {
           return true
         }
       })
-      this.exportData = resultArray.join(str)
+      this.exportData = resultArray.join(eliminateDuplicationStr)
     },
     sortASC () {
       const originalData = this.getOriginalData()
