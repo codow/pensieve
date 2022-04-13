@@ -1,6 +1,7 @@
 /* eslint-disable no-eval */
 import Vue from 'vue'
 import Router from 'vue-router'
+// import { normalizeLocation } from 'vue-router/src/util/location'
 
 Vue.use(Router)
 

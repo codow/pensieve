@@ -158,6 +158,16 @@ export default [{
         label: '测试数据生成',
         icon: '',
         url: '/common/utils/big/data/generate'
+      }, {
+        id: "9980304",
+        label: '数字生成',
+        icon: '',
+        url: '/common/utils/number/data/generate'
+      }, {
+        id: "9980305",
+        label: 'UUID生成',
+        icon: '',
+        url: '/common/utils/uuid/data/generate'
       }]
     }
   ]

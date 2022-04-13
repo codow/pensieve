@@ -229,6 +229,22 @@ export default [
         title: '测试数据生成',
         keepAlive: true
       }
+    }, {
+      name: 'common-utils-number-data-generate',
+      path: '/common/utils/number/data/generate',
+      component: () => import('@/views/common-utils/data/number-data-generate'),
+      meta: {
+        title: '数字生成',
+        keepAlive: true
+      }
+    }, {
+      name: 'common-utils-uuid-data-generate',
+      path: '/common/utils/uuid/data/generate',
+      component: () => import('@/views/common-utils/data/uuid-data-generate'),
+      meta: {
+        title: '数字生成',
+        keepAlive: true
+      }
     },
     // 错误页面
     {

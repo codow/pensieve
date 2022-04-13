@@ -6,8 +6,10 @@
 
 import * as stringUtils from './packages/string'
 import * as objectUtils from './packages/object'
+import * as numberUtils from './packages/number'
 
 export default {
   string: stringUtils,
-  object: objectUtils
+  object: objectUtils,
+  number: numberUtils
 }
