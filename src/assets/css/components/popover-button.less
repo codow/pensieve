@@ -1,0 +1,46 @@
+.button-popover {
+  padding: 0px;
+}
+
+.button-popover-item {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: @BG_DEFAULT_DEEP_COLOR;
+  text-align: left;
+}
+
+.button-popover-item.el-button:active,
+.button-popover-item.el-button:focus {
+  background: @BG_DEFAULT_LIGHT_COLOR;
+  color: @FONT_DEEP_COLOR;
+}
+
+.button-popover-item.el-button:hover {
+  color: @BG_PRIMARY_DEEP_COLOR;
+  border-color: @BG_PRIMARY_MEDIUM_COLOR;
+  background-color: @BG_PRIMARY_LIGHT_COLOR;
+}
+
+.button-popover-item>span {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.el-button.button-popover-item+.el-button.button-popover-item {
+  margin-left: 0;
+}
+
+.button-popover-divider {
+  margin: 10px 0;
+}
+
+.button-popover-divider .el-divider__text {
+  color: @FONT_MEDIUM_COLOR;
+}
+
+.button-popover-divider-icon+.button-popover-divider-label {
+  margin-left: 10px;
+}

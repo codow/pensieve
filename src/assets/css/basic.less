@@ -1,0 +1,147 @@
+/**
+ * 定义基础样式，并设置样式使用的变量
+ * @author wangyb
+ * @createTime 2022-05-09 14:57:32
+ */
+/** --- 常用样式 START --- **/
+// 宽高
+.width__full {
+  width: 100%;
+}
+
+// 高度
+.height__full {
+  height: 100%;
+}
+
+// padding
+.padding__empty {
+  padding: 0px;
+}
+
+.padding__medium {
+  padding: 20px;
+}
+
+.padding__small {
+  padding: 10px;
+}
+
+.padding-horizontal__small {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.padding-vertical__small {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.padding-left__small {
+  padding-left: 10px;
+}
+
+.padding__mini {
+  padding: 5px;
+}
+
+// margin
+.margin__empty {
+  margin: 0px;
+}
+
+.margin__medium {
+  margin: 20px;
+}
+
+.margin__small {
+  margin: 10px;
+}
+
+.margin__mini {
+  margin: 5px;
+}
+
+.margin-top__medium {
+  margin-top: 20px;
+}
+
+.margin-horizontal__medium {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.margin-horizontal__auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align__center {
+  text-align: center;
+}
+
+/** --- 常用样式 END --- **/
+
+/** --- 滚动条样式 START **/
+.auto-scroll {
+  overflow: auto;
+}
+
+// 滚动条整体部分，可以设置宽度啥的
+.auto-scroll::-webkit-scrollbar {
+  /*对垂直流动条有效*/
+  width: 10px;
+  /*对水平流动条有效*/
+  height: 10px;
+  // background-color: rgba(0, 0, 0, 0.34);
+}
+
+// 滚动条两端的按钮
+.auto-scroll::-webkit-scrollbar-button {
+  background-color: cyan;
+  width: 10px;
+  height: 10px;
+}
+
+// 外层轨道
+.auto-scroll::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: rosybrown;
+  border-radius: 3px;
+}
+
+// 内层滚动槽
+.auto-scroll::-webkit-scrollbar-track-piece {
+  // background-color: blue;
+  background-color: darkred;
+}
+
+// 滚动的滑块
+.auto-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(144, 147, 153, .5);
+  border-radius: 7px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #E8E8E8;
+}
+
+// 边角
+.auto-scroll::-webkit-scrollbar-corner {
+  background: khaki;
+}
+
+// // 定义右下角拖动块的样式
+// .auto-scroll::-webkit-resizer {
+
+// }
+
+/** --- 滚动条样式 END **/
+
+.fr-full {
+  width: 100%;
+  height: 100%;
+}
+
+// 引入组件样式
+@import url('./components/index.less');
+// 引入页面样式
+@import url('./views/index.less');
