@@ -1,0 +1,77 @@
+{
+  "model": {
+    "formData": {
+      "name": "王钰博"
+    }
+  },
+  "define": {
+    "id": "page",
+    "tag": "div",
+    "props": {
+      "size": {
+        "type": "String",
+        "default": "small"
+      }
+    },
+    "attributes": {},
+    "events": {
+      "mounted": "function () {this.$notify.success('加载完成')}"
+    },
+    "children": [
+      {
+        "id": "form",
+        "tag": "el-form",
+        "attributes": {
+          "model": "#{formData}",
+          "size": "#{size}"
+        },
+        "children": [
+          {
+            "tag": "el-form-item",
+            "attributes": {
+              "label": "姓名",
+              "prop": "name"
+            },
+            "children": [
+              {
+                "tag": "el-input",
+                "field": "formData.name"
+              }
+            ]
+          },
+          {
+            "tag": "el-form-item",
+            "attributes": {
+              "label": "年龄",
+              "prop": "age"
+            },
+            "children": [
+              {
+                "tag": "el-input",
+                "field": "formData.age"
+              }
+            ]
+          },
+          {
+            "tag": "el-form-item",
+            "attributes": {},
+            "children": [
+              {
+                "tag": "el-button",
+                "text": "提交",
+                "attributes": {},
+                "events": {
+                  "click": "#{save}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "methods": {
+      "save": "function () {\n  console.log('save', JSON.stringify(this.formData))\n}"
+    },
+    "meta": {}
+  }
+}

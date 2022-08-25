@@ -46,7 +46,7 @@
   width: 100%;
   border: 0;
   float: right;
-  background: @BG_DEFAULT_MEDIUM_COLOR;
+  background: @BG_DEFAULT_LIGHT_COLOR;
   border-bottom: 1px solid @BORDER_DEFAULT_LIGHT_COLOR;
   border-radius: 0;
   padding: 12px 0;
@@ -56,4 +56,10 @@
 .fr-route-views-tabs .el-tabs__nav-next,
 .fr-route-views-tabs .el-tabs__nav-prev {
   line-height: 40px;
+}
+
+.fr-route-views-tabs {
+  .el-tabs__header {
+    background-color: @BG_DEFAULT_LIGHT_COLOR;
+  }
 }

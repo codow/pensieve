@@ -48,6 +48,9 @@ export default {
   created () {
     console.log('1 created')
   },
+  updated () {
+    console.log('updated')
+  },
   methods: {
     setId () {
       this.id = this.form.id

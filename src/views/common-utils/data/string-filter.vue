@@ -147,26 +147,26 @@ export default {
     lineNumberFilter () {
       //获取原始数据
       const originalData = this.getOriginalData()
-      if (!originalData) return;
+      if (!originalData) return
       let { baseNumber, remainder } = this.options
       baseNumber = +baseNumber
       baseNumber = !baseNumber ? 1 : baseNumber
       remainder = +remainder
       remainder = !remainder ? 0 : remainder
       //格式化数据
-      const originaDataArray = originalData.split("\n");
+      const originaDataArray = originalData.split("\n")
       const exportDataArray = originaDataArray.filter((item, i) => {
         if ((i + 1) % baseNumber == remainder) {
           return true
         }
       })
-      this.exportData = exportDataArray.join("\n");
+      this.exportData = exportDataArray.join("\n")
     },
     regexReplace () {
       const originalData = this.getOriginalData() //原始数据
       if (!originalData) return
       let { regexStr, replaceStr, splitStr, replaceFuncStr } = this.options
-      if (!regexStr) return;
+      if (!regexStr) return
       //处理正则表达式
       const opt = 'gi'
       let strArray = []
@@ -204,12 +204,12 @@ export default {
     regexScreen () {
       const originalData = this.getOriginalData() //原始数据
       if (!originalData) return
-      let { regexStr, screenStr } = this.options
-      if (!regexStr) return
+      let { screenRegexStr, screenStr } = this.options
+      if (!screenRegexStr) return
       //处理正则表达式
       const opt = 'g'
-      regexStr = regexStr.replace("\\", "\\\\")
-      const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')")
+      screenRegexStr = screenRegexStr.replaceAll("\\", "\\\\")
+      const regexObj = eval("new RegExp('" + screenRegexStr + "', '" + opt + "')")
       // 处理替换的字符串
       screenStr = eval("'" + screenStr + "'")
       //执行match
@@ -220,7 +220,7 @@ export default {
       const originalData = this.getOriginalData() //原始数据
       if (!originalData) return
       let { eliminateDuplicationStr } = this.options
-      if (!eliminateDuplicationStr) return;
+      if (!eliminateDuplicationStr) return
       eliminateDuplicationStr = eval("'" + eliminateDuplicationStr + "'")
       const array = originalData.split(eliminateDuplicationStr)
       const map = {}

@@ -188,6 +188,34 @@ export default [
         keepAlive: true
       }
     },
+    // 在线表单
+    {
+      name: 'form-manage',
+      path: '/form/manage',
+      component: () => import('@/views/form/manage.vue'),
+      meta: {
+        title: '表单管理',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'form-designer',
+      path: '/form/designer',
+      component: () => import('@/views/form/designer.vue'),
+      meta: {
+        title: '表单设计',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'form-dynamic',
+      path: '/form/dynamic',
+      component: () => import('@/views/form/dynamic.vue'),
+      meta: {
+        title: '动态表单',
+        keepAlive: true
+      }
+    },
     // 常用工具
     {
       name: 'common-utils-color-editor',

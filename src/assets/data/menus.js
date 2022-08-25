@@ -19,11 +19,6 @@ export default [{
     icon: '',
     url: '/demo/dynamic-watch'
   }, {
-    id: "10103",
-    label: '表单设计器',
-    icon: '',
-    url: '/demo/designer'
-  }, {
     id: "10105",
     label: 'Vue嵌套插槽',
     icon: '',
@@ -108,6 +103,31 @@ export default [{
     icon: '',
     url: '/demo/rich-editor'
   }]
+}, {
+  id: '997',
+  label: '在线表单',
+  icon: '',
+  url: '/form',
+  children: [
+    {
+      id: "99701",
+      label: '表单管理',
+      icon: '',
+      url: '/form/manage'
+    },
+    {
+      id: "99702",
+      label: '表单设计',
+      icon: '',
+      url: '/form/designer'
+    },
+    {
+      id: "99703",
+      label: '动态表单',
+      icon: '',
+      url: '/form/dynamic'
+    }
+  ]
 }, {
   id: '998',
   label: '常用工具',
