@@ -208,11 +208,20 @@ export default [
       }
     },
     {
-      name: 'form-dynamic',
-      path: '/form/dynamic',
-      component: () => import('@/views/form/dynamic.vue'),
+      name: 'form-dynamic-render',
+      path: '/form/dynamic/render',
+      component: () => import('@/views/form/dynamic-render.vue'),
       meta: {
-        title: '动态表单',
+        title: '动态表单(Render)',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'form-dynamic-template',
+      path: '/form/dynamic/template',
+      component: () => import('@/views/form/dynamic-template.vue'),
+      meta: {
+        title: '动态表单(template)',
         keepAlive: true
       }
     },

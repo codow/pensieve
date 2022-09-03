@@ -18,3 +18,26 @@ export function isNativeTag (tag) {
   tag = tag.toUpperCase()
   return tag in NATIVE_TAGS_MAP
 }
+
+/**
+ * 给dom元素增加样式
+ * 
+ * @param {Dom} el dom元素
+ * @param  {...any} newClassNames 需要增加的样式
+ * @returns 
+ */
+export function addClass (el, ...newClassNames) {
+  if (!el) return
+  el.className = (el.className || '').split(/\s+/).filter(item => !newClassNames.includes(item)).concat(newClassNames).join(' ')
+}
+
+/**
+ * 给dom元素删除样式
+ * 
+ * @param {*} el dom元素
+ * @param  {...any} removeClassNames 需要删除的样式
+ */
+export function removeClass (el, ...removeClassNames) {
+  if (!el) return
+  el.className = (el.className || '').split(/\s+/).filter(item => !removeClassNames.includes(item)).join(' ')
+}

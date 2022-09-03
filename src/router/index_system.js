@@ -14,7 +14,7 @@ const router = new Router({
 const _init = router.init
 
 router.init = function (app) {
-  console.log('router systems init', app)
+  // console.log('router systems init', app)
   _init.call(this, app)
 }
 

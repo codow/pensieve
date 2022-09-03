@@ -17,7 +17,14 @@ import './assets/css/index.less'
 import Vue from 'vue'
 // import './assets/css/dark.less';
 
+import utils from './utils'
 import { isArray, isObject } from './utils/packages/validator'
+
+import draggable from './components/draggable'
+
+Vue.component('draggable', draggable)
+
+Vue.prototype.$utils = utils
 
 /**
    * 给对象设置指定的数据，支持嵌套和数组

@@ -2,13 +2,24 @@
   <div class="padding__small">
     <div>测试el-table</div>
     <div>
-      <el-table :data="list">
+      <el-button v-if="'1' === formData"
+                 type=""
+                 @click="formData.list.push({ contract_id: 'test' + formData.list.length })">新增一行</el-button>
+    </div>
+    <div>
+      <el-table :data="formData.list">
         <el-table-column label="#"
                          type="index"></el-table-column>
         <el-table-column label="合同ID"
-                         prop="contract_id"></el-table-column>
+                         prop="contract_id">
+          <template #default="{row}">
+            <el-input v-if="row.contract_id === 'test1'"
+                      v-model="row.contract_id"></el-input>
+          </template>
+        </el-table-column>
         <el-table-column label="合同名称"
-                         prop="contract_name"></el-table-column>
+                         prop="contract_name">
+        </el-table-column>
         <el-table-column label="签约时间"
                          prop="create_time"></el-table-column>
       </el-table>
@@ -159,6 +170,9 @@ export default {
         contract_amount: 60000000,
         create_time: '2020-12-10 12:23:12'
       }],
+      formData: {
+        list: []
+      },
       columns: [{
         id: 1,
         type: 'index',

@@ -12,7 +12,7 @@ import './tinymce'
 // 生成唯一ID
 let uidIndex = 0
 const prefixInteger = function (num, length) {
-  return (Array(length).join('0') + num).slice(-length);
+  return (Array(length).join('0') + num).slice(-length)
 }
 const getUID = function (prefex) {
   prefex = prefex || 'richEidtor'
@@ -38,7 +38,7 @@ export default {
           'searchreplace wordcount visualblocks visualchars code fullscreen',
           'insertdatetime media nonbreaking save table contextmenu directionality',
           'template paste textcolor colorpicker textpattern imagetools toc help emoticons hr'
-        ];
+        ]
       },
       type: Array
     },
@@ -79,7 +79,7 @@ export default {
     text.style.display = ''
   },
   activated () {
-    if (this.inactive ) {
+    if (this.inactive) {
       this.init()
     }
     this.inactive = false
@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     init () {
-      console.log('init ' + this.id)
+      // console.log('init ' + this.id)
       const { text } = this.$refs
       let options = {
         // selector: '#' + this.id,
@@ -114,35 +114,35 @@ export default {
         },
 
         init_instance_callback: (editor) => {
-          this.editor = editor;
+          this.editor = editor
           editor.on('KeyUp', (e) => {
-            this.submitNewContent();
+            this.submitNewContent()
           })
           editor.on('Change', (e) => {
             if (this.editor.getContent() !== this.value) {
-              this.submitNewContent();
+              this.submitNewContent()
             }
           })
         }
       }
-      tinymce.init(this.concatAssciativeArrays(options, this.other_options));
+      tinymce.init(this.concatAssciativeArrays(options, this.other_options))
     },
     concatAssciativeArrays (array1, array2) {
-      if (array2.length === 0) return array1;
-      if (array1.length === 0) return array2;
-      let dest = [];
-      for (let key in array1) dest[key] = array1[key];
-      for (let key in array2) dest[key] = array2[key];
-      return dest;
+      if (array2.length === 0) return array1
+      if (array1.length === 0) return array2
+      let dest = []
+      for (let key in array1) dest[key] = array1[key]
+      for (let key in array2) dest[key] = array2[key]
+      return dest
     },
     submitNewContent () {
-      this.isTyping = true;
+      this.isTyping = true
       // 清理定时器
       if (this.checkerTimeout !== null) clearTimeout(this.checkerTimeout)
       this.checkerTimeout = setTimeout(() => {
-        this.isTyping = false;
-      }, 300);
-      this.$emit('input', this.editor.getContent());
+        this.isTyping = false
+      }, 300)
+      this.$emit('input', this.editor.getContent())
     }
   }
 }

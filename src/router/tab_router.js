@@ -25,7 +25,7 @@ export function createRouter (app, options) {
     tab.query = route.query
     tab.params = route.params
   }
-  
+
   const addRouteTab = function (route, location) {
     if (!route) {
       return
@@ -49,7 +49,7 @@ export function createRouter (app, options) {
       params: route.params
     })
   }
-  
+
   const handleRouterJump = function (location, route) {
     // 获取跳转方式
     let target = location.target || route.meta.target || 'tab'
@@ -98,9 +98,9 @@ export function createRouter (app, options) {
     linkActiveClass: 'is-active',
     routes: []
   }, options))
-  
+
   router._push = router.push
-  
+
   router.push = function (location, onComplete, onAbort) {
     // 解析路由
     let to = router.resolve(location)
@@ -121,9 +121,9 @@ export function createRouter (app, options) {
     }
     return this._push(location, onComplete, onAbort)
   }
-  
+
   router._replace = router.replace
-  
+
   router.replace = function (location, onComplete, onAbort) {
     // 解析路由
     let to = router.resolve(location)
@@ -155,9 +155,9 @@ export function createRouter (app, options) {
     raw = raw || {}
     let path = raw.path || raw
     let name = raw.title || raw
-    console.log('arguments', raw, current, redirectedFrom)
+    // console.log('arguments', raw, current, redirectedFrom)
     let matchResult = router._match(raw, current, redirectedFrom)
-    console.log('matchResult', matchResult)
+    // console.log('matchResult', matchResult)
     // matchResult.matched.splice(0, 1)
     // 根据实际需要来替换matched
     if (matchResult.matched.length) return matchResult
@@ -172,7 +172,7 @@ export function createRouter (app, options) {
     // 验证路由权限，如果没有权限，则替换为无权限的错误页面
     return matchResult
   }
-  
+
   // router.beforeResolve((to, from, next) => {
   //   /* 必须调用 `next` */
   //   if (store.state.Route.loaded && !to.matched.length) {
@@ -182,7 +182,7 @@ export function createRouter (app, options) {
   //     next()
   //   }
   // })
-  
+
   router.afterEach((to, from) => {
     const route = to.matched[to.matched.length - 1]
     if (!route) {

@@ -1,18 +1,24 @@
 <template>
-  <div ref="wrap" class="axis-wrap" :style="wrapStyle" v-loading="loading">
+  <div ref="wrap"
+       class="axis-wrap"
+       :style="wrapStyle"
+       v-loading="loading">
     <div class="axis-x">
-      <div v-for="xp in xPoints" :key="xp">
+      <div v-for="xp in xPoints"
+           :key="xp">
         <!-- 是否需要隐藏坐标 -->
         <template v-if="xp % 10 === 0">{{xp}}</template>
       </div>
     </div>
     <div class="axis-y">
-      <div v-for="yp in yPoints" :key="yp">
+      <div v-for="yp in yPoints"
+           :key="yp">
         <!-- 是否需要隐藏坐标 -->
         <template v-if="yp % 10 === 0">{{yp}}</template>
       </div>
     </div>
-    <div class="axis-content-wrap" @scroll="handleContentWrapScroll">
+    <div class="axis-content-wrap"
+         @scroll="handleContentWrapScroll">
       <div class="axis-content">
         <slot></slot>
       </div>
@@ -141,7 +147,7 @@ export default {
       // 获取滚动
       this.scrollLeft = target.scrollLeft
       this.scrollTop = target.scrollTop
-      console.log('content scroll', this.scrollLeft, this.scrollTop)
+      // console.log('content scroll', this.scrollLeft, this.scrollTop)
     }
   }
 }

@@ -123,9 +123,15 @@ export default [{
     },
     {
       id: "99703",
-      label: '动态表单',
+      label: '动态表单(Render)',
       icon: '',
-      url: '/form/dynamic'
+      url: '/form/dynamic/render'
+    },
+    {
+      id: "99704",
+      label: '动态表单(Template)',
+      icon: '',
+      url: '/form/dynamic/template'
     }
   ]
 }, {
