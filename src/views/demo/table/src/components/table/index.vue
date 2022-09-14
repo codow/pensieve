@@ -200,7 +200,6 @@
 </style>
 
 <script>
-import VueDraggable from 'vuedraggable'
 import { nameToNumber, numberToName } from '../../utils/common'
 import TableCell from '../cell'
 
@@ -210,7 +209,6 @@ export default {
   name: 'demo-table',
 
   components: {
-    VueDraggable,
     TableCell
   },
 

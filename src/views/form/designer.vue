@@ -17,12 +17,8 @@
                          :group="{ name: 'form', pull: 'clone', put: false }"
                          :list="item.children"
                          :clone="toolClone"
-                         :set-data="dragSetData"
-                         v-show="!item.close"
-                         :move="dragMove"
-                         @start="dragStart"
-                         @end="dragEnd"
-                         @clone="dragClone">
+                         :plain="true"
+                         v-show="!item.close">
                 <template v-for="sub in item.children">
                   <div :key="sub.tag"
                        class="tools-list__item-wrap">
@@ -51,10 +47,8 @@
                    :list="currentSlot"
                    group="form"
                    draggable=".draggable"
-                   chosen-class="drag-item__chosen"
-                   ghost-class="drag-item__ghost"
                    style="height: calc(100% - 20px);"
-                   :set-data="dragSetData"
+                   :plain="true"
                    @add="dragAdd">
         </draggable>
         <outline v-else
@@ -69,6 +63,7 @@
                class="sf-designer__designer-canvas-wrapper fr-full"
                v-loading="pageLoading">
             <designer-dynamic-template v-if="page.define"
+                                       ref="template"
                                        :page="page"></designer-dynamic-template>
           </div>
         </div>
@@ -480,34 +475,8 @@ ul {
 </style>
 
 <style>
-/* .drag-container.z-without-children {
-  background-image: linear-gradient(
-    135deg,
-    #e7e8eb 25%,
-    transparent 0px,
-    transparent 50%,
-    #e7e8eb 0px,
-    #e7e8eb 75%,
-    transparent 0px
-  );
-  background-size: 40px 40px;
-  min-width: 100px;
-  min-height: 38px;
-} */
-
 .drag-container {
-  min-height: 20px;
-  padding-bottom: 20px;
-  background-image: linear-gradient(
-    135deg,
-    #e7e8eb 25%,
-    transparent 0px,
-    transparent 50%,
-    #e7e8eb 0px,
-    #e7e8eb 75%,
-    transparent 0px
-  );
-  background-size: 40px 40px;
+  min-height: 10px;
 }
 </style>
 
@@ -519,8 +488,6 @@ import { addClass, removeClass } from '../../utils/packages/dom'
 import _ from 'lodash'
 
 import ToolsData from './tools.json'
-
-import draggable from 'vuedraggable'
 
 import ResizeObserver from 'resize-observer-polyfill'
 
@@ -558,7 +525,6 @@ export default {
   name: 'form-designer-view',
 
   components: {
-    draggable,
     Outline,
     DesignerDynamicTemplate
   },
@@ -717,27 +683,6 @@ export default {
       return item.sf_attributes.label || item.sf_attributes.title || defaultLabel
     },
 
-    dragSetData (dataTransfer, srcEl) {
-      let dragImage = this.drag.image
-      if (dragImage) {
-        dragImage.remove()
-      }
-      // 创建拖拽样式
-      dragImage = document.createElement('div')
-      // 数据调整
-      dragImage.innerHTML = `<div class="drag-item-title">组件</div>
-      <div class="drag-item-line">
-        <div class="drag-item-line__dot"></div>
-      </div>`
-      dragImage.style.position = 'absolute'
-      dragImage.style.left = '-10000px'
-      dragImage.style.top = '-10000px'
-      dragImage.style.display = 'inline'
-      dragImage.style.padding = '10px'
-      document.body.appendChild(dragImage)
-      dataTransfer.setDragImage(dragImage, 0, 0)
-      this.drag.image = dragImage
-    },
     dragAdd (event) {
       let newIndex = event.newIndex
       let currentDefine = this.currentSlot.length <= newIndex ? this.currentSlot[this.currentSlot.length - 1] : this.currentSlot[newIndex]
@@ -763,33 +708,6 @@ export default {
           this.currentSlot = currentDefine.children[currentSlotName].components
         }
       }
-      console.log(this.page)
-    },
-    dragStart (event) {
-      console.log('dragStart', event)
-      // 记录开始的拖拽容器
-      this.drag.fromEl = event.from
-      // 找到被拖拽的元素，添加显示的元素
-      addClass(event.item, 'drag-item-clone')
-      addClass(event.from, 'drag-from-container')
-      let lineEl = document.createElement('div')
-      lineEl.className = 'drag-item-line'
-      lineEl.innerHTML = '<div class="drag-item-line__dot"></div>'
-      event.item.appendChild(lineEl)
-    },
-    dragEnd (event) {
-      console.log('dragEnd', event)
-      // 找到被拖拽的元素，添加显示的元素
-      removeClass(event.item, 'drag-item-clone')
-      removeClass(event.from, 'drag-from-container')
-      // 删除
-      let lineEl = event.item.querySelector('.drag-item-line')
-      lineEl && lineEl.remove()
-      // 清除每次拖拽的缓存
-      this.drag.fromEl = null
-      this.drag.toEl = null
-    },
-    dragClone (event) {
     },
     dragMove (event) {
       let toEl = event.to
@@ -863,17 +781,32 @@ export default {
     },
     dropComponent (compDefine, toCompId, toSlotName, toIndex, fromCompId, fromSlotName, fromIndex) {
       let parentDefine
-      // 加入到新的组件中
-      if (toCompId) {
-        parentDefine = this.findCompDefine(this.page.define, toCompId)
-        this.appendChildDefine(parentDefine, compDefine, toSlotName, toIndex)
-        // console.log('pageDefine', this.page.define)
-        // this.page.define = Object.assign({}, this.page.define)
+      if (!compDefine) {
+        if (fromCompId) {
+          parentDefine = this.findCompDefine(this.page.define, fromCompId)
+          compDefine = this.getChildDefine(parentDefine, fromSlotName, fromIndex)
+        } else {
+          compDefine = this.drag.data
+        }
       }
-      // 从原来的组件中移除
-      if (fromCompId) {
-        parentDefine = this.findCompDefine(this.page.define, fromCompId)
+      if (toCompId === fromCompId && toSlotName === fromSlotName) {
+        parentDefine = this.findCompDefine(this.page.define, toCompId)
+        if (toIndex > fromIndex) {
+          toIndex--
+        }
         this.removeChildDefine(parentDefine, fromSlotName, fromIndex)
+        this.appendChildDefine(parentDefine, compDefine, toSlotName, toIndex)
+      } else {
+        // 加入到新的组件中
+        if (toCompId) {
+          parentDefine = this.findCompDefine(this.page.define, toCompId)
+          this.appendChildDefine(parentDefine, compDefine, toSlotName, toIndex)
+        }
+        // 从原来的组件中移除
+        if (fromCompId) {
+          parentDefine = this.findCompDefine(this.page.define, fromCompId)
+          this.removeChildDefine(parentDefine, fromSlotName, fromIndex)
+        }
       }
       this.refreshOutline()
     },
@@ -924,11 +857,19 @@ export default {
       // 更新children字段
       // parentDefine.children = Object.assign({}, parentDefine.children)
     },
+    getChildDefine (parentDefine, slotName, index) {
+      if (!parentDefine) return
+      if (!parentDefine.children) return
+      slotName = slotName || 'default'
+      index = index < 0 ? 0 : index
+      if (!parentDefine.children[slotName]) return
+      return parentDefine.children[slotName].components[index]
+    },
     removeChildDefine (parentDefine, slotName, index) {
       if (!parentDefine) return
       if (!parentDefine.children) return
       slotName = slotName || 'default'
-      index = index || 0
+      index = index < 0 ? 0 : index
       if (!parentDefine.children[slotName]) return
       parentDefine.children[slotName].components.splice(index, 1)
       // 更新children字段
@@ -969,8 +910,9 @@ export default {
       })
     },
     refreshOutline () {
-      const { outline } = this.$refs
+      const { outline, template } = this.$refs
       outline && outline.refresh()
+      template && template.refresh()
     }
   }
 }

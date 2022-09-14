@@ -20,14 +20,12 @@
 </template> 
 
 <script>
-import VueDraggable from 'vuedraggable'
 import DemoTableLayout from './components/table/index-old'
 
 export default {
   name: 'demo-table-old',
 
   components: {
-    VueDraggable,
     DemoTableLayout
   },
 
@@ -73,7 +71,7 @@ export default {
     },
 
     uncontinuousChooseCell (cellId) {
-      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
       let index = this.continuousChoosedCells.indexOf(cellId)
       this.continuousChoosedCells.splice(index, 1)
     }

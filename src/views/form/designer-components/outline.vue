@@ -53,25 +53,6 @@
 .drag-to-container > .drag-item__ghost > .drag-item-line {
   display: block;
 }
-
-.drag-item-line {
-  height: 2px;
-  position: relative;
-  line-height: 0px;
-  padding-left: 8px;
-  background-color: #409eff;
-}
-
-.drag-item-line__dot {
-  position: absolute;
-  height: 4px;
-  width: 4px;
-  border-radius: 50%;
-  border: 2px solid #409eff;
-  background: #ffffff;
-  top: -3px;
-  left: -8px;
-}
 </style>
 
 <script>

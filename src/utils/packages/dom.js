@@ -41,3 +41,115 @@ export function removeClass (el, ...removeClassNames) {
   if (!el) return
   el.className = (el.className || '').split(/\s+/).filter(item => !removeClassNames.includes(item)).join(' ')
 }
+
+var R_SPACE = /\s+/g
+/**
+ * 增加/删除样式
+ * 
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} state 
+ */
+export function toggleClass (el, name, state) {
+  if (el && name) {
+    if (el.classList) {
+      el.classList[state ? 'add' : 'remove'](name)
+    } else {
+      var className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ')
+      el.className = (className + (state ? ' ' + name : '')).replace(R_SPACE, ' ')
+    }
+  }
+}
+
+/**
+ * 
+ * @param {*} src 
+ * @param {*} target 
+ * @param {*} direction
+ * @returns 
+ */
+export function addNode (src, target, direction) {
+  direction === 'top' || direction === 'left' ? addNodeBefore(src, target) : addNodeAfter(src, target)
+}
+
+export function addNodeBefore (src, target) {
+  var srcContainer = src.parentNode,
+    targetContainer = target.parentNode
+
+  if (!targetContainer
+    || (srcContainer && srcContainer.isEqualNode(target))
+    || targetContainer.isEqualNode(src)) return
+
+  targetContainer.insertBefore(src, target)
+}
+
+export function addNodeAfter (src, target) {
+  var srcContainer = src.parentNode,
+    targetContainer = target.parentNode,
+    srcIndex,
+    targetIndex
+  if (!targetContainer
+    || (srcContainer && srcContainer.isEqualNode(target))
+    || targetContainer.isEqualNode(src)) return
+
+  if (srcContainer && srcContainer.isEqualNode(targetContainer) && srcIndex < targetIndex) {
+    targetIndex++
+  }
+
+  if (targetContainer.lastChild === target) {
+    targetContainer.append(src)
+  } else {
+    targetContainer.insertBefore(src, target.nextSibling)
+  }
+}
+
+/**
+ * 匹配dom选择器条件
+ * 
+ * @param {HTMLElement} el 
+ * @param {String} selector 
+ * @returns 
+ */
+export function matches (el, selector) {
+  if (!selector) return
+  selector[0] === '>' && (selector = selector.substring(1))
+
+  if (el) {
+    try {
+      if (el.matches) {
+        return el.matches(selector)
+      } else if (el.msMatchesSelector) {
+        return el.msMatchesSelector(selector)
+      } else if (el.webkitMatchesSelector) {
+        return el.webkitMatchesSelector(selector)
+      }
+    } catch (_) {
+      return false
+    }
+  }
+
+  return false
+}
+
+/**
+ * 判断元素在父容器的顺序
+ * 
+ * @param {HTMLElement} el 
+ * @param {String} selector 
+ * @param  {...HTMLElement} exceptions 需要排除的元素
+ * @returns 
+ */
+export function index (el, selector, ...exceptions) {
+  var index = 0
+  if (!el || !el.parentNode) {
+    return -1
+  }
+  /* jshint boss:true */
+  exceptions = exceptions || []
+  while (el = el.previousElementSibling) {
+    if (el.nodeName.toUpperCase() !== 'TEMPLATE' && !exceptions.includes(el) && (!selector || matches(el, selector))) {
+      index++
+    }
+  }
+  return index
+}

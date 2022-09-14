@@ -245,7 +245,7 @@ const createPageComponent = function (page) {
   // 保留除vue生命周期外的事件
   pageDefine.events = pageEvents
   let template = createTemplate(define)
-  console.log(template)
+  // console.log(template)
   // 创建组件
   return {
     template,

@@ -44,13 +44,13 @@
             @mouseenter="contSelectCell(x, y)"
             @mouseleave="clearSelectedText"
             @contextmenu="showCellMenu(x, y, $event)">
-          <VueDraggable v-model="cellDatas[y][x]"
-                        :group="{ name: 'tools'}"
-                        style="height: 100%; width: 100%;">
+          <draggable v-model="cellDatas[y][x]"
+                     :group="{ name: 'tools'}"
+                     style="height: 100%; width: 100%;">
             <component v-for="(item, index) of cellDatas[y][x]"
                        :key="index"
                        :is="item.value"></component>
-          </VueDraggable>
+          </draggable>
         </td>
       </template>
     </tr>
@@ -182,15 +182,10 @@
 </style>
 
 <script>
-import VueDraggable from 'vuedraggable'
 import { nameToNumber, numberToName } from '../../utils/common'
 
 export default {
   name: 'demo-table-layout',
-
-  components: {
-    VueDraggable
-  },
 
   props: {
     rows: {
@@ -491,7 +486,7 @@ export default {
     },
 
     clearSelectedText () {
-      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
     },
 
     selectColumn (x, $event) {

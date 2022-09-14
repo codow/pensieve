@@ -26,8 +26,8 @@
     </div>
     <div>列拖拽测试</div>
     <div>
-      <vue-draggable tag="el-table"
-                     :attrs="{
+      <draggable tag="el-table"
+                 :attrs="{
                         data: list
                       }">
         <el-table-column label="#"
@@ -38,7 +38,7 @@
                          prop="contract_name"></el-table-column>
         <el-table-column label="签约时间"
                          prop="create_time"></el-table-column>
-      </vue-draggable>
+      </draggable>
     </div>
 
     <div>列拖拽测试</div>
@@ -138,7 +138,6 @@
 </style>
 
 <script>
-import VueDraggable from 'vuedraggable'
 import Sortable from 'sortablejs'
 
 const addClass = function (el, className) {
@@ -156,10 +155,6 @@ let uid = 1
 
 export default {
   name: 'demo-el-table',
-
-  components: {
-    VueDraggable
-  },
 
   data () {
     return {
