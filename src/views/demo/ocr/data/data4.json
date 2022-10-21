@@ -1,0 +1,402 @@
+{
+  "words_result": [
+    {
+      "words": "培训签到表",
+      "location": {
+        "top": 19,
+        "left": 351,
+        "width": 136,
+        "height": 28
+      }
+    },
+    {
+      "words": "培训日期",
+      "location": {
+        "top": 66,
+        "left": 77,
+        "width": 69,
+        "height": 18
+      }
+    },
+    {
+      "words": "b2).09",
+      "location": {
+        "top": 62,
+        "left": 176,
+        "width": 90,
+        "height": 27
+      }
+    },
+    {
+      "words": "培训地点",
+      "location": {
+        "top": 60,
+        "left": 322,
+        "width": 70,
+        "height": 21
+      }
+    },
+    {
+      "words": "会议星",
+      "location": {
+        "top": 57,
+        "left": 432,
+        "width": 55,
+        "height": 32
+      }
+    },
+    {
+      "words": "讲解人",
+      "location": {
+        "top": 61,
+        "left": 577,
+        "width": 50,
+        "height": 18
+      }
+    },
+    {
+      "words": "欣露莩",
+      "location": {
+        "top": 54,
+        "left": 670,
+        "width": 72,
+        "height": 31
+      }
+    },
+    {
+      "words": "培训时间",
+      "location": {
+        "top": 92,
+        "left": 75,
+        "width": 71,
+        "height": 21
+      }
+    },
+    {
+      "words": "14:0∠",
+      "location": {
+        "top": 96,
+        "left": 180,
+        "width": 52,
+        "height": 21
+      }
+    },
+    {
+      "words": "培训时数",
+      "location": {
+        "top": 88,
+        "left": 324,
+        "width": 69,
+        "height": 21
+      }
+    },
+    {
+      "words": "合计1",
+      "location": {
+        "top": 85,
+        "left": 672,
+        "width": 88,
+        "height": 27
+      }
+    },
+    {
+      "words": "时",
+      "location": {
+        "top": 88,
+        "left": 760,
+        "width": 18,
+        "height": 18
+      }
+    },
+    {
+      "words": "培训对象",
+      "location": {
+        "top": 123,
+        "left": 75,
+        "width": 70,
+        "height": 18
+      }
+    },
+    {
+      "words": ")新进人员(0在职人员0其他：",
+      "location": {
+        "top": 112,
+        "left": 338,
+        "width": 280,
+        "height": 26
+      }
+    },
+    {
+      "words": "应到人数",
+      "location": {
+        "top": 150,
+        "left": 73,
+        "width": 72,
+        "height": 21
+      }
+    },
+    {
+      "words": "7",
+      "location": {
+        "top": 147,
+        "left": 228,
+        "width": 17,
+        "height": 25
+      }
+    },
+    {
+      "words": "实到人数",
+      "location": {
+        "top": 145,
+        "left": 325,
+        "width": 69,
+        "height": 22
+      }
+    },
+    {
+      "words": "缺勤人数",
+      "location": {
+        "top": 142,
+        "left": 571,
+        "width": 69,
+        "height": 23
+      }
+    },
+    {
+      "words": "0",
+      "location": {
+        "top": 147,
+        "left": 700,
+        "width": 16,
+        "height": 19
+      }
+    },
+    {
+      "words": "培训主题",
+      "location": {
+        "top": 193,
+        "left": 72,
+        "width": 73,
+        "height": 21
+      }
+    },
+    {
+      "words": "粗赁尔纪者老川2)",
+      "location": {
+        "top": 169,
+        "left": 177,
+        "width": 334,
+        "height": 53
+      }
+    },
+    {
+      "words": "培训人员签到",
+      "location": {
+        "top": 231,
+        "left": 366,
+        "width": 113,
+        "height": 24
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 270,
+        "left": 88,
+        "width": 39,
+        "height": 21
+      }
+    },
+    {
+      "words": "姓名",
+      "location": {
+        "top": 272,
+        "left": 214,
+        "width": 39,
+        "height": 22
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 271,
+        "left": 342,
+        "width": 37,
+        "height": 21
+      }
+    },
+    {
+      "words": "姓名",
+      "location": {
+        "top": 268,
+        "left": 468,
+        "width": 36,
+        "height": 21
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 266,
+        "left": 591,
+        "width": 39,
+        "height": 21
+      }
+    },
+    {
+      "words": "姓名",
+      "location": {
+        "top": 266,
+        "left": 716,
+        "width": 36,
+        "height": 18
+      }
+    },
+    {
+      "words": "1",
+      "location": {
+        "top": 301,
+        "left": 97,
+        "width": 24,
+        "height": 21
+      }
+    },
+    {
+      "words": "张水油",
+      "location": {
+        "top": 296,
+        "left": 181,
+        "width": 89,
+        "height": 30
+      }
+    },
+    {
+      "words": "2",
+      "location": {
+        "top": 298,
+        "left": 352,
+        "width": 19,
+        "height": 18
+      }
+    },
+    {
+      "words": "3",
+      "location": {
+        "top": 292,
+        "left": 596,
+        "width": 28,
+        "height": 18
+      }
+    },
+    {
+      "words": "周",
+      "location": {
+        "top": 281,
+        "left": 684,
+        "width": 60,
+        "height": 39
+      }
+    },
+    {
+      "words": "4",
+      "location": {
+        "top": 332,
+        "left": 97,
+        "width": 19,
+        "height": 18
+      }
+    },
+    {
+      "words": "在幽",
+      "location": {
+        "top": 327,
+        "left": 197,
+        "width": 79,
+        "height": 34
+      }
+    },
+    {
+      "words": "5",
+      "location": {
+        "top": 327,
+        "left": 354,
+        "width": 16,
+        "height": 19
+      }
+    },
+    {
+      "words": "法",
+      "location": {
+        "top": 319,
+        "left": 430,
+        "width": 69,
+        "height": 33
+      }
+    },
+    {
+      "words": "6",
+      "location": {
+        "top": 322,
+        "left": 605,
+        "width": 16,
+        "height": 18
+      }
+    },
+    {
+      "words": "7",
+      "location": {
+        "top": 362,
+        "left": 98,
+        "width": 17,
+        "height": 19
+      }
+    },
+    {
+      "words": "8",
+      "location": {
+        "top": 357,
+        "left": 355,
+        "width": 15,
+        "height": 18
+      }
+    },
+    {
+      "words": "9",
+      "location": {
+        "top": 352,
+        "left": 604,
+        "width": 17,
+        "height": 18
+      }
+    },
+    {
+      "words": "10",
+      "location": {
+        "top": 392,
+        "left": 93,
+        "width": 25,
+        "height": 21
+      }
+    },
+    {
+      "words": "11",
+      "location": {
+        "top": 388,
+        "left": 352,
+        "width": 21,
+        "height": 18
+      }
+    },
+    {
+      "words": "12",
+      "location": {
+        "top": 382,
+        "left": 604,
+        "width": 22,
+        "height": 18
+      }
+    }
+  ],
+  "log_id": 1579656218576834603,
+  "words_result_num": 44
+}

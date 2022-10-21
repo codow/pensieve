@@ -188,6 +188,16 @@ export default [
         keepAlive: true
       }
     },
+    // OCR接口
+    {
+      name: 'demo-ocr-baidu',
+      path: '/demo/ocr/baidu',
+      component: () => import('@/views/demo/ocr/baidu.vue'),
+      meta: {
+        title: '百度OCR',
+        keepAlive: true
+      }
+    },
     // 在线表单
     {
       name: 'form-manage',

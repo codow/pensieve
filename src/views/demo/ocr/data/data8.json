@@ -1,0 +1,438 @@
+{
+  "words_result": [
+    {
+      "words": "培训签到表",
+      "location": {
+        "top": 21,
+        "left": 352,
+        "width": 133,
+        "height": 25
+      }
+    },
+    {
+      "words": "培训日期",
+      "location": {
+        "top": 64,
+        "left": 76,
+        "width": 71,
+        "height": 21
+      }
+    },
+    {
+      "words": "2022.09.26",
+      "location": {
+        "top": 64,
+        "left": 177,
+        "width": 86,
+        "height": 31
+      }
+    },
+    {
+      "words": "培训地点",
+      "location": {
+        "top": 63,
+        "left": 325,
+        "width": 66,
+        "height": 17
+      }
+    },
+    {
+      "words": "会议室",
+      "location": {
+        "top": 58,
+        "left": 434,
+        "width": 59,
+        "height": 28
+      }
+    },
+    {
+      "words": "讲解人",
+      "location": {
+        "top": 60,
+        "left": 574,
+        "width": 54,
+        "height": 21
+      }
+    },
+    {
+      "words": "露莹",
+      "location": {
+        "top": 51,
+        "left": 668,
+        "width": 76,
+        "height": 38
+      }
+    },
+    {
+      "words": "培训时间",
+      "location": {
+        "top": 96,
+        "left": 77,
+        "width": 68,
+        "height": 16
+      }
+    },
+    {
+      "words": "14:00-",
+      "location": {
+        "top": 96,
+        "left": 180,
+        "width": 51,
+        "height": 22
+      }
+    },
+    {
+      "words": "培训时数",
+      "location": {
+        "top": 91,
+        "left": 325,
+        "width": 68,
+        "height": 18
+      }
+    },
+    {
+      "words": "合计",
+      "location": {
+        "top": 87,
+        "left": 671,
+        "width": 36,
+        "height": 21
+      }
+    },
+    {
+      "words": "1",
+      "location": {
+        "top": 94,
+        "left": 725,
+        "width": 4,
+        "height": 18
+      }
+    },
+    {
+      "words": "时",
+      "location": {
+        "top": 88,
+        "left": 760,
+        "width": 19,
+        "height": 18
+      }
+    },
+    {
+      "words": "培训对象",
+      "location": {
+        "top": 123,
+        "left": 76,
+        "width": 68,
+        "height": 18
+      }
+    },
+    {
+      "words": "()新进人员()在职人员",
+      "location": {
+        "top": 118,
+        "left": 341,
+        "width": 193,
+        "height": 19
+      }
+    },
+    {
+      "words": "√",
+      "location": {
+        "top": 114,
+        "left": 552,
+        "width": 23,
+        "height": 24
+      }
+    },
+    {
+      "words": "其他:",
+      "location": {
+        "top": 117,
+        "left": 576,
+        "width": 41,
+        "height": 18
+      }
+    },
+    {
+      "words": "应到人数",
+      "location": {
+        "top": 151,
+        "left": 76,
+        "width": 69,
+        "height": 19
+      }
+    },
+    {
+      "words": "7",
+      "location": {
+        "top": 148,
+        "left": 227,
+        "width": 17,
+        "height": 26
+      }
+    },
+    {
+      "words": "实到人数",
+      "location": {
+        "top": 148,
+        "left": 325,
+        "width": 68,
+        "height": 20
+      }
+    },
+    {
+      "words": "7",
+      "location": {
+        "top": 147,
+        "left": 470,
+        "width": 22,
+        "height": 26
+      }
+    },
+    {
+      "words": "缺勤人数",
+      "location": {
+        "top": 146,
+        "left": 571,
+        "width": 68,
+        "height": 18
+      }
+    },
+    {
+      "words": "0",
+      "location": {
+        "top": 147,
+        "left": 700,
+        "width": 15,
+        "height": 20
+      }
+    },
+    {
+      "words": "培训主题",
+      "location": {
+        "top": 195,
+        "left": 73,
+        "width": 70,
+        "height": 19
+      }
+    },
+    {
+      "words": "租赁系统前端培训(2)",
+      "location": {
+        "top": 176,
+        "left": 181,
+        "width": 323,
+        "height": 42
+      }
+    },
+    {
+      "words": "培训人员签到",
+      "location": {
+        "top": 234,
+        "left": 366,
+        "width": 112,
+        "height": 21
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 270,
+        "left": 89,
+        "width": 38,
+        "height": 22
+      }
+    },
+    {
+      "words": "姓名",
+      "location": {
+        "top": 273,
+        "left": 214,
+        "width": 38,
+        "height": 21
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 271,
+        "left": 341,
+        "width": 38,
+        "height": 22
+      }
+    },
+    {
+      "words": "序号",
+      "location": {
+        "top": 267,
+        "left": 591,
+        "width": 37,
+        "height": 21
+      }
+    },
+    {
+      "words": "1",
+      "location": {
+        "top": 304,
+        "left": 102,
+        "width": 11,
+        "height": 15
+      }
+    },
+    {
+      "words": "张永沛",
+      "location": {
+        "top": 296,
+        "left": 183,
+        "width": 85,
+        "height": 31
+      }
+    },
+    {
+      "words": "2",
+      "location": {
+        "top": 297,
+        "left": 353,
+        "width": 15,
+        "height": 20
+      }
+    },
+    {
+      "words": "王钰博",
+      "location": {
+        "top": 289,
+        "left": 430,
+        "width": 75,
+        "height": 42
+      }
+    },
+    {
+      "words": "3",
+      "location": {
+        "top": 294,
+        "left": 604,
+        "width": 15,
+        "height": 18
+      }
+    },
+    {
+      "words": "周攀",
+      "location": {
+        "top": 284,
+        "left": 685,
+        "width": 55,
+        "height": 36
+      }
+    },
+    {
+      "words": "4",
+      "location": {
+        "top": 333,
+        "left": 98,
+        "width": 16,
+        "height": 18
+      }
+    },
+    {
+      "words": "肖鹏姿",
+      "location": {
+        "top": 328,
+        "left": 198,
+        "width": 77,
+        "height": 34
+      }
+    },
+    {
+      "words": "5",
+      "location": {
+        "top": 328,
+        "left": 355,
+        "width": 11,
+        "height": 18
+      }
+    },
+    {
+      "words": "周志川",
+      "location": {
+        "top": 320,
+        "left": 428,
+        "width": 71,
+        "height": 44
+      }
+    },
+    {
+      "words": "6",
+      "location": {
+        "top": 325,
+        "left": 606,
+        "width": 11,
+        "height": 15
+      }
+    },
+    {
+      "words": "蒋林",
+      "location": {
+        "top": 315,
+        "left": 684,
+        "width": 90,
+        "height": 34
+      }
+    },
+    {
+      "words": "7",
+      "location": {
+        "top": 363,
+        "left": 98,
+        "width": 15,
+        "height": 19
+      }
+    },
+    {
+      "words": "8",
+      "location": {
+        "top": 360,
+        "left": 355,
+        "width": 11,
+        "height": 16
+      }
+    },
+    {
+      "words": "9",
+      "location": {
+        "top": 354,
+        "left": 605,
+        "width": 15,
+        "height": 18
+      }
+    },
+    {
+      "words": "10",
+      "location": {
+        "top": 394,
+        "left": 95,
+        "width": 23,
+        "height": 18
+      }
+    },
+    {
+      "words": "11",
+      "location": {
+        "top": 390,
+        "left": 352,
+        "width": 19,
+        "height": 18
+      }
+    },
+    {
+      "words": "12",
+      "location": {
+        "top": 384,
+        "left": 604,
+        "width": 22,
+        "height": 18
+      }
+    }
+  ],
+  "log_id": 1579658182945911248,
+  "words_result_num": 48
+}

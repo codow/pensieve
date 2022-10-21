@@ -102,6 +102,18 @@ export default [{
     label: '富文本框（TinyMCE）',
     icon: '',
     url: '/demo/rich-editor'
+  }, {
+    id: "10117",
+    label: '文字识别',
+    icon: '',
+    children: [
+      {
+        id: "1011701",
+        label: '百度OCR',
+        icon: '',
+        url: '/demo/ocr/baidu'
+      }
+    ]
   }]
 }, {
   id: '997',

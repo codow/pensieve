@@ -28,6 +28,10 @@
               <el-button type="primary"
                          @click="sortDESC">逆向排序</el-button>
             </div>
+            <div class="margin-top__medium margin-horizontal__medium align__center">
+              <el-button type="primary"
+                         @click="urlEncode">UrlEncode</el-button>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="10">
@@ -250,6 +254,11 @@ export default {
         return -a.localeCompare(b)
       })
       this.exportData = originaDataArray.join('\n')
+    },
+    urlEncode () {
+      const originalData = this.getOriginalData()
+      if (!originalData) return
+      this.exportData = window.encodeURI(originalData)
     }
   }
 }

@@ -49,7 +49,7 @@ const devWebpackConfig = WebpackMerge.merge(baseWebpackConfig, {
     static: {
       publicPath: config.dev.assetsPublicPath,
     },
-    proxy: config.dev.proxyTable,
+    proxy: config.dev.proxyTable
   },
   // v5 开启编译文件的监听
   watchOptions: {
