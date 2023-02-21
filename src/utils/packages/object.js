@@ -103,3 +103,24 @@ export function getByPath (obj, path) {
 
   return value
 }
+
+/**
+ * Get the raw type string of a value, e.g., [object Object].
+ */
+const _toString = Object.prototype.toString
+
+export function toRawType (value) {
+  return _toString.call(value).slice(8, -1)
+}
+
+/**
+ * Strict object type check. Only returns true
+ * for plain JavaScript objects.
+ */
+export function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}
+
+export function isRegExp (v) {
+  return _toString.call(v) === '[object RegExp]'
+}

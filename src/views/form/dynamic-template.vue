@@ -249,6 +249,9 @@ const createTemplate = function (define) {
     }
   }
   innerHtml = innerHtml || text || ''
+  if (tag === 'el-form') {
+    innerHtml = `<div>{{formData}}</div>` + innerHtml
+  }
   let endTag = `</${tag}>\n`
   return `${startTag}${innerHtml}${endTag}${appendHtml}`
 }
@@ -426,7 +429,7 @@ const createPageComponent = function (page) {
   // 保留除vue生命周期外的事件
   pageDefine.events = pageEvents
   let template = createTemplate(define)
-  console.log(template)
+  console.log(template, model)
   // 创建组件
   return {
     template,

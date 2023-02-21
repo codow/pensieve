@@ -742,6 +742,7 @@ const draggableComponent = {
       if (element === undefined) {
         return
       }
+      console.log('hahaha', element)
       removeNode(evt.item)
       const newIndex = this.getVmIndex(evt.newIndex)
       this.spliceList(newIndex, 0, element)

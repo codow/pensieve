@@ -2,6 +2,7 @@
   <div>
     富文本框演示
     <div>
+      {{text1}}
       <rich-editor v-model="text1"></rich-editor>
     </div>
     <div>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-form label-position="top" class="padding__medium">
+    <el-form label-position="top"
+             class="padding__medium">
       <el-row>
         <el-col :span="4">
           <el-form-item label="生成个数">
@@ -10,13 +11,22 @@
                              style="width: 100%"></el-input-number>
           </el-form-item>
           <el-form-item label="起始数值">
-            <el-input-number v-model="startNumber" style="width: 100%"></el-input-number>
+            <el-input-number v-model="startNumber"
+                             style="width: 100%"></el-input-number>
           </el-form-item>
           <el-form-item label="基础数值">
-            <el-input-number v-model="basicNumber" style="width: 100%"></el-input-number>
+            <el-input-number v-model="basicNumber"
+                             style="width: 100%"></el-input-number>
           </el-form-item>
           <el-form-item label="精度">
-            <el-input-number v-model="precision" style="width: 100%"></el-input-number>
+            <el-input-number v-model="precision"
+                             style="width: 100%"></el-input-number>
+          </el-form-item>
+          <el-form-item label="类型">
+            <el-radio-group v-model="type">
+              <el-radio-button label="line">换行</el-radio-button>
+              <el-radio-button label="array">数组</el-radio-button>
+            </el-radio-group>
           </el-form-item>
           <el-form-item>
             <el-button @click="generate">生成</el-button>
@@ -53,7 +63,8 @@ export default {
       size: 10,
       startNumber: 0,
       basicNumber: 1000,
-      precision: 2,
+      precision: 0,
+      type: 'line',
       separator: null,
       inputData: null,
       outputData: null
@@ -68,6 +79,13 @@ export default {
       basicNumber = basicNumber === null || startNumber === undefined ? 1000 : basicNumber
       precision = basicNumber === null || startNumber === undefined ? 2 : precision
       inputData = (inputData || '').trim()
+      if (!separator) {
+        if (this.type === 'line') {
+          separator = '\\n'
+        } else if (this.type === 'array') {
+          separator = ','
+        }
+      }
       separator = separator || '\\n'
       separator = separator.replaceAll(/\\{2}/g, '\\')
       separator = eval('("' + separator + '")')

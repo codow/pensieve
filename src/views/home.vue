@@ -32,6 +32,12 @@
         <el-button @click="openAllField">开启全部字段</el-button>
         <el-button @click="closeField">关闭部分字段</el-button>
       </el-form-item>
+      <component :is="tag">
+        <template #default>
+          hahahaha
+        </template>
+        asdfasdf
+      </component>
     </el-form>
   </div>
 </template>
@@ -39,6 +45,11 @@
 <script>
 export default {
   name: 'fr-home',
+  data () {
+    return {
+      tag: 'div'
+    }
+  },
   methods: {
     openAllField () {
       this.setSysAppOptions({

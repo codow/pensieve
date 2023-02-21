@@ -144,6 +144,12 @@ export default [{
       label: '动态表单(Template)',
       icon: '',
       url: '/form/dynamic/template'
+    },
+    {
+      id: "99705",
+      label: '属性编辑',
+      icon: '',
+      url: '/form/attributes/editors'
     }
   ]
 }, {

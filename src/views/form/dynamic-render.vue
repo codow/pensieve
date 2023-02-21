@@ -94,7 +94,7 @@ const createRender = function (ins, model, pModel, define, h) {
   // 解析属性
   componentDefine = parseDefine(ins, model, pModel, componentDefine)
   // 处理具体属性
-  let { id, tag, text, field, inline, vif, alt, _class, _style, attributes, events } = componentDefine
+  let { id, tag, text, field, inline, vif, vfor, alt, _class, _style, attributes, events } = componentDefine
 
   // 如果不显示
   if (vif !== undefined && !vif) {

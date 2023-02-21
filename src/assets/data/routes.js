@@ -235,6 +235,15 @@ export default [
         keepAlive: true
       }
     },
+    {
+      name: 'form-attributes-editors',
+      path: '/form/attributes/editors',
+      component: () => import('@/views/form/attributes/index.vue'),
+      meta: {
+        title: '属性编辑',
+        keepAlive: true
+      }
+    },
     // 常用工具
     {
       name: 'common-utils-color-editor',

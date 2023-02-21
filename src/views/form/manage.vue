@@ -98,7 +98,7 @@ export default {
     return {
       dragOptions: {
         plain: true,
-        // multiDrag: true, // Enable the plugin
+        multiDrag: true, // Enable the plugin
         // selectedClass: "selected", // Class name for selected item
         animation: 150
       },

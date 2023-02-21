@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <textarea ref="text"
-              :id="id"
-              v-model="content"></textarea>
-  </div>
+  <textarea ref="text"
+            :id="id"
+            v-model="content"></textarea>
 </template>
 
 <script>
@@ -147,7 +145,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
