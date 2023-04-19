@@ -46,7 +46,7 @@ export default {
     this.createDynamicWatch()
   },
 
-  destroyed () {
+  unmounted () {
     // 销毁动态监听
     this.destroyDynamicWatch()
   },

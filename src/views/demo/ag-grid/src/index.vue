@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import "ag-grid-community/styles/ag-grid.css"
+import "ag-grid-community/styles/ag-theme-alpine.css"
 // import 'ag-grid-enterprise';
-import { AgGridVue } from 'ag-grid-vue'
+import { AgGridVue } from 'ag-grid-vue3'
 
 export default {
   name: 'demo-ag-grid',
@@ -34,7 +34,7 @@ export default {
       { field: 'make', sortable: true, filter: true, checkboxSelection: true },
       { field: 'model', sortable: true, filter: true },
       { field: 'price', sortable: true, filter: true }
-    ];
+    ]
 
     // this.rowData = [
     //   { make: 'Toyota', model: 'Celica', price: 35000 },
@@ -45,7 +45,7 @@ export default {
     // fetch('https://www.ag-grid.com/example-assets/small-row-data.json')
     fetch('https://www.ag-grid.com/example-assets/row-data.json')
       .then(result => result.json())
-      .then(rowData => this.rowData = rowData);
+      .then(rowData => this.rowData = rowData)
   }
 }
 </script>

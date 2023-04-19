@@ -8,22 +8,21 @@
       <el-popover placement="bottom-end"
                   :width="popoverWidth"
                   trigger="click">
-        <template>
-          <el-form :model="formData"
-                   label-position="right"
-                   label-width="80px">
-            <el-form-item v-for="lang in finalLangs"
-                          :key="lang.id"
-                          :label="lang.label"
-                          :prop="lang.field">
-              <el-input v-model="formData[lang.field]"
-                        @change="handleLangTextChange(formData[lang.field], lang)"></el-input>
-            </el-form-item>
-          </el-form>
+        <el-form :model="formData"
+                 label-position="right"
+                 label-width="80px">
+          <el-form-item v-for="lang in finalLangs"
+                        :key="lang.id"
+                        :label="lang.label"
+                        :prop="lang.field">
+            <el-input v-model="formData[lang.field]"
+                      @change="handleLangTextChange(formData[lang.field], lang)"></el-input>
+          </el-form-item>
+        </el-form>
+        <template #reference>
+          <el-button icon="el-icon-s-operation"
+                     @click="calcPopoverWidth"></el-button>
         </template>
-        <el-button slot="reference"
-                   icon="el-icon-s-operation"
-                   @click="calcPopoverWidth"></el-button>
       </el-popover>
     </template>
   </el-input>

@@ -5,9 +5,8 @@
     <!-- 生成行列 -->
     <tr v-for="(row, rowIndex) of cellModels"
         :key="rowIndex">
-      <template v-for="(cell, colIndex) of row">
-        <table-cell :key="cell.uid"
-                    :model="cell"
+      <template v-for="(cell, colIndex) of row" :key="cell.uid">
+        <table-cell :model="cell"
                     :row-index="rowIndex"
                     :col-index="colIndex">
           <component v-for="(item, index) of cell.children"

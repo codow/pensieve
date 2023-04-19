@@ -33,9 +33,7 @@
         <el-button @click="closeField">关闭部分字段</el-button>
       </el-form-item>
       <component :is="tag">
-        <template #default>
-          hahahaha
-        </template>
+        hahahaha
         asdfasdf
       </component>
     </el-form>

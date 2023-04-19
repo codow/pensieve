@@ -20,6 +20,13 @@ const devWebpackConfig = WebpackMerge.merge(baseWebpackConfig, {
   // v4 新增
   mode: 'development',
 
+  resolve: {
+    alias: {
+      // vue3文件名改变
+      'vue$': 'vue/dist/vue.esm-bundler.js',
+    },
+  },
+
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   },

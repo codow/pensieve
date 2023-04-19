@@ -2,31 +2,31 @@
   <el-col v-if="showResponsive && visible"
           v-bind="responsiveAttributes">
     <el-form-item v-if="showLabel"
-                  :prop="formItemPath"
-                  v-bind="formItemAttributes">
+                  v-bind="formItemAttributes"
+                  :prop="formItemPath">
       <component :is="componentName"
-                 v-model="componentValue"
                  v-bind="attributes"
-                 v-on="events"></component>
+                 v-on="events"
+                 v-model="componentValue"></component>
     </el-form-item>
     <sp-label v-else
-              v-model="componentValue"
               v-bind="attributes"
-              v-on="events"></sp-label>
+              v-on="events"
+              v-model="componentValue"></sp-label>
   </el-col>
   <el-form-item v-else-if="showLabel && visible"
-                :prop="formItemPath"
-                v-bind="formItemAttributes">
+                v-bind="formItemAttributes"
+                :prop="formItemPath">
     <component :is="componentName"
-               v-model="componentValue"
                v-bind="attributes"
-               v-on="events"></component>
+               v-on="events"
+               v-model="componentValue"></component>
   </el-form-item>
   <component v-else-if="visible"
-             :is="componentName"
-             v-model="componentValue"
              v-bind="attributes"
-             v-on="events"></component>
+             v-on="events"
+             :is="componentName"
+             v-model="componentValue"></component>
   <!-- <div>{{componentName}}</div> -->
 </template>
 

@@ -1,5 +1,7 @@
 <template>
-  <link ref="link" type="text/css" :href="href">
+  <link ref="link"
+        type="text/css"
+        :href="href">
 </template>
 
 <script>
@@ -11,7 +13,7 @@ export default {
   mounted () {
     this.initLink()
   },
-  destroyed () {
+  unmounted () {
     this.destroyLink()
   },
   methods: {
@@ -25,7 +27,7 @@ export default {
       const head = window.document.head
       head.append(link)
     },
-    destroyLink (){
+    destroyLink () {
       this.getLinkEl().remove()
     }
   }

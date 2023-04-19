@@ -1,18 +1,18 @@
 <template>
   <el-menu class="sp-menu"
-    :collapse="collapse"
-    :default-active="defaultActive"
-    @select="handleMenuSelect">
+           :collapse="collapse"
+           :default-active="defaultActive"
+           @select="handleMenuSelect">
     <fr-menu-item v-for="item in menuTree"
-      :key="item.id"
-      :item="item"
-      :props="config"></fr-menu-item>
+                  :key="item.id"
+                  :item="item"
+                  :props="config"></fr-menu-item>
   </el-menu>
 </template>
 
 <script>
-import FrMenuItem from './menu-item';
-import { isNotEmpty } from '../../utils/packages/validator';
+import FrMenuItem from './menu-item'
+import { isNotEmpty } from '../../utils/packages/validator'
 
 // 默认配置
 const DEFAULT_PROPS = {
@@ -22,7 +22,7 @@ const DEFAULT_PROPS = {
   iconClass: 'icon_class',
   router: 'path',
   messageNumber: 'message_number'
-};
+}
 
 export default {
   name: 'FrMenu',
@@ -38,106 +38,106 @@ export default {
     props: Object,
     menuClick: { type: Function }
   },
-  data() {
+  data () {
     return {
       menuTree: [],
       menuCache: {},
       defaultActive: null
-    };
+    }
   },
   computed: {
-    config() {
-      return Object.assign({}, DEFAULT_PROPS, this.props || {});
+    config () {
+      return Object.assign({}, DEFAULT_PROPS, this.props || {})
     }
   },
   watch: {
     // 重新渲染组件
     dataSource: {
-      handler() {
-        this.dataBinding();
+      handler () {
+        this.dataBinding()
       },
       immediate: true
     },
     // 监听路由参数发生改变
     $route: {
-      handler() {
+      handler () {
         // 计算默认响应
-        this.initDefaultActive();
+        this.initDefaultActive()
       }
     }
   },
   methods: {
-    dataBinding() {
+    dataBinding () {
       if (isNotEmpty(this.data)) {
-        this.handleMenuLoadCallback(this.data);
+        this.handleMenuLoadCallback(this.data)
       } else if (isNotEmpty(this.dataSource)) {
         this.$http.get(this.dataSource).then(response => {
           if (response.status === 'success') {
-            this.handleMenuLoadCallback(response.data);
+            this.handleMenuLoadCallback(response.data)
           }
-        });
+        })
       }
     },
-    initMenuCache(list) {
+    initMenuCache (list) {
       if (!list) {
-        return;
+        return
       }
       list.forEach(item => {
-        this.menuCache[item.id] = item;
+        this.menuCache[item.id] = item
         // 递归处理
-        this.initMenuCache(item.children);
-      });
+        this.initMenuCache(item.children)
+      })
     },
-    initDefaultActive() {
+    initDefaultActive () {
       // 如果没有菜单，直接跳过
       if (!this.menuTree || !this.menuTree.length) {
-        return;
+        return
       }
       // 获取当前路径
-      const { matched } = this.$route;
+      const { matched } = this.$route
       if (!matched || !matched.length) {
-        return;
+        return
       }
-      const matchedRoute = matched[matched.length - 1];
+      const matchedRoute = matched[matched.length - 1]
       // 获取当前路由的匹配规则
-      const matchedRegexp = matchedRoute.regex;
+      const matchedRegexp = matchedRoute.regex
       // 遍历当前的菜单，然后匹配路径
-      let tempMenu, menuId;
+      let tempMenu, menuId
       for (menuId in this.menuCache) {
-        tempMenu = this.menuCache[menuId];
+        tempMenu = this.menuCache[menuId]
         // 跳过菜单分组
         if (tempMenu.children && tempMenu.children.length) {
-          continue;
+          continue
         }
         if (!tempMenu.path) {
-          continue;
+          continue
         }
         // 匹配第一个菜单
         if (matchedRegexp.test(tempMenu.path)) {
-          this.defaultActive = menuId;
-          return;
+          this.defaultActive = menuId
+          return
         }
       }
     },
-    handleMenuLoadCallback(treeList) {
-      this.menuTree = treeList || [];
+    handleMenuLoadCallback (treeList) {
+      this.menuTree = treeList || []
       // 计算缓存
-      this.initMenuCache(this.menuTree);
+      this.initMenuCache(this.menuTree)
       // 计算菜单高亮
-      this.initDefaultActive();
+      this.initDefaultActive()
       // 通知加载完成事件
-      this.$emit('loaded', this.listData);
+      this.$emit('loaded', this.listData)
     },
-    handleMenuSelect(index, indexPath) {
+    handleMenuSelect (index, indexPath) {
       // 查询
-      const menu = this.menuCache[index];
+      const menu = this.menuCache[index]
       if (this.menuClick) {
-        this.menuClick(menu);
-        return;
+        this.menuClick(menu)
+        return
       }
       // 跳转
       if (menu.url) {
-        this.$router.push(menu.url);
+        this.$router.push(menu.url)
       }
     }
   }

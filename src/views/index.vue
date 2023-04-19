@@ -57,14 +57,17 @@ export default {
       menuData: MenuData
     }
   },
+  created () {
+    console.log('created index')
+  },
   methods: {
     handleMenuClick (menu) {
       this.$router.push({
         target: menu.target,
         title: menu.label,
         path: menu.url || menu.path,
-        query: menu.query,
-        params: menu.params
+        query: menu.query || {},
+        params: menu.params || {}
       })
     },
 

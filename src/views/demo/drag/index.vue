@@ -59,7 +59,7 @@ export default {
   mounted () {
     this.initSortArea()
   },
-  destroyed () {
+  unmounted () {
     this.destorySortArea()
   },
   methods: {

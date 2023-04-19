@@ -63,7 +63,7 @@ export default {
     this.ro.observe(spanContainer)
     // this.ro.observe(divContent)
   },
-  destroyed () {
+  unmounted () {
     this.ro.disconnect()
     this.ro = null
     console.log('hahahaha')

@@ -21,7 +21,7 @@
                      :body-style="{ padding: '0px' }"
                      class="image-card"
                      :class="{ 'selected' : item === selectedFile }"
-                     @click.native="selectedFile = item">
+                     @click="selectedFile = item">
               <el-image class="image"
                         :src="'/api' + item.path"
                         fit="fill"

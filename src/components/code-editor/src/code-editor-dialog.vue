@@ -11,7 +11,7 @@
     </el-input>
     <!-- $$t('smart.platform.ui.codeEditor.editor.label') -->
     <el-dialog title="代码编辑器"
-               :visible.sync="editorVisible"
+               v-model:visible="editorVisible"
                :close-on-click-modal="false"
                :append-to-body="true"
                :size="size">

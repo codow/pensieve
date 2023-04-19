@@ -65,5 +65,4 @@ instance.interceptors.response.use(
   }
 )
 
-
-Vue.prototype.$http = instance
+export default instance

@@ -202,7 +202,7 @@ export default {
     this.initMenu()
   },
 
-  destroyed () {
+  unmounted () {
     this.destroyDragArea()
 
     this.destroyMenu()

@@ -7,7 +7,7 @@ const vueLoaderConfig = require('./vue-loader.conf')
 // 
 const Webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const VueLoaderPlugin = require('vue-loader/lib/plugin-webpack5')
+const { VueLoaderPlugin } = require('vue-loader')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -39,7 +39,10 @@ const webpackConfig = {
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
+      // vue3文件名改变
+      // 'vue$': 'vue/dist/vue.esm.js',
+      // 使用vue兼容版本
+      // vue: '@vue/compat',
       '@': resolve('src'),
     },
     // v5 调整
@@ -118,12 +121,13 @@ const webpackConfig = {
         }
       ]
     }),
-    // v5 新增
+    // v5 新增, vue3 不需要
+    // new VueLoaderPlugin(),
     new VueLoaderPlugin(),
     // 全局注入 Vue, 避免在每个 .vue 文件中重复引入
-    new Webpack.ProvidePlugin({
-      Vue: ['vue/dist/vue.esm.js', 'default'],
-    })
+    // new Webpack.ProvidePlugin({
+    //   Vue: ['vue/dist/vue.runtime.esm-bundler.js', 'default'],
+    // })
   ]
 }
 

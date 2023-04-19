@@ -78,7 +78,7 @@
                       @cont-select-cell="handleCellContSelect"
                       @open-cell-menu="handleCellMenuOpen"
                       @close-cell-menu="handleCellMenuClose"
-                      @drag-start.native="handleDragStart">
+                      @drag-start="handleDragStart">
             <component v-for="(item, index) of cell.children"
                        :key="index"
                        :is="item.value"
@@ -559,7 +559,7 @@ export default {
     this.initEvent()
   },
 
-  destroyed () {
+  unmounted () {
     if (this.cellMenuModel.instance) {
       this.cellMenuModel.instance.remove()
     }
@@ -715,7 +715,7 @@ export default {
     },
 
     clearSelectedText () {
-      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+      window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
     },
 
     handleAllCellSelect (cell, rowIndex, colIndex, $event) {
@@ -1729,7 +1729,7 @@ export default {
       let position = {}
       let tempCell
       let maxRowIndex, maxColIndex
-      let l = 0, n = 0;
+      let l = 0, n = 0
       for (let i = rowIndex; i > l; i--) {
         for (let m = colIndex; m > n; m--) {
           tempCell = this.cellModels[i][m]

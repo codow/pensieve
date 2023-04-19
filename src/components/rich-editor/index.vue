@@ -67,7 +67,7 @@ export default {
     this.content = this.value
     this.init()
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.editor.destroy()
   },
   deactivated () {

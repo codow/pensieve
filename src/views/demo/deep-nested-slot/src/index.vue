@@ -3,8 +3,8 @@
     <div>测试多层数据嵌套的插槽</div>
     <div>
       <deep-nested-slot-component v-for="(item, index) of items"
-                                  :key="index"
-                                  v-bind="item">
+                                  v-bind="item"
+                                  :key="index">
         <template #chongqing1>
           我是重庆1插槽下面的
         </template>

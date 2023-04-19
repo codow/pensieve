@@ -8,9 +8,9 @@
                 style="border-right: 1px solid #DCDFE6; overflow: auto;">
         <el-collapse class="designer-tools__group"
                      v-model="activeNames">
-          <template v-for="item in tools">
-            <el-collapse-item :key="item.tag"
-                              :title="item.label"
+          <template v-for="item in tools"
+                    :key="item.tag">
+            <el-collapse-item :title="item.label"
                               :name="item.tag">
               <draggable class="tools-list__wrapper drag-container"
                          :sort="false"
@@ -19,9 +19,9 @@
                          :clone="toolClone"
                          :plain="true"
                          v-show="!item.close">
-                <template v-for="sub in item.children">
-                  <div :key="sub.tag"
-                       class="tools-list__item-wrap">
+                <template v-for="sub in item.children"
+                          :key="sub.tag">
+                  <div class="tools-list__item-wrap">
                     <div class="tools-list__item tools-list__card"
                          @dblclick="dblclickTool(sub)"
                          :title="sub.label">

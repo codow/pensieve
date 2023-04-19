@@ -1,14 +1,14 @@
 /* eslint-disable no-eval */
-import Vue from 'vue'
-import Router from 'vue-router'
+// import Vue from 'vue'
+import { createRouter as createVueRouter, createWebHashHistory, createWebHistory, createMemoryHistory } from 'vue-router'
 // import { normalizeLocation } from 'vue-router/src/util/location'
 
-Vue.use(Router)
+// Vue.use(Router)
 
 // 加入路由的动态module创建
 
 export function createRouter (app, options) {
-  const store = app.$store
+  const store = app.config.globalProperties.$store
   const findRouteTab = store.getters['Route/findRouteTab']
 
   const updateRouteTab = function (tab, route, location) {
@@ -92,8 +92,9 @@ export function createRouter (app, options) {
     }
   }
 
-  const router = new Router(Object.assign({
-    mode: 'history',
+  const router = createVueRouter(Object.assign({
+    // mode: 'history',
+    history: createWebHistory(),
     base: __dirname,
     linkActiveClass: 'is-active',
     routes: []
@@ -205,9 +206,10 @@ export function createRouter (app, options) {
 }
 
 // 当前项目自己使用，不用动态路由
-const defaultRouter = new Router({
+const defaultRouter = createVueRouter({
   // mode: 'hash',
-  mode: 'history',
+  // mode: 'history',
+  history: createWebHistory(),
   base: __dirname,
   linkActiveClass: 'is-active',
   routes: []

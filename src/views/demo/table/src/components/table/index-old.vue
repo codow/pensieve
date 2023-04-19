@@ -5,9 +5,9 @@
          @mouseup="handleTableMouseUp">
     <tr v-for="y of layoutRows"
         :key="y">
-      <template v-for="x of layoutCols">
+      <template v-for="x of layoutCols"
+                :key="x">
         <td v-if="y === 0 && x !== 0"
-            :key="x"
             class="column-header"
             :class="{selected: checkColumnSelected(x), 'selected-all': checkColumnSelectedAll(x)}"
             @mousedown="selectColumn(x, $event)"
@@ -17,7 +17,6 @@
           {{calcColName(x)}}
         </td>
         <td v-else-if="y !== 0 && x === 0"
-            :key="x"
             class="row-header"
             :class="{selected: checkRowSelected(y), 'selected-all': checkRowSelectedAll(y)}"
             @mousedown="selectRow(y, $event)"
@@ -27,14 +26,12 @@
           {{y}}
         </td>
         <td v-else-if="y === 0 && x === 0"
-            :key="x"
             class="column-header row-header">
           <!-- 全选 -->
           all
         </td>
 
         <td v-else-if="!checkIgnoreCell(x, y)"
-            :key="x"
             :class="calcCellClass(x, y)"
             :row="y"
             :col="x"
@@ -273,7 +270,7 @@ export default {
     this.init()
   },
 
-  destroyed () {
+  unmounted () {
     if (this.cellMenu.instance) {
       document.body.removeChild(this.cellMenu.instance)
     }

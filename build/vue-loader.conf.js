@@ -18,5 +18,11 @@ module.exports = {
     source: 'src',
     img: 'src',
     image: 'xlink:href'
-  }
+  },
+  // 兼容vue 2.x
+  // compilerOptions: {
+  //   compatConfig: {
+  //     MODE: 2
+  //   }`
+  // }
 }

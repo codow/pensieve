@@ -17,9 +17,9 @@
     <div style="padding: 20px 0">拖拽测试</div>
     <el-row>
       <el-col :xl="4">
-        <draggable v-model="list"
+        <draggable v-bind="dragOptions"
+                   v-model="list"
                    group="form"
-                   v-bind="dragOptions"
                    class="drag-wrapper">
           <div v-for="item in list"
                :key="item.id"
@@ -27,9 +27,9 @@
         </draggable>
       </el-col>
       <el-col :xl="4">
-        <draggable v-model="list2"
+        <draggable v-bind="dragOptions"
+                   v-model="list2"
                    group="form"
-                   v-bind="dragOptions"
                    class="drag-wrapper">
           <div v-for="item in list2"
                :key="item.id"
@@ -148,7 +148,7 @@ export default {
       e.preventDefault()
     }
   },
-  destroyed () {
+  unmounted () {
     if (this.dragInstance) {
       this.dragInstance.destroy()
       this.dragInstance = null
