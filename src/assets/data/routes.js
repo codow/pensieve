@@ -198,6 +198,36 @@ export default [
         keepAlive: true
       }
     },
+    // 动画
+    {
+      name: 'demo-animation',
+      path: '/demo/animation',
+      children: [
+        {
+          name: 'demo-animation-3d',
+          path: '3d',
+          children: []
+        }
+      ]
+    },
+    {
+      name: 'demo-animation-3d-hello',
+      path: '/demo/animation/3d/hello',
+      component: () => import('@/views/demo/animations/3d/hello'),
+      meta: {
+        title: '3D动画--Hello',
+        keepAlive: true
+      }
+    },
+    {
+      name: 'demo-animation-3d-porsche-911',
+      path: '/demo/animation/3d/porsche-911',
+      component: () => import('@/views/demo/animations/3d/porsche_911'),
+      meta: {
+        title: '3D动画--保时捷911',
+        keepAlive: true
+      }
+    },
     // 在线表单
     {
       name: 'form-manage',

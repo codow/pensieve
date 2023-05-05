@@ -116,6 +116,28 @@ export default [{
     ]
   }]
 }, {
+  id: "10118",
+  label: '动画',
+  icon: '',
+  children: [
+    {
+      id: "1011801",
+      label: '3D',
+      icon: '',
+      children: [{
+        id: "101180101",
+        label: 'Hello',
+        icon: '',
+        url: '/demo/animation/3d/hello',
+      }, {
+        id: "101180102",
+        label: 'PORSCHE 911',
+        icon: '',
+        url: '/demo/animation/3d/porsche-911',
+      }]
+    }
+  ]
+}, {
   id: '997',
   label: '在线表单',
   icon: '',
