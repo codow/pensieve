@@ -153,3 +153,19 @@ export function index (el, selector, ...exceptions) {
   }
   return index
 }
+
+/**
+ * 复制文本
+ * @param {*} text 
+ */
+export function copyToClipboard (text) {
+  let el = document.createElement('textarea')
+  el.style.position = 'absolute'
+  el.style.left = '-9999px'
+  el.style.top = '-9999px'
+  document.body.appendChild(el)
+  el.value = text
+  el.select()
+  document.execCommand('copy')
+  el.remove()
+}

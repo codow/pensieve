@@ -284,6 +284,14 @@ export default [
         keepAlive: true
       }
     }, {
+      name: 'common-utils-css-cursor',
+      path: '/common/utils/css/cursor',
+      component: () => import('@/views/common-utils/css/cursor'),
+      meta: {
+        title: 'CSS游标',
+        keepAlive: true
+      }
+    }, {
       name: 'common-utils-excel-sql-concat-generate',
       path: '/common/utils/excel/sql/concat/generate',
       component: () => import('@/views/common-utils/excel/sql-concat-generate'),

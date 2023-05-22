@@ -235,6 +235,17 @@ export default [{
         icon: '',
         url: '/common/utils/uuid/data/generate'
       }]
+    }, {
+      id: "99804",
+      label: 'CSS',
+      icon: '',
+      url: '/common/utils/css',
+      children: [{
+        id: "9980401",
+        label: '游标',
+        icon: '',
+        url: '/common/utils/css/cursor'
+      }]
     }
   ]
 }, {
