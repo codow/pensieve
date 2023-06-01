@@ -202,31 +202,49 @@ export default [
     {
       name: 'demo-animation',
       path: '/demo/animation',
+      component: () => import('@/views/layout/empty.vue'),
       children: [
         {
           name: 'demo-animation-3d',
           path: '3d',
-          children: []
+          component: () => import('@/views/layout/empty.vue'),
+          children: [
+            {
+              name: 'demo-animation-3d-hello',
+              path: 'hello',
+              component: () => import('@/views/demo/animations/3d/hello'),
+              meta: {
+                title: '3D动画--Hello',
+                keepAlive: true
+              }
+            },
+            {
+              name: 'demo-animation-3d-porsche-911',
+              path: 'porsche-911',
+              component: () => import('@/views/demo/animations/3d/porsche_911'),
+              meta: {
+                title: '3D动画--保时捷911',
+                keepAlive: true
+              }
+            },
+          ]
+        },
+        {
+          name: 'demo-animation-svg',
+          path: 'svg',
+          component: () => import('@/views/layout/empty.vue'),
+          children: [
+            {
+              name: 'demo-animation-svg-encapsulation',
+              path: 'encapsulation',
+              component: () => import('@/views/demo/animations/svg/encapsulation'),
+              meta: {
+                title: '图形对象封装'
+              }
+            }
+          ]
         }
       ]
-    },
-    {
-      name: 'demo-animation-3d-hello',
-      path: '/demo/animation/3d/hello',
-      component: () => import('@/views/demo/animations/3d/hello'),
-      meta: {
-        title: '3D动画--Hello',
-        keepAlive: true
-      }
-    },
-    {
-      name: 'demo-animation-3d-porsche-911',
-      path: '/demo/animation/3d/porsche-911',
-      component: () => import('@/views/demo/animations/3d/porsche_911'),
-      meta: {
-        title: '3D动画--保时捷911',
-        keepAlive: true
-      }
     },
     // 在线表单
     {

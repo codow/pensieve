@@ -135,6 +135,17 @@ export default [{
         icon: '',
         url: '/demo/animation/3d/porsche-911',
       }]
+    },
+    {
+      id: "1011802",
+      label: 'SVG',
+      icon: '',
+      children: [{
+        id: "101180201",
+        label: 'SVG对象封装',
+        icon: '',
+        url: '/demo/animation/svg/encapsulation',
+      }]
     }
   ]
 }, {
