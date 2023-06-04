@@ -241,6 +241,21 @@ export default [
               meta: {
                 title: '图形对象封装'
               }
+            },
+            {
+              name: 'demo-animation-svg-demo',
+              path: 'demo',
+              component: () => import('@/views/layout/empty.vue'),
+              children: [
+                {
+                  name: 'demo-animation-svg-demo-path',
+                  path: 'path',
+                  component: () => import('@/views/demo/animations/svg/demo/path'),
+                  meta: {
+                    title: 'SVG-PATH示例'
+                  }
+                },
+              ]
             }
           ]
         }

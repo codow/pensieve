@@ -6,8 +6,10 @@
 
 const DefaultXmlns = "http://www.w3.org/2000/svg";
 
-const createSvgElement = function (tag: string) {
-  return document.createElementNS(DefaultXmlns, tag);
+const createSvgElement = function (tag: string): SVGElement {
+  let svgEl = document.createElementNS(DefaultXmlns, tag);
+
+  return svgEl;
 };
 
 export { createSvgElement };

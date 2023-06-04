@@ -145,6 +145,19 @@ export default [{
         label: 'SVG对象封装',
         icon: '',
         url: '/demo/animation/svg/encapsulation',
+      },
+      {
+        id: "101180202",
+        label: 'SVG示例',
+        icon: '',
+        children: [
+          {
+            id: "10118020201",
+            label: 'SVG-PATH示例',
+            icon: '',
+            url: '/demo/animation/svg/demo/path',
+          },
+        ]
       }]
     }
   ]

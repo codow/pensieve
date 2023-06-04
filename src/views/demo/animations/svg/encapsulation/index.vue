@@ -71,12 +71,13 @@ export default {
   methods: {
     init () {
       let model = new SvgRectModel({
-        width: 200,
-        height: 200,
-        border: '10 solid red',
-        borderRadius: '30'
+        width: 160,
+        height: 64,
+        border: '2 solid #2461ef',
+        borderRadius: '5',
+        fill: '#ffffff' // '#233661'
       })
-      model.render()
+      model.init()
       this.$refs.container.appendChild(model.$el)
       this.models.push(model)
       model = new SvgRectPathModel({
@@ -84,9 +85,9 @@ export default {
         height: 64,
         border: '2 solid #2461ef',
         borderRadius: '5',
-        fill: '#233661'
+        fill: '#ffffff' // '#233661'
       })
-      model.render()
+      model.init()
       this.$refs.container.appendChild(model.$el)
       this.models.push(model)
     },

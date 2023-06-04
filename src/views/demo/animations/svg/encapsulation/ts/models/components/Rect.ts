@@ -8,12 +8,8 @@ import SvgModel, { ISvgModelOptions } from "../SvgModel";
 import { BorderTypeEnum, SideEnum, SideNameMap } from "../../constants";
 import { toBorderOptions } from "../../utils/css";
 import { toFixed } from "../../utils/math";
-
-interface ISvgModelBorderOptions {
-  size?: Number | String;
-  type?: BorderTypeEnum;
-  color?: String;
-}
+import { BorderAttr } from "../../interfaces";
+import { isString, isNumber } from "lodash";
 
 export interface ISvgRectModelOptions extends ISvgModelOptions {
   // 使用css的border参数配置
@@ -65,8 +61,6 @@ class SvgRectModel extends SvgModel {
     let height = this.getOption("height", 100);
     this.$el.setAttribute("width", width);
     this.$el.setAttribute("height", height);
-    this.$el.setAttribute("version", "1.1");
-    this.$el.setAttribute("baseProfile", "full");
     let content = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
@@ -97,30 +91,24 @@ class SvgRectModel extends SvgModel {
   setBorderOptions(options: ISvgRectModelOptions = {}) {
     // 设置边
     let { border, borderTop, borderBottom, borderLeft, borderRight } = options;
-    // 拆分border
-    let config = toBorderOptions(border);
-    if (config) {
-      this.setBorderSize(config.size);
-      this.setBorderType(config.type);
-      this.setBorderColor(config.color);
-    }
-    let configArr = [border, borderTop, borderBottom, borderLeft, borderRight];
-    configArr.forEach((item, side) => {
-      side = side as unknown as SideEnum;
-      config = toBorderOptions(item);
-      if (!config) {
-        return;
+    let config;
+    [border, borderTop, borderBottom, borderLeft, borderRight].forEach(
+      (item, side) => {
+        side = side as SideEnum;
+        config = toBorderOptions(item);
+        if (!config) {
+          return;
+        }
+        this.$options["border" + SideNameMap[side]] = config;
+        this.setBorderSize(side, config.size);
+        this.setBorderType(side, config.type);
+        this.setBorderColor(side, config.color);
       }
-      this.setBorderSize(side, config.size);
-      this.setBorderType(side, config.type);
-      this.setBorderColor(side, config.color);
-    });
+    );
+    console.log(this.$options);
   }
 
-  setBorderOption(
-    side: SideEnum,
-    { size, type, color }: ISvgModelBorderOptions
-  ) {
+  setBorderOption(side: SideEnum, { size, type, color }: BorderAttr) {
     this.setBorderSize(side, size);
     this.setBorderType(side, type);
     this.setBorderColor(side, color);
@@ -167,9 +155,25 @@ class SvgRectModel extends SvgModel {
   }
 
   setBorderRadius(borderRadius: Number | String) {
-    //
-    this.$options["borderRadius"] = borderRadius;
+    // 处理为数组
+    let radius: Array<Number> = [];
+    if (isString(borderRadius)) {
+      radius = (borderRadius as String).split(/\s+/).map((item) => +item);
+    }
+    if (isNumber(borderRadius)) {
+      radius = [borderRadius as Number];
+    }
+    this.$options["borderRadius"] = radius;
     this.renderDelay();
+  }
+
+  getBorderOption(side?: SideEnum): BorderAttr {
+    let namePrefix = "border" + (side ? SideNameMap[side] : "");
+    return {
+      size: this.$options[namePrefix + "Size"],
+      type: this.$options[namePrefix + "Type"],
+      color: this.$options[namePrefix + "Color"],
+    };
   }
 }
 

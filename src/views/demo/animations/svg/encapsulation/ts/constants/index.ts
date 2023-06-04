@@ -29,6 +29,7 @@ export enum SideEnum {
 }
 
 export const SideNameMap = {
+  [0]: "",
   [SideEnum.Top]: "Top",
   [SideEnum.Bottom]: "Bottom",
   [SideEnum.Left]: "Left",
@@ -67,17 +68,27 @@ export enum ColorEnum {
   Info = "#bfbfbf",
   Danger = "#f5222d",
   Warn = "#fa8c16",
+  Volcano = "#fa541c",
+  Cyan = "#13c2c2",
 }
 
 export enum PathActionEnum {
-  Moveto = "M",
-  Lineto = "L",
-  HorizontalLineto = "H",
-  VerticalLineto = "V",
+  Moveto = "M", // 开始移动到的位置
+  Lineto = "L", // 移动至x,y
+  LinetoR = "l", // 相对移动x,y
+  HorizontalLineto = "H", // 横移至x
+  HorizontalLinetoR = "h", // 相对横移x
+  VerticalLineto = "V", // 纵移至y
+  VerticalLinetoR = "v", // 相对纵移y
   Curveto = "C",
+  CurvetoR = "c",
   SmoothCurveto = "S",
+  SmoothCurvetoR = "s",
   QuadraticBezierCurve = "Q",
+  QuadraticBezierCurveR = "q",
   SmoothQuadraticBezierCurveto = "T",
-  EllipticalArc = "A",
+  SmoothQuadraticBezierCurvetoT = "t",
+  EllipticalArc = "A", // 绝对位置绘制椭圆
+  EllipticalArcR = "a", // 相对位置绘制椭圆
   Closepath = "Z",
 }

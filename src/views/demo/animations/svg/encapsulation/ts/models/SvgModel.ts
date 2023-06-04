@@ -4,7 +4,8 @@
 // @createTime 2023-05-31 10:34:31
 // ========================================================
 
-import { get as getByPath, set as setByPath, isString } from "lodash";
+import { cloneDeep } from "lodash";
+import { defineInnerProps } from "../utils/object";
 
 interface ISvgModel {
   // 用来存储对应的dom元素
@@ -33,60 +34,6 @@ export interface ISvgModelOptions {
 //   new (options: Object): ISvgModel;
 // }
 
-const defineInnerProps = function (obj: Object, props: PropertyDescriptorMap) {
-  let prop: PropertyDescriptor;
-  let defaultProp: PropertyDescriptor;
-  props = Object.assign({}, props);
-  for (let key in props) {
-    prop = props[key];
-    defaultProp = {};
-    if (!prop.get && !prop.set) {
-      defaultProp.writable = true;
-    }
-    prop = Object.assign(defaultProp, prop, {
-      enumerable: false,
-    });
-    props[key] = prop;
-  }
-  Object.defineProperties(obj, props);
-};
-
-const defineWatchProps = function (
-  obj: Object,
-  configs:
-    | { [propName: string]: String }
-    | { [propName: string]: { path: String; handler: Function } } = {},
-  defaultHandler: Function
-) {
-  let prop: PropertyDescriptor;
-  let config, field, path, handler;
-  let props: PropertyDescriptorMap = {};
-  for (let key in configs) {
-    config = configs[key];
-    field = key;
-    if (isString(config)) {
-      path = config;
-      handler = null;
-    } else {
-      path = config.path;
-      handler = config.handler;
-    }
-    prop = (function (_f, _p, _h) {
-      return {
-        get() {
-          return getByPath(obj, _p);
-        },
-        set(newVal) {
-          setByPath(obj, _p, newVal);
-          _h && _h({ field: _f, path: _p, value: newVal });
-        },
-      };
-    })(field, path, handler || defaultHandler);
-    props[field] = prop;
-  }
-  Object.defineProperties(obj, props);
-};
-
 class SvgModel implements ISvgModel {
   $el: Element;
   $options: ISvgModelOptions;
@@ -95,42 +42,45 @@ class SvgModel implements ISvgModel {
   constructor(options: ISvgModelOptions = {}) {
     console.log("创建SvgModel", options);
     defineInnerProps(this, {
+      // 根图形
       $el: {
         value: this.$el,
       },
+      // 所有关联的对象
+      $refs: {
+        value: {},
+      },
       $options: {
+        // 互不影响
+        value: cloneDeep(options),
+      },
+      options: {
         value: options,
       },
-    });
-    defineWatchProps(
-      this,
-      {
-        width: "$options.width",
-        height: "$options.height",
-        fill: "$options.fill",
+      __renderDelayTimer: {
+        value: null,
       },
-      ({ field, value }) => {
-        this.setAttribute(field, value);
-      }
-    );
+    });
+  }
+
+  /**
+   * 模型初始化
+   */
+  init(): void {
+    this.initShape();
+    this.render();
+  }
+
+  initShape() {
+    // 创建Svg
+    this.$el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.$el.setAttribute("version", "1.1");
+    this.$el.setAttribute("baseProfile", "full");
   }
 
   render(): void {
-    // 创建Svg
-    this.$el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this.$el.setAttribute("width", this.getOption("width", "100"));
     this.$el.setAttribute("height", this.getOption("height", "100"));
-    this.$el.setAttribute("version", "1.1");
-    this.$el.setAttribute("baseProfile", "full");
-    let content = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
-    content.setAttribute("width", "100%");
-    content.setAttribute("height", "100%");
-    content.setAttribute("fill", this.getOption("fill", "blue"));
-
-    this.$el.appendChild(content);
   }
 
   /**
@@ -138,12 +88,8 @@ class SvgModel implements ISvgModel {
    * @param delay
    */
   renderDelay(delay = 30) {
-    if (!("__renderDelayTimer" in this)) {
-      defineInnerProps(this, {
-        __renderDelayTimer: {
-          value: null,
-        },
-      });
+    if (this.__renderDelayTimer) {
+      return;
     }
     this.__renderDelayTimer = setTimeout(() => {
       this.render();
@@ -164,7 +110,10 @@ class SvgModel implements ISvgModel {
   }
 
   setOptions(options: ISvgModelOptions): void {
-    this.$options = options;
+    Object.assign(this.options, options);
+    // 执行options计算，处理特殊属性，如边框等
+    Object.assign(this.$options, options);
+    this.renderDelay();
   }
 
   getOption(name: any, defaultVal?: any) {
@@ -181,6 +130,11 @@ class SvgModel implements ISvgModel {
       this.$el.remove();
       this.$el = null;
     }
+  }
+
+  bindRef(name: string, svgEl: SVGElement) {
+    this.$refs[name] = svgEl;
+    svgEl.setAttribute("name", name);
   }
 }
 
