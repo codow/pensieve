@@ -12,6 +12,7 @@ import {
   ModelStatusPrefixMap,
 } from "../constants";
 import { getModelByEvent } from "../utils/model";
+import { createSvgElement } from "../shapes/base";
 
 export interface ISvgModel {
   // 用来存储对应的dom元素
@@ -92,9 +93,7 @@ class SvgModel implements ISvgModel {
 
   initShape() {
     // 创建Svg
-    this.$el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.$el.setAttribute("version", "1.1");
-    this.$el.setAttribute("baseProfile", "full");
+    this.$el = createSvgElement("svg");
     defineInnerProps(this.$el, {
       $model: {
         value: this,
@@ -169,6 +168,7 @@ class SvgModel implements ISvgModel {
 
   getOption(name: any, defaultVal?: any, status?: ModelStatusEnum) {
     let defaultName = name;
+    status = status || this.getStatus();
     if (status) {
       name =
         ModelStatusPrefixMap[status] + name + ModelStatusPostfixMap[status];
@@ -226,11 +226,6 @@ class SvgModel implements ISvgModel {
       childEl = (child as SvgModel).$el;
     } else {
       childEl = child as Element;
-      // defineInnerProps(childEl, {
-      //   $model: {
-      //     value: this,
-      //   },
-      // });
     }
     if (!childEl) {
       if (process.env.NODE_ENV !== "dev") {

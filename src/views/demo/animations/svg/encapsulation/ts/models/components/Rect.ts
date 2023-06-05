@@ -11,6 +11,8 @@ import { toFixed } from "../../utils/math";
 import { BorderAttr } from "../../interfaces";
 import { isString, isNumber } from "lodash";
 import SvgDraggableModel from "../DraggableModel";
+import { createSvgElement } from "../../shapes/base";
+import { defineInnerProps } from "../../utils/object";
 
 export interface ISvgRectModelOptions extends ISvgModelOptions {
   // 使用css的border参数配置
@@ -39,18 +41,27 @@ class SvgRectModel extends SvgDraggableModel {
     this.setBorderRadius(options.borderRadius);
   }
 
+  initShape(): void {
+    this.$el = createSvgElement("svg");
+    this.bindRef("root", this.$el);
+    defineInnerProps(this.$el, {
+      $model: {
+        value: this,
+      },
+    });
+    let content = createSvgElement("rect");
+    this.appendChild(content, "bg");
+  }
+
   render(): void {
     // 创建Svg
-    this.$el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     let width = this.getOption("width", 100);
     let height = this.getOption("height", 100);
     this.$el.setAttribute("width", width);
     this.$el.setAttribute("height", height);
-    let content = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
-    let borderSize = +this.getOption("borderSize");
+    this.$el.setAttribute("x", this.getOption("x", "0"));
+    this.$el.setAttribute("y", this.getOption("y", "0"));
+    let borderSize = +this.getOption("borderSize", 0);
     let contentX = 0;
     let contentY = 0;
     let contentWidth: String | Number = "100%";
@@ -60,13 +71,14 @@ class SvgRectModel extends SvgDraggableModel {
       contentHeight = height - borderSize;
       contentY = contentX = toFixed(borderSize / 2, 1);
     }
+    let content = this.$refs.bg;
     content.setAttribute("x", contentX + "");
     content.setAttribute("y", contentY + "");
     content.setAttribute("width", contentWidth + "");
     content.setAttribute("height", contentHeight + "");
-    content.setAttribute("stroke", this.getOption("borderColor"));
-    content.setAttribute("stroke-width", this.getOption("borderSize"));
-    let borderRadius = this.getOption("borderRadius");
+    content.setAttribute("stroke", this.getOption("borderColor", ""));
+    content.setAttribute("stroke-width", borderSize);
+    let borderRadius = this.getOption("borderRadius", []);
     content.setAttribute("rx", borderRadius[0]);
     content.setAttribute("ry", borderRadius[1]);
     content.setAttribute("fill", this.getOption("fill", "blue"));

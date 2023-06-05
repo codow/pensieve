@@ -5,6 +5,7 @@
 // ========================================================
 
 import { ModelStatusNextMap } from "../constants";
+import { onContextMenu } from "../plugins/menus";
 import { getModelByEvent } from "../utils/model";
 import SvgSerializableModel from "./SerializableModel";
 import SvgModel from "./SvgModel";
@@ -22,6 +23,7 @@ const onModelClick = function (event) {
 class SvgSelectableModel extends SvgSerializableModel {
   initEvents(): void {
     this.$el.addEventListener("click", onModelClick);
+    this.$el.addEventListener("contextmenu", onContextMenu);
   }
 }
 

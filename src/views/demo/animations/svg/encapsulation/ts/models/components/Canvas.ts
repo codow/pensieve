@@ -5,6 +5,7 @@
 // ========================================================
 
 import SvgContainerModel from "../ContainerModel";
+
 class SvgCanvasModel extends SvgContainerModel {}
 
 export default SvgCanvasModel;

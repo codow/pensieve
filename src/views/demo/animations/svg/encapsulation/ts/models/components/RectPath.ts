@@ -17,6 +17,7 @@ import {
   createRectPathBorderV2,
 } from "../../shapes/RectPath";
 import { createSvgElement } from "../../shapes/base";
+import { defineInnerProps } from "../../utils/object";
 import SvgRectModel, { ISvgRectModelOptions } from "./Rect";
 
 class SvgRectPathModel extends SvgRectModel {
@@ -25,7 +26,13 @@ class SvgRectPathModel extends SvgRectModel {
   }
 
   initShape(): void {
-    super.initShape();
+    this.$el = createSvgElement("svg");
+    this.bindRef("root", this.$el);
+    defineInnerProps(this.$el, {
+      $model: {
+        value: this,
+      },
+    });
     // 背景
     let bg = createRectPath({
       ...(this.$options as RectAttr),
@@ -76,25 +83,24 @@ class SvgRectPathModel extends SvgRectModel {
 
   render(): void {
     // 创建Svg
-    let status = this.getStatus();
-    let width = this.getOption("width", 100, status);
-    let height = this.getOption("height", 100, status);
-    let fill = this.getOption("fill", ColorEnum.White, status);
+    let width = this.getOption("width", 100);
+    let height = this.getOption("height", 100);
+    let fill = this.getOption("fill", ColorEnum.White);
     this.$el.setAttribute("width", width);
     this.$el.setAttribute("height", height);
     this.$el.setAttribute("x", this.getOption("x", "0"));
     this.$el.setAttribute("y", this.getOption("y", "0"));
     this.$refs.bg.setAttribute("fill", fill);
     // 设置头部背景
-    let headerFill = this.getOption("headerFill", ColorEnum.White, status);
+    let headerFill = this.getOption("headerFill", ColorEnum.White);
     this.$refs.headerBg.setAttribute("fill", headerFill);
 
     // 设置边框样式
-    let borderSize = this.getOption("borderSize", null, status);
+    let borderSize = this.getOption("borderSize", null);
     // 重新计算边的路径
-    let borderType = this.getOption("borderType", null, status);
+    let borderType = this.getOption("borderType", null);
     let dashArray = BorderTypeDashArrayMap[borderType] || "";
-    let borderColor = this.getOption("borderColor", "Black", status);
+    let borderColor = this.getOption("borderColor", "Black");
     let sideEl: Element;
     for (let key in SideNameMap) {
       sideEl = this.$refs["border" + SideNameMap[key]];

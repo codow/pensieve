@@ -103,7 +103,7 @@ export default {
         fill: '#ffffff' // '#233661'
       })
       model.init()
-      canvas.appendChild(model.$el)
+      canvas.appendChild(model)
       this.models.push(model)
       let options = {
         x: 20,
@@ -128,7 +128,7 @@ export default {
       model = new SvgRectPathModel(options)
       model.init()
       model.$el.style = "margin-left: 10px;"
-      canvas.appendChild(model.$el)
+      canvas.appendChild(model)
       this.models.push(model)
 
       model = new SvgRectPathModel({
@@ -139,7 +139,7 @@ export default {
       })
       model.init()
       model.$el.style = "margin-left: 10px;"
-      canvas.appendChild(model.$el)
+      canvas.appendChild(model)
       this.models.push(model)
     },
     toImage (ref) {
