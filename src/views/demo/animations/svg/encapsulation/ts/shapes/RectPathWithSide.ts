@@ -4,7 +4,6 @@
 // @createTime 2023-06-01 17:38:38
 // ========================================================
 import {
-  BorderTypeDashArrayMap,
   BorderTypeEnum,
   DirectionEnum,
   PathActionEnum,
@@ -15,19 +14,38 @@ import {
   PathActionArray,
   BorderAttr,
   PointArray,
-  SideElementMap,
 } from "../interfaces";
-import { getBorderRadius } from "../utils/css";
+import { getObjectValue } from "../utils/object";
 import { calcPathActions, calcPathActionsV2, toPathData } from "./Path";
 import { createSvgElement } from "./base";
 
-export function calcRectPathActions(
-  { x = 0, y = 0, width, height, borderRadius = [] }: RectAttr,
-  closePath = true
-) {
+const getBorderRadius = function (borderRadius: Array<number>) {
+  let [leftTopRadius = 0, rightTopRadius, rightBottomRadius, leftBottomRadius] =
+    borderRadius;
+  // 处理不同类型的配置
+  if (rightTopRadius === undefined) {
+    rightTopRadius = leftTopRadius;
+  }
+  if (rightBottomRadius === undefined && leftBottomRadius === undefined) {
+    rightBottomRadius = leftTopRadius;
+    leftBottomRadius = rightTopRadius;
+  }
+  if (leftBottomRadius === undefined) {
+    leftBottomRadius = rightTopRadius;
+  }
+  return [leftTopRadius, rightTopRadius, rightBottomRadius, leftBottomRadius];
+};
+
+export function calcRectPathActions({
+  x = 0,
+  y = 0,
+  width,
+  height,
+  borderRadius = [],
+}: RectAttr) {
   let actions: Array<PathActionArray> = [];
   let [leftTopRadius, rightTopRadius, rightBottomRadius, leftBottomRadius] =
-    borderRadius;
+    getBorderRadius(borderRadius);
 
   // 左上顶点坐标
   let p = [x, y];
@@ -118,9 +136,7 @@ export function calcRectPathActions(
     ]);
   }
   // 封闭
-  if (closePath) {
-    actions.push([PathActionEnum.Closepath]);
-  }
+  actions.push([PathActionEnum.Closepath]);
   return actions;
 }
 
@@ -131,37 +147,7 @@ export function calcRectPathActions(
  */
 export function calcRectPathData(attr: RectAttr) {
   let actions = calcRectPathActions(attr) || [];
-  return toPathData(actions);
-}
-
-export function calcRectBorderPathData(attrs: RectAttr) {
-  let {
-    x = 0,
-    y = 0,
-    width = 0,
-    height = 0,
-    border,
-    borderRadius = [],
-  } = attrs;
-  let borderSize = border.size || 0;
-  let halfBorderSize = borderSize / 2;
-  borderRadius = borderRadius.map((item) => item - halfBorderSize);
-  x += halfBorderSize;
-  y += halfBorderSize;
-  width -= borderSize;
-  height -= borderSize;
-  let actions =
-    calcRectPathActions(
-      {
-        x,
-        y,
-        width,
-        height,
-        borderRadius,
-      },
-      false
-    ) || [];
-  return toPathData(actions);
+  return actions.map((item) => item.join(" ")).join(" ");
 }
 
 export const createRectPath = function (attr: RectAttr): SVGElement {
@@ -324,53 +310,112 @@ export const createRectPathSideBorderV2 = function (
   if (color) {
     path.setAttribute("stroke", color);
   }
-  path.setAttribute("stroke-dasharray", BorderTypeDashArrayMap[type]);
-  path.setAttribute("fill", "none");
+  switch (type) {
+    case BorderTypeEnum.DashedShort:
+      path.setAttribute("stroke-dasharray", "2 2");
+      break;
+    case BorderTypeEnum.Dashed:
+      path.setAttribute("stroke-dasharray", "4 4");
+      break;
+    case BorderTypeEnum.DashedLarge:
+      path.setAttribute("stroke-dasharray", "6 6");
+      break;
+  }
+
+  path.setAttribute("fill", "transparent");
   return path;
+};
+
+const getBorderOption = function (...objs: Array<BorderAttr>): BorderAttr {
+  return {
+    size: getObjectValue("size", ...objs),
+    type: getObjectValue("type", ...objs),
+    color: getObjectValue("color", ...objs),
+  };
 };
 
 export const createRectPathBorder = function (
   attr: RectAttr
 ): Array<SVGElement> {
   // 创建边线
-  let { border, borderRadius } = attr;
+  let {
+    border,
+    borderTop,
+    borderRight,
+    borderBottom,
+    borderLeft,
+    borderRadius,
+  } = attr;
   // 圆角
   borderRadius = getBorderRadius(borderRadius);
   // [上, 右, 下, 左]
   return [
-    createRectPathSideBorder(SideEnum.Top, attr, border, borderRadius[0]),
-    createRectPathSideBorder(SideEnum.Right, attr, border, borderRadius[1]),
-    createRectPathSideBorder(SideEnum.Bottom, attr, border, borderRadius[2]),
-    createRectPathSideBorder(SideEnum.Left, attr, border, borderRadius[3]),
+    createRectPathSideBorder(
+      SideEnum.Top,
+      attr,
+      getBorderOption(borderTop, border),
+      borderRadius[0]
+    ),
+    createRectPathSideBorder(
+      SideEnum.Right,
+      attr,
+      getBorderOption(borderRight, border),
+      borderRadius[1]
+    ),
+    createRectPathSideBorder(
+      SideEnum.Bottom,
+      attr,
+      getBorderOption(borderBottom, border),
+      borderRadius[2]
+    ),
+    createRectPathSideBorder(
+      SideEnum.Left,
+      attr,
+      getBorderOption(borderLeft, border),
+      borderRadius[3]
+    ),
   ];
 };
 
 export const createRectPathBorderV2 = function (
   attr: RectAttr
-): SideElementMap {
+): Array<SVGElement> {
   // 创建边线
-  let { border, borderRadius } = attr;
+  let {
+    border,
+    borderTop,
+    borderRight,
+    borderBottom,
+    borderLeft,
+    borderRadius,
+  } = attr;
   // 圆角
   borderRadius = getBorderRadius(borderRadius);
   // [上, 右, 下, 左]
-  return {
-    [SideEnum.Top]: createRectPathSideBorderV2(SideEnum.Top, attr, border, [
-      borderRadius[0],
-      borderRadius[1],
-    ]),
-    [SideEnum.Right]: createRectPathSideBorderV2(SideEnum.Right, attr, border, [
-      borderRadius[1],
-      borderRadius[2],
-    ]),
-    [SideEnum.Bottom]: createRectPathSideBorderV2(
+  return [
+    createRectPathSideBorderV2(
+      SideEnum.Top,
+      attr,
+      getBorderOption(borderTop, border),
+      [borderRadius[0], borderRadius[1]]
+    ),
+    createRectPathSideBorderV2(
+      SideEnum.Right,
+      attr,
+      getBorderOption(borderRight, border),
+      [borderRadius[1], borderRadius[2]]
+    ),
+    createRectPathSideBorderV2(
       SideEnum.Bottom,
       attr,
-      border,
+      getBorderOption(borderBottom, border),
       [borderRadius[2], borderRadius[3]]
     ),
-    [SideEnum.Left]: createRectPathSideBorderV2(SideEnum.Left, attr, border, [
-      borderRadius[3],
-      borderRadius[0],
-    ]),
-  };
+    createRectPathSideBorderV2(
+      SideEnum.Left,
+      attr,
+      getBorderOption(borderLeft, border),
+      [borderRadius[3], borderRadius[0]]
+    ),
+  ];
 };

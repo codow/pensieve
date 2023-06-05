@@ -4,40 +4,25 @@
 // @createTime 2023-06-01 13:49:53
 // ========================================================
 
-import SvgModel, { ISvgModelOptions } from "../SvgModel";
-import { BorderTypeEnum, SideEnum, SideNameMap } from "../../constants";
-import { toBorderOptions } from "../../utils/css";
+import { ISvgModelOptions } from "../SvgModel";
+import { BorderTypeEnum } from "../../constants";
+import { getBorderRadius, toBorderOptions } from "../../utils/css";
 import { toFixed } from "../../utils/math";
 import { BorderAttr } from "../../interfaces";
 import { isString, isNumber } from "lodash";
+import SvgDraggableModel from "../DraggableModel";
 
 export interface ISvgRectModelOptions extends ISvgModelOptions {
   // 使用css的border参数配置
   // border: 1px solid #ffffff;
   // 边: 边款 类型 颜色 圆角
   border?: String;
-  borderTop?: String;
-  borderRight?: String;
-  borderBottom?: String;
-  borderLeft?: String;
   // 边宽
   borderSize?: Number | String;
-  borderTopSize?: Number | String;
-  borderRightSize?: Number | String;
-  borderBottomSize?: Number | String;
-  borderLeftSize?: Number | String;
   // 边类型，实现，短虚线，长虚线等等
-  borderType?: String;
-  borderTopType?: String;
-  borderRightType?: String;
-  borderBottomType?: String;
-  borderLeftType?: String;
+  borderType?: BorderTypeEnum;
   // 边颜色
   borderColor?: String;
-  borderTopColor?: String;
-  borderRightColor?: String;
-  borderBottomColor?: String;
-  borderLeftColor?: String;
   // 圆角
   // border-radius: 2px 4px;
   // border-radius: 2px;
@@ -46,7 +31,7 @@ export interface ISvgRectModelOptions extends ISvgModelOptions {
   [propName: string]: any;
 }
 
-class SvgRectModel extends SvgModel {
+class SvgRectModel extends SvgDraggableModel {
   constructor(options: ISvgRectModelOptions = {}) {
     super(options);
     // 处理边配置
@@ -81,8 +66,9 @@ class SvgRectModel extends SvgModel {
     content.setAttribute("height", contentHeight + "");
     content.setAttribute("stroke", this.getOption("borderColor"));
     content.setAttribute("stroke-width", this.getOption("borderSize"));
-    content.setAttribute("rx", this.getOption("borderRadius"));
-    content.setAttribute("ry", this.getOption("borderRadius"));
+    let borderRadius = this.getOption("borderRadius");
+    content.setAttribute("rx", borderRadius[0]);
+    content.setAttribute("ry", borderRadius[1]);
     content.setAttribute("fill", this.getOption("fill", "blue"));
 
     this.$el.appendChild(content);
@@ -90,89 +76,74 @@ class SvgRectModel extends SvgModel {
 
   setBorderOptions(options: ISvgRectModelOptions = {}) {
     // 设置边
-    let { border, borderTop, borderBottom, borderLeft, borderRight } = options;
-    let config;
-    [border, borderTop, borderBottom, borderLeft, borderRight].forEach(
-      (item, side) => {
-        side = side as SideEnum;
-        config = toBorderOptions(item);
-        if (!config) {
-          return;
-        }
-        this.$options["border" + SideNameMap[side]] = config;
-        this.setBorderSize(side, config.size);
-        this.setBorderType(side, config.type);
-        this.setBorderColor(side, config.color);
-      }
-    );
-    console.log(this.$options);
+    let { border, borderSize, borderType, borderColor } = options;
+    let config = toBorderOptions(border);
+    if (config) {
+      this.$options.border = config;
+      this.setBorderSize(config.size);
+      this.setBorderType(config.type);
+      this.setBorderColor(config.color);
+    }
+    // 设置边宽
+    this.setBorderSize(borderSize);
+    // 设置边类型
+    this.setBorderType(borderType);
+    // 设置边颜色
+    this.setBorderColor(borderColor);
   }
 
-  setBorderOption(side: SideEnum, { size, type, color }: BorderAttr) {
-    this.setBorderSize(side, size);
-    this.setBorderType(side, type);
-    this.setBorderColor(side, color);
+  setBorderOption({ size, type, color }: BorderAttr) {
+    this.setBorderSize(size);
+    this.setBorderType(type);
+    this.setBorderColor(color);
     this.renderDelay();
   }
 
-  setBorderSize(
-    side: SideEnum | Number | String,
-    borderSize?: Number | String
-  ) {
-    //
-    let sideName = "";
-    if (borderSize !== undefined) {
-      sideName = SideNameMap[side as SideEnum] || "";
-    } else {
-      borderSize = side as Number | String;
+  setBorderSize(borderSize: Number | String) {
+    if (borderSize === undefined) {
+      return;
     }
-    this.$options["border" + sideName + "Size"] = borderSize;
+    this.$options.borderSize = borderSize;
     this.renderDelay();
   }
 
-  setBorderType(side: SideEnum | BorderTypeEnum, borderType?: BorderTypeEnum) {
-    //
-    if (borderType !== undefined) {
-      this.$options["border" + SideNameMap[side as SideEnum] + "Type"] =
-        borderType;
-    } else {
-      borderType = side as BorderTypeEnum;
-      this.$options["borderType"] = borderType;
+  setBorderType(borderType: BorderTypeEnum) {
+    // 无效设置
+    if (borderType === undefined) {
+      return;
     }
+    this.$options.borderType = borderType;
     this.renderDelay();
   }
 
-  setBorderColor(side: SideEnum | Number | String, borderColor?: String) {
-    //
-    if (borderColor !== undefined) {
-      this.$options["border" + SideNameMap[side as SideEnum] + "Color"] =
-        borderColor;
-    } else {
-      borderColor = side as String;
-      this.$options["borderColor"] = borderColor;
+  setBorderColor(borderColor: String) {
+    // 无效设置
+    if (borderColor === undefined) {
+      return;
     }
+    this.$options.borderColor = borderColor;
     this.renderDelay();
   }
 
   setBorderRadius(borderRadius: Number | String) {
     // 处理为数组
-    let radius: Array<Number> = [];
+    let radius: Array<number> = [];
     if (isString(borderRadius)) {
       radius = (borderRadius as String).split(/\s+/).map((item) => +item);
     }
     if (isNumber(borderRadius)) {
-      radius = [borderRadius as Number];
+      radius = [borderRadius as number];
     }
+    radius = getBorderRadius(radius);
     this.$options["borderRadius"] = radius;
     this.renderDelay();
   }
 
-  getBorderOption(side?: SideEnum): BorderAttr {
-    let namePrefix = "border" + (side ? SideNameMap[side] : "");
+  getBorderOption(): BorderAttr {
     return {
-      size: this.$options[namePrefix + "Size"],
-      type: this.$options[namePrefix + "Type"],
-      color: this.$options[namePrefix + "Color"],
+      size: this.$options.borderSize,
+      type: this.$options.borderType,
+      color: this.$options.borderColor,
     };
   }
 }

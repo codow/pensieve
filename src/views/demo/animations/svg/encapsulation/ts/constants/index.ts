@@ -54,11 +54,18 @@ export const RectCornerNameMap = {
 };
 
 export enum BorderTypeEnum {
-  Solid = 1,
-  Dashed,
-  DashedShort,
-  DashedLarge,
+  Solid = "solid",
+  Dashed = "dashed",
+  DashedShort = "dashed_short",
+  DashedLarge = "dashed_large",
 }
+
+export const BorderTypeDashArrayMap = {
+  [BorderTypeEnum.Solid]: "",
+  [BorderTypeEnum.Dashed]: "4 4",
+  [BorderTypeEnum.DashedShort]: "2 2",
+  [BorderTypeEnum.DashedLarge]: "6 6",
+};
 
 export enum ColorEnum {
   White = "#ffffff",
@@ -92,3 +99,27 @@ export enum PathActionEnum {
   EllipticalArcR = "a", // 相对位置绘制椭圆
   Closepath = "Z",
 }
+
+export enum ModelStatusEnum {
+  Default = "default",
+  Selected = "selected",
+  Debugger = "debugger",
+}
+
+export const ModelStatusNextMap = {
+  [ModelStatusEnum.Default]: ModelStatusEnum.Selected,
+  [ModelStatusEnum.Selected]: ModelStatusEnum.Debugger,
+  [ModelStatusEnum.Debugger]: ModelStatusEnum.Default,
+};
+
+export const ModelStatusPrefixMap = {
+  [ModelStatusEnum.Default]: "",
+  [ModelStatusEnum.Selected]: "selected.",
+  [ModelStatusEnum.Debugger]: "debugger.",
+};
+
+export const ModelStatusPostfixMap = {
+  [ModelStatusEnum.Default]: "",
+  [ModelStatusEnum.Selected]: "",
+  [ModelStatusEnum.Debugger]: "",
+};

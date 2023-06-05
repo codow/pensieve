@@ -6,17 +6,25 @@
 
 import { cloneDeep } from "lodash";
 import { defineInnerProps } from "../utils/object";
+import {
+  ModelStatusEnum,
+  ModelStatusPostfixMap,
+  ModelStatusPrefixMap,
+} from "../constants";
+import { getModelByEvent } from "../utils/model";
 
-interface ISvgModel {
+export interface ISvgModel {
   // 用来存储对应的dom元素
   $el: Element;
   $options: ISvgModelOptions;
+  status: ModelStatusEnum;
   [propName: string]: any;
 
   render(): void;
   setAttribute(name: string, value: any): void;
   setAttributes(attrs: Object): void;
   setOptions(options: ISvgModelOptions): void;
+  setOption(name: string, value: any, status?: ModelStatusEnum): void;
   getOption(name, defaultVal): any;
   destroy(): void;
 }
@@ -27,20 +35,27 @@ export interface ISvgModelOptions {
   width?: Number;
   height?: Number;
   fill?: String;
+  // 事件处理
+  onClick?: Function;
+  status?: ModelStatusEnum;
   [propName: string]: any;
 }
 
-// interface ISvgModelConstructor {
-//   new (options: Object): ISvgModel;
-// }
+const onModelClick = function (event) {
+  let model = getModelByEvent(event) as unknown as SvgModel;
+  if (!model) {
+    return;
+  }
+  model.$options.onClick && model.$options.onClick(model, event);
+};
 
 class SvgModel implements ISvgModel {
   $el: Element;
   $options: ISvgModelOptions;
+  status: ModelStatusEnum;
   [propName: string]: any;
 
   constructor(options: ISvgModelOptions = {}) {
-    console.log("创建SvgModel", options);
     defineInnerProps(this, {
       // 根图形
       $el: {
@@ -57,6 +72,9 @@ class SvgModel implements ISvgModel {
       options: {
         value: options,
       },
+      status: {
+        value: options.status || ModelStatusEnum.Default,
+      },
       __renderDelayTimer: {
         value: null,
       },
@@ -68,6 +86,7 @@ class SvgModel implements ISvgModel {
    */
   init(): void {
     this.initShape();
+    this.initEvents();
     this.render();
   }
 
@@ -76,24 +95,46 @@ class SvgModel implements ISvgModel {
     this.$el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this.$el.setAttribute("version", "1.1");
     this.$el.setAttribute("baseProfile", "full");
+    defineInnerProps(this.$el, {
+      $model: {
+        value: this,
+      },
+    });
+  }
+
+  initEvents() {
+    this.$el.addEventListener("click", onModelClick);
   }
 
   render(): void {
     this.$el.setAttribute("width", this.getOption("width", "100"));
     this.$el.setAttribute("height", this.getOption("height", "100"));
+    this.$el.setAttribute("x", this.getOption("x", "0"));
+    this.$el.setAttribute("y", this.getOption("y", "0"));
+    this.$el.setAttribute("fill", this.getOption("fill", "none"));
   }
 
   /**
    * 延迟重绘，当创建了延迟重绘后，延迟期间不会再接收延迟重绘
    * @param delay
    */
-  renderDelay(delay = 30) {
+  renderDelay(delay = 1000 / 60) {
     if (this.__renderDelayTimer) {
       return;
     }
     this.__renderDelayTimer = setTimeout(() => {
       this.render();
+      this.__renderDelayTimer = null;
     }, delay);
+  }
+
+  getStatus(): ModelStatusEnum {
+    return this.status;
+  }
+
+  setStatus(status: ModelStatusEnum) {
+    this.status = status;
+    this.renderDelay();
   }
 
   setAttribute(name: string, value: any): void {
@@ -116,8 +157,23 @@ class SvgModel implements ISvgModel {
     this.renderDelay();
   }
 
-  getOption(name: any, defaultVal?: any) {
-    let val = this.$options[name];
+  setOption(
+    name: string,
+    value: any,
+    status: ModelStatusEnum = ModelStatusEnum.Default
+  ): void {
+    name = ModelStatusPrefixMap[status] + name + ModelStatusPostfixMap[status];
+    this.$options[name] = value;
+    this.renderDelay();
+  }
+
+  getOption(name: any, defaultVal?: any, status?: ModelStatusEnum) {
+    let defaultName = name;
+    if (status) {
+      name =
+        ModelStatusPrefixMap[status] + name + ModelStatusPostfixMap[status];
+    }
+    let val = this.$options[name] || this.$options[defaultName];
     if (val === null || val === undefined) {
       val = defaultVal;
     }
@@ -132,9 +188,130 @@ class SvgModel implements ISvgModel {
     }
   }
 
-  bindRef(name: string, svgEl: SVGElement) {
+  bindRef(name: string, svgEl: Element) {
     this.$refs[name] = svgEl;
     svgEl.setAttribute("name", name);
+  }
+
+  insertChild(child: Element | SvgModel, index: number, name?: string) {
+    if (!this.$el) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("模型未初始化");
+      }
+      return;
+    }
+    // 最后插入
+    if (index < 0 || index > this.$el.children.length) {
+      this.appendChild(child, name);
+      return;
+    }
+    // 在元素前插入
+    let beforeChildEl: Element = this.$el.children[index];
+    this.insertBefore(child, beforeChildEl, name);
+  }
+
+  insertBefore(
+    child: Element | SvgModel,
+    beforeChild: Element | SvgModel,
+    name?: string
+  ) {
+    if (!this.$el) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("模型未初始化");
+      }
+      return;
+    }
+    let childEl: Element;
+    if (child instanceof SvgModel) {
+      childEl = (child as SvgModel).$el;
+    } else {
+      childEl = child as Element;
+      // defineInnerProps(childEl, {
+      //   $model: {
+      //     value: this,
+      //   },
+      // });
+    }
+    if (!childEl) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("子模型未初始化");
+      }
+      return;
+    }
+    let beforeChildEl: Element;
+    if (beforeChild instanceof SvgModel) {
+      beforeChildEl = (beforeChild as SvgModel).$el;
+    } else {
+      beforeChildEl = beforeChild as Element;
+    }
+    if (!beforeChildEl) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("指定位置模型未初始化");
+      }
+      return;
+    }
+    this.$el.insertBefore(childEl, beforeChildEl);
+    if (name) {
+      this.bindRef(name, childEl);
+    }
+  }
+
+  insertAfter(
+    child: Element | SvgModel,
+    afterChild: Element | SvgModel,
+    name?: string
+  ) {
+    if (!this.$el) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("模型未初始化");
+      }
+      return;
+    }
+    let afterChildEl: Element;
+    if (afterChild instanceof SvgModel) {
+      afterChildEl = (afterChild as SvgModel).$el;
+    } else {
+      afterChildEl = afterChild as Element;
+    }
+    if (!afterChildEl) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("指定位置模型未初始化");
+      }
+      return;
+    }
+    let index = this.$el.children.length;
+    for (let i = index - 1; i >= 0; i--) {
+      if (this.$el.children[i] === afterChildEl) {
+        index = i;
+        break;
+      }
+    }
+    this.insertChild(child, index, name);
+  }
+
+  appendChild(child: Element | SvgModel, name?: string) {
+    if (!this.$el) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("模型未初始化");
+      }
+      return;
+    }
+    let childEl: Element;
+    if (child instanceof SvgModel) {
+      childEl = (child as SvgModel).$el;
+    } else {
+      childEl = child as Element;
+    }
+    if (!childEl) {
+      if (process.env.NODE_ENV !== "dev") {
+        console.error("子模型未初始化");
+      }
+      return;
+    }
+    this.$el.appendChild(childEl);
+    if (name) {
+      this.bindRef(name, childEl);
+    }
   }
 }
 

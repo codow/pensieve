@@ -43,3 +43,7 @@ export interface PointArray extends Array<number> {
   [1]?: number;
   [index: number]: number;
 }
+
+export interface SideElementMap {
+  [side: number]: Element;
+}

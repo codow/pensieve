@@ -6,6 +6,7 @@
 
 import { DirectionEnum, PathActionEnum } from "../constants";
 import { PathActionArray, PointArray } from "../interfaces";
+import { toFixed } from "../utils/math";
 // import { toFixed } from "../utils/math";
 
 const fixRadiusPoint = function (
@@ -49,6 +50,69 @@ const fixRadiusPoint = function (
   return result;
 };
 
+const fixRadiusPointV2 = function (
+  p: PointArray,
+  type: "start" | "end",
+  radius?: number,
+  radiusD: DirectionEnum = DirectionEnum.RightDown
+): PointArray {
+  if (!radius) {
+    return p;
+  }
+  p = [p[0], p[1], p[0], p[1]];
+  // 根据圆角计算坐标
+  let rp = toFixed(Math.sqrt(Math.pow(radius, 2) / 2), 1);
+  let orp = toFixed(radius - rp, 1);
+  if (type === "start") {
+    switch (radiusD) {
+      case DirectionEnum.RightUp:
+        p[0] += orp;
+        p[1] += orp;
+        p[2] += radius;
+        break;
+      case DirectionEnum.RightDown:
+        p[0] -= orp;
+        p[1] += orp;
+        p[3] += radius;
+        break;
+      case DirectionEnum.LeftDown:
+        p[0] -= orp;
+        p[1] -= orp;
+        p[2] -= radius;
+        break;
+      case DirectionEnum.LeftUp:
+        p[0] += orp;
+        p[1] -= orp;
+        p[3] -= radius;
+        break;
+    }
+  } else {
+    switch (radiusD) {
+      case DirectionEnum.RightUp:
+        p[2] += orp;
+        p[3] += orp;
+        p[1] += radius;
+        break;
+      case DirectionEnum.RightDown:
+        p[2] -= orp;
+        p[3] += orp;
+        p[0] -= radius;
+        break;
+      case DirectionEnum.LeftDown:
+        p[2] -= orp;
+        p[3] -= orp;
+        p[1] -= radius;
+        break;
+      case DirectionEnum.LeftUp:
+        p[2] += orp;
+        p[3] -= orp;
+        p[0] += radius;
+        break;
+    }
+  }
+  return p;
+};
+
 export function calcPathRadiusActions(
   points: PointArray,
   radius?: number,
@@ -59,6 +123,34 @@ export function calcPathRadiusActions(
   let p: PointArray = [points[0], points[1]];
   // 圆角修正
   p = fixRadiusPoint(p, radius, radiusD);
+  actions.push([beginAction, p[0], p[1]]);
+  // 存在圆角
+  if (radius) {
+    actions.push([
+      PathActionEnum.EllipticalArc,
+      radius,
+      radius,
+      0,
+      "0,1",
+      p[2],
+      p[3],
+    ]);
+  }
+  return actions;
+}
+
+export function calcPathRadiusActionsV2(
+  points: PointArray,
+  type: "start" | "end",
+  radius?: number,
+  radiusD?: DirectionEnum,
+  beginAction: PathActionEnum = PathActionEnum.Lineto
+) {
+  let actions: Array<PathActionArray> = [];
+  let p: PointArray = [points[0], points[1]];
+  // 圆角修正
+  p = fixRadiusPointV2(p, type, radius, radiusD);
+
   actions.push([beginAction, p[0], p[1]]);
   // 存在圆角
   if (radius) {
@@ -100,8 +192,9 @@ export function calcPathActionsV2(
   let actions: Array<PathActionArray> = [];
   // 开始
   actions = actions.concat(
-    calcPathRadiusActions(
+    calcPathRadiusActionsV2(
       [points[0], points[1]],
+      "start",
       radius[0],
       enterRadiusD,
       PathActionEnum.Moveto
@@ -109,7 +202,12 @@ export function calcPathActionsV2(
   );
   // 圆角修正
   actions = actions.concat(
-    calcPathRadiusActions([points[2], points[3]], radius[1], outerRadiusD)
+    calcPathRadiusActionsV2(
+      [points[2], points[3]],
+      "end",
+      radius[1],
+      outerRadiusD
+    )
   );
   return actions;
 }
