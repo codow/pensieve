@@ -70,6 +70,7 @@ export const onMouseDown = function (e) {
   // 绑定拖拽元素
   window.document.body.addEventListener("mousemove", onMouseMove);
   window.document.body.addEventListener("mouseup", onMouseUp);
+  model.$options.onDragstart && model.$options.onDragstart(model, e);
 };
 
 export const onMouseMove = function (e) {
@@ -86,10 +87,16 @@ export const onMouseMove = function (e) {
     model.setOption("x", __dragCache.originModelX + __dragCache.movedX);
     model.setOption("y", __dragCache.originModelY + __dragCache.movedY);
   });
+  __dragCache.models.forEach((model) => {
+    model.$options.onDragmove && model.$options.onDragmove(model, e);
+  });
 };
 
-export const onMouseUp = function () {
-  initDragCache();
+export const onMouseUp = function (e) {
   window.document.body.removeEventListener("mousemove", onMouseMove);
   window.document.body.removeEventListener("mouseup", onMouseUp);
+  __dragCache.models.forEach((model) => {
+    model.$options.onDragend && model.$options.onDragend(model, e);
+  });
+  initDragCache();
 };

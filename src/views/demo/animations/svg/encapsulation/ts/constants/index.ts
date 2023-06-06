@@ -123,3 +123,8 @@ export const ModelStatusPostfixMap = {
   [ModelStatusEnum.Selected]: "",
   [ModelStatusEnum.Debugger]: "",
 };
+
+export enum LineModeEnum {
+  Straight = 1,
+  Broken,
+}

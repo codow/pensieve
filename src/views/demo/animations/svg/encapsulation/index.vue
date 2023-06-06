@@ -6,9 +6,18 @@
         <div style="width: 200px; height: 200px; border: 10px solid red; border-radius: 30px; box-sizing: border-box;">我是内容</div>
       </div>
       <el-form>
-        <el-form-item label=""><el-button type="primary"
+        <el-form-item label="线绘制">
+          <el-input v-model="points"
+                    style="width: 400px;">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary"
+                     @click="onLineGenerateClick">生成线</el-button>
+          <el-button type="primary"
                      icon="el-icon-save"
-                     @click="save">保存</el-button></el-form-item>
+                     @click="save">保存</el-button>
+        </el-form-item>
       </el-form>
       <div ref="container"
            class="padding__small"></div>
@@ -45,10 +54,13 @@
 
 <script>
 import { ColorEnum, ModelStatusEnum } from './ts/constants'
-import { SvgModel, SvgRectModel, SvgRectPathModel } from './ts/index'
+import { SvgModel, SvgLineModel, SvgRectModel, SvgRectPathModel } from './ts/index'
 import SvgCanvasModel from './ts/models/components/Canvas'
 import VueSvgCanvas from './vue/canvas.vue'
 import VueSvgRect from './vue/rect.vue'
+import * as MeshGraphUtils from './ts/plugins/graph'
+
+window.MeshGraphUtils = MeshGraphUtils
 
 const onBodyClick = function (e) {
   window.clickEvent = e
@@ -64,6 +76,10 @@ export default {
   },
   data () {
     return {
+      canvas: null,
+      canvasGraph: null,
+      points: "[200, 100, 700, 300]",
+      line: null,
       models: [],
       formData: {
         width: undefined,
@@ -79,9 +95,12 @@ export default {
     window.models = this.models
   },
   destroyed () {
+    this.canvas && this.canvas.destroy()
+    this.canvasGraph = null
     this.models.forEach(model => {
       model && model.destroy()
     })
+    this.line && this.line.destroy()
   },
   methods: {
     init () {
@@ -92,6 +111,7 @@ export default {
         onClick: this.clickModel
       })
       canvas.init()
+      this.canvas = canvas
       this.$refs.container.appendChild(canvas.$el)
       let model = new SvgRectModel({
         x: 20,
@@ -100,7 +120,8 @@ export default {
         height: 64,
         border: '2 solid #2461ef',
         borderRadius: '5',
-        fill: '#ffffff' // '#233661'
+        fill: '#ffffff', // '#233661'
+        onDragend: this.onDragend
       })
       model.init()
       canvas.appendChild(model)
@@ -123,7 +144,8 @@ export default {
         "debugger.headerFill": ColorEnum.Warn,
         "debugger.borderColor": ColorEnum.Warn,
         "debugger.borderType": "dashed",
-        onClick: this.clickModel
+        onClick: this.clickModel,
+        onDragend: this.onDragend
       }
       model = new SvgRectPathModel(options)
       model.init()
@@ -141,6 +163,30 @@ export default {
       model.$el.style = "margin-left: 10px;"
       canvas.appendChild(model)
       this.models.push(model)
+
+      this.createCanvasGraph()
+    },
+    createCanvasGraph () {
+      // 创建图
+      this.canvasGraph = MeshGraphUtils.generateMeshGraph({
+        x1: 0,
+        y1: 0,
+        x2: 800,
+        y2: 400,
+        size: 50
+      }, this.models.map(model => {
+        let { x = 0, y = 0, width = 0, height = 0 } = model.$options
+        // 向外扩展10像素，避免挨得太近
+        let margin = 0
+        return {
+          x1: x - margin,
+          y1: y - margin,
+          x2: x + width + margin,
+          y2: y + height + margin
+        }
+      }))
+      window.graph = this.canvasGraph
+      console.log('canvasGraph', window.graph)
     },
     toImage (ref) {
       let canvas = this.$refs[ref]
@@ -152,13 +198,28 @@ export default {
       console.log('点击图形', model, event, event.target)
       window.modelClickEvent = event
     },
-    onDragstart (e) {
-      console.log('dragstart', e.target)
+    onDragend (model, e) {
+      console.log('拖拽结束', model)
+      this.createCanvasGraph()
     },
     save () {
-      console.log('this.models', this.models)
-      let models = this.models.map(model => model.toJSON())
-      console.log(JSON.stringify(models))
+      console.log(JSON.stringify(this.canvas.toJSON()))
+    },
+    onLineGenerateClick () {
+      let points = JSON.parse(this.points) || []
+      points = MeshGraphUtils.pathfindingByPoints(this.canvasGraph, [points[0], points[1]], [points[2], points[3]])
+      if (!this.line) {
+        this.line = new SvgLineModel({
+          points,
+          border: '2 solid #2461ef',
+        })
+        this.line.init()
+        this.canvas.appendChild(this.line)
+      } else {
+        this.line.setOptions({
+          points
+        })
+      }
     }
   }
 }

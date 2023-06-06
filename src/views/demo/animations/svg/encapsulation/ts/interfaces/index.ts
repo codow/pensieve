@@ -37,6 +37,10 @@ export interface Point {
   y: number;
 }
 
+export function isPoint(p: Point | PointArray): p is Point {
+  return (<Point>p).x !== undefined;
+}
+
 // 至少两个值
 export interface PointArray extends Array<number> {
   [0]?: number;

@@ -16,5 +16,6 @@
 import SvgModel from "./models/SvgModel";
 import SvgRectModel from "./models/components/Rect";
 import SvgRectPathModel from "./models/components/RectPath";
+import SvgLineModel from "./models/components/Line";
 
-export { SvgModel, SvgRectModel, SvgRectPathModel };
+export { SvgModel, SvgRectModel, SvgRectPathModel, SvgLineModel };

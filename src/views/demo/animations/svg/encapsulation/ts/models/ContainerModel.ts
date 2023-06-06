@@ -6,9 +6,20 @@
 
 import { defineInnerProps } from "../utils/object";
 import SvgSerializableModel from "./SerializableModel";
-import SvgModel from "./SvgModel";
+import SvgModel, { ISvgModelOptions } from "./SvgModel";
 
 class SvgContainerModel extends SvgSerializableModel {
+  models: Array<SvgModel>;
+
+  constructor(options: ISvgModelOptions) {
+    super(options);
+    defineInnerProps(this, {
+      models: {
+        value: [],
+      },
+    });
+  }
+
   bringToFront(...models: Array<SvgModel>) {
     // 重新插入到当前容器的最后
     models.forEach((model) => {
@@ -32,7 +43,16 @@ class SvgContainerModel extends SvgSerializableModel {
           value: this,
         },
       });
+      if (!this.models.includes(child as SvgModel)) {
+        this.models.push(child as SvgModel);
+      }
     }
+  }
+
+  toJSON(): Object {
+    let json = super.toJSON();
+    json["models"] = this.models.map((model) => model.toJSON());
+    return json;
   }
 }
 
