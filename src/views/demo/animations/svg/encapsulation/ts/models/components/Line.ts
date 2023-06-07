@@ -44,6 +44,23 @@ interface ISvgLineModelOptions extends ISvgModelOptions {
   collisionDetection?: Function; // 碰撞检测，判断连线是否有阻碍
 }
 
+/**
+ * 创建线结束Arrow
+ * @returns 线段结束Arrow
+ */
+export const createArrow = function (color) {
+  let arrow = createSvgElement("marker", {
+    markerWidth: "4",
+    markerHeight: "4",
+    refX: "3",
+    refY: "2",
+    orient: "auto",
+    markerUnits: "strokeWidth",
+  });
+  arrow.innerHTML = `<path d="M 0 0 L 4 2 L 0 4 z" fill="${color}"/>`;
+  return arrow;
+};
+
 class SvgLineModel extends SvgSelectableModel {
   constructor(options: ISvgLineModelOptions) {
     super(options);

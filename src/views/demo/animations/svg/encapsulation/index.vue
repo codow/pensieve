@@ -195,11 +195,11 @@ export default {
       }
     },
     clickModel (model, event) {
-      console.log('点击图形', model, event, event.target)
+      // console.log('点击图形', model, event, event.target)
       window.modelClickEvent = event
     },
     onDragend (model, e) {
-      console.log('拖拽结束', model)
+      // console.log('拖拽结束', model)
       this.createCanvasGraph()
     },
     save () {

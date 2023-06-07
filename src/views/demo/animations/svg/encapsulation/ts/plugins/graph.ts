@@ -4,11 +4,12 @@
 // @createTime 2023-06-06 11:10:31
 // ========================================================
 
+import { ColorEnum, DirectionEnum } from "../constants";
 import { Point, PointArray, isPoint } from "../interfaces";
 import { toFixed } from "../utils/math";
 import { defineInnerProps } from "../utils/object";
 
-const DefaultSize = 20;
+const DefaultSize = 10;
 
 const MathSize = 1000000;
 
@@ -102,17 +103,148 @@ class MeshGraphCell implements MeshGraphArea {
     return cells;
   }
 
+  nextCell(type: DirectionEnum) {
+    switch (type) {
+      case DirectionEnum.Up:
+        return this.graph.get([this.rowIndex - 1, this.colIndex]);
+      case DirectionEnum.Down:
+        return this.graph.get([this.rowIndex + 1, this.colIndex]);
+      case DirectionEnum.Left:
+        return this.graph.get([this.rowIndex, this.colIndex - 1]);
+      case DirectionEnum.Right:
+        return this.graph.get([this.rowIndex, this.colIndex + 1]);
+      case DirectionEnum.UpLeft:
+      case DirectionEnum.LeftUp:
+      case DirectionEnum.UpLeftCenter:
+        return this.graph.get([this.rowIndex - 1, this.colIndex - 1]);
+      case DirectionEnum.DownLeft:
+      case DirectionEnum.LeftDown:
+      case DirectionEnum.DownLeftCenter:
+        return this.graph.get([this.rowIndex + 1, this.colIndex - 1]);
+      case DirectionEnum.UpRight:
+      case DirectionEnum.RightUp:
+      case DirectionEnum.UpRightCenter:
+        return this.graph.get([this.rowIndex - 1, this.colIndex + 1]);
+      case DirectionEnum.RightDown:
+      case DirectionEnum.DownRight:
+      case DirectionEnum.DownRightCenter:
+        return this.graph.get([this.rowIndex + 1, this.colIndex + 1]);
+    }
+  }
+
+  /**
+   * 将一个矩形按中线和对角线分割，8个区域和8条线，共十六个方向
+   * @param cell
+   * @returns
+   */
+  directionWith(cell: MeshGraphCell): DirectionEnum {
+    let xVector = cell.colIndex - this.colIndex;
+    let xAbsVector = Math.abs(xVector);
+    let yVector = cell.rowIndex - this.rowIndex;
+    let yAbsVector = Math.abs(yVector);
+    if (yVector === 0) {
+      return xVector > 0 ? DirectionEnum.Right : DirectionEnum.Left;
+    }
+    if (xVector === 0) {
+      return yVector > 0 ? DirectionEnum.Down : DirectionEnum.Up;
+    }
+    // x向量 > 0 则在右边，否则在左边
+    if (xVector > 0) {
+      // y向量 > 0 则在右边，否则在左边
+      if (yVector > 0) {
+        // 下边
+        if (yAbsVector === xAbsVector) {
+          return DirectionEnum.DownRightCenter;
+        } else if (yAbsVector > xAbsVector) {
+          return DirectionEnum.RightDown;
+        } else {
+          return DirectionEnum.DownRight;
+        }
+      } else {
+        if (yAbsVector === xAbsVector) {
+          return DirectionEnum.UpRightCenter;
+        } else if (yAbsVector > xAbsVector) {
+          return DirectionEnum.RightUp;
+        } else {
+          return DirectionEnum.UpRight;
+        }
+      }
+    } else {
+      // 左边
+      if (yVector > 0) {
+        // 上边
+        if (yAbsVector === xAbsVector) {
+          return DirectionEnum.UpLeftCenter;
+        } else if (yAbsVector > xAbsVector) {
+          return DirectionEnum.LeftUp;
+        } else {
+          return DirectionEnum.UpLeft;
+        }
+      } else {
+        if (yAbsVector === xAbsVector) {
+          return DirectionEnum.UpLeftCenter;
+        } else if (yAbsVector > xAbsVector) {
+          return DirectionEnum.LeftUp;
+        } else {
+          return DirectionEnum.UpLeft;
+        }
+      }
+    }
+  }
+
   isUnreachable() {
     let cells = this.nextCells();
     return cells.length > 0 && cells.every((cell) => !cell.passable);
   }
 
   // 距离目标网格有多远
-  distanceFrom(target: MeshGraphCell) {
-    return (
-      Math.abs(target.rowIndex - this.rowIndex) +
-      Math.abs(target.colIndex - this.colIndex)
-    );
+  distanceFrom(target: MeshGraphCell, directionWeight = true) {
+    let xAbsVector = Math.abs(target.rowIndex - this.rowIndex);
+    let yAbsVector = Math.abs(target.colIndex - this.colIndex);
+    let xWeight = 1;
+    let yWeight = 1;
+    // 带方向修正的距离
+    if (directionWeight) {
+      let direction = this.directionWith(target);
+      switch (direction) {
+        // 上下关系时，横向的消耗加倍
+        case DirectionEnum.Up:
+        case DirectionEnum.Down:
+          xWeight = 2;
+          break;
+        // 左右关系时，纵向的消耗加倍
+        case DirectionEnum.Left:
+        case DirectionEnum.Right:
+          yWeight = 2;
+          break;
+        // 斜向关系时，根据上下近，左右远时，横向消耗1.8，纵向消耗1.2
+        case DirectionEnum.UpLeft:
+        case DirectionEnum.DownLeft:
+        case DirectionEnum.UpRight:
+        case DirectionEnum.DownRight:
+          xWeight = 1.8;
+          yWeight = 1.2;
+          break;
+        // 斜向关系时，根据上下远，左右近时，横向消耗1.2，纵向消耗1.8
+        case DirectionEnum.LeftUp:
+        case DirectionEnum.LeftDown:
+        case DirectionEnum.RightUp:
+        case DirectionEnum.RightDown:
+          xWeight = 1.2;
+          yWeight = 1.8;
+          break;
+        // 斜向关系时，上下，左右相同时，横向、纵向消耗1.5
+        case DirectionEnum.UpLeftCenter:
+        case DirectionEnum.DownLeftCenter:
+        case DirectionEnum.UpRightCenter:
+        case DirectionEnum.DownRightCenter:
+          xWeight = 1.5;
+          yWeight = 1.5;
+          break;
+      }
+    }
+    // 曼哈顿距离带方向权重
+    return xAbsVector * xWeight + yAbsVector * yWeight;
   }
 
   // 当前网格的权重
@@ -170,6 +302,122 @@ class MeshGraph implements MeshGraphArea {
     return this.cells.length && this.cells[0].length;
   }
 
+  /**
+   * 生成障碍图
+   * 0 无障碍 1 障碍
+   */
+  createObstacleGraph(
+    ...mustVisitCells: Array<MeshGraphCell>
+  ): Array<Array<number>> {
+    let cellMap = {};
+    let obstacleGraph = this.cells.map((row) =>
+      row.map((cell) => {
+        // 记录有哪些单元格可以访问
+        if (cell.passable) {
+          cellMap[cell.rowIndex + "x" + cell.colIndex] = cell;
+          return 0;
+        }
+        return 1;
+      })
+    );
+    // 如果传入了必须访问的单元格，则强制设置为可访问的单元格
+    mustVisitCells.forEach((cell) => {
+      obstacleGraph[cell.rowIndex][cell.colIndex] = 0;
+      cellMap[cell.rowIndex + "x" + cell.colIndex] = cell;
+    });
+    // 把地图分为一个个区域，相连可连的为一个区域，小区域打通与大区域的交界
+    let areas: Array<Object> = [];
+    // let maxArea = null;
+    let visitedGraph = this.createVisitedGraph();
+    let restCellMap = Object.assign({}, cellMap);
+    const nextUnvisitedCell = function () {
+      for (let key in restCellMap) {
+        let temp = restCellMap[key];
+        delete restCellMap[key];
+        return temp;
+      }
+      return null;
+    };
+    const collectCellInArea = function (area: Object, cell: MeshGraphCell) {
+      // 从0，0开始遍历
+      let cellQueue: Array<MeshGraphCell> = [cell];
+      while (cellQueue.length > 0) {
+        cell = cellQueue.shift();
+        let id = cell.rowIndex + "x" + cell.colIndex;
+        area[id] = cell;
+        delete restCellMap[id];
+        visitedGraph[cell.rowIndex][cell.colIndex] = 1;
+        // 更新区域边界
+        if (cell.rowIndex < area["top"].rowIndex) {
+          area["top"] = cell;
+        }
+        if (cell.rowIndex > area["bottom"].rowIndex) {
+          area["bottom"] = cell;
+        }
+        if (cell.colIndex < area["left"].colIndex) {
+          area["left"] = cell;
+        }
+        if (cell.colIndex > area["right"].colIndex) {
+          area["right"] = cell;
+        }
+        // 将后续需要处理的推入队列
+        cell.nextCells().forEach((item) => {
+          if (
+            !obstacleGraph[item.rowIndex][item.colIndex] &&
+            !visitedGraph[item.rowIndex][item.colIndex]
+          ) {
+            if (!cellQueue.includes(item)) {
+              cellQueue.push(item);
+            }
+          }
+        });
+      }
+    };
+    let restCell = nextUnvisitedCell();
+    while (restCell) {
+      let area = {
+        top: restCell,
+        bottom: restCell,
+        left: restCell,
+        right: restCell,
+      };
+      areas.push(area);
+      collectCellInArea(area, restCell);
+      restCell = nextUnvisitedCell();
+    }
+    areas.sort((a, b) => Object.keys(a).length - Object.keys(b).length);
+    let maxArea = areas.splice(areas.length - 1, 1)[0];
+    const connectedMaxArea = function (cell: MeshGraphCell, direction) {
+      cell = cell.nextCell(direction);
+      while (cell) {
+        let id = cell.rowIndex + "x" + cell.colIndex;
+        if (maxArea[id]) {
+          // 已经联通
+          break;
+        }
+        // 设置当前单元格为非障碍节点
+        obstacleGraph[cell.rowIndex][cell.colIndex] = 0;
+        cell = cell.nextCell(direction);
+      }
+    };
+    areas.forEach((area) => {
+      // 打通与最大区域的联系, 从上右下左开始处理
+      connectedMaxArea(area["top"], DirectionEnum.Up);
+      connectedMaxArea(area["right"], DirectionEnum.Right);
+      connectedMaxArea(area["bottom"], DirectionEnum.Down);
+      connectedMaxArea(area["left"], DirectionEnum.Left);
+    });
+    return obstacleGraph;
+  }
+
+  /**
+   * 生成访问图
+   * 0 未访问 1 已访问
+   */
+  createVisitedGraph(): Array<Array<number>> {
+    return this.cells.map((row) => row.map(() => 0));
+  }
+
   push(row: MeshGraphRow) {
     this.cells.push(row);
   }
@@ -200,7 +448,293 @@ class MeshGraph implements MeshGraphArea {
     }
     return this.cells[rowIndex][colIndex];
   }
+
+  pathfinding(
+    source: MeshGraphCell,
+    target: MeshGraphCell
+  ): Array<MeshGraphCell> {
+    // 开始和目标为同一个区域
+    if (source.equals(target)) {
+      return [source];
+    }
+    // 障碍地图
+    let obstacleGraph = this.createObstacleGraph(source, target);
+    // 已访问地图
+    let visitedGraph = this.createVisitedGraph();
+    // 路径节点缓存
+    let pathNodeGraph: Array<Array<PathNode>> = [];
+
+    let model = openGraphModel(obstacleGraph, source, target);
+
+    const setPathNode = function (
+      node: PathNode,
+      rowIndex: number,
+      colIndex: number
+    ) {
+      if (!pathNodeGraph[rowIndex]) {
+        pathNodeGraph[rowIndex] = [];
+      }
+      pathNodeGraph[rowIndex][colIndex] = node;
+    };
+
+    const getPathNode = function (
+      rowIndex: number,
+      colIndex: number
+    ): PathNode {
+      return pathNodeGraph[rowIndex] && pathNodeGraph[rowIndex][colIndex];
+    };
+
+    // 用来记录到目标节点的位置
+    let endPathNodes: Array<PathNode> = [];
+    let endPathNode = null;
+    // 用来遍历是否还有未走的单元格
+    let cellQueue: Array<MeshGraphCell> = [];
+    // 加入开始节点
+    cellQueue.push(source);
+    // 设置当前父节点为起始节点
+    let parentNode = new PathNode([source.rowIndex, source.colIndex]);
+    // 记录PathNode，重复使用
+    setPathNode(parentNode, source.rowIndex, source.colIndex);
+
+    while (cellQueue.length > 0) {
+      // 获取队列中的第一个位置
+      let cell = cellQueue.shift();
+      // 获取或生成路径节点
+      let currentPathNode = getPathNode(cell.rowIndex, cell.colIndex);
+      // 计算开销
+      if (parentNode === currentPathNode) {
+        currentPathNode.cost = 0;
+      } else {
+        let cost =
+          parentNode.cost +
+          this.get([
+            currentPathNode.rowIndex,
+            currentPathNode.colIndex,
+          ]).distanceFrom(target);
+        if (currentPathNode.cost === -1) {
+          currentPathNode.cost = cost;
+        } else if (currentPathNode.cost > cost) {
+          // 更新开销，并修改父节点
+          currentPathNode.cost = cost;
+          currentPathNode.parent = parentNode;
+        }
+      }
+      // 如果是结束节点, 则不再需要往下找
+      if (cell === target) {
+        endPathNodes.push(currentPathNode);
+        if (!endPathNode || currentPathNode.cost < endPathNode.cost) {
+          if (!endPathNode) {
+            model.markPath(toCellPath(this, currentPathNode), ColorEnum.Cyan);
+          }
+          endPathNode = currentPathNode;
+        }
+        continue;
+      }
+      // 处理周围节点
+      cell
+        .nextCells()
+        // 过来掉障碍物和已经被处理过的节点
+        .filter(
+          (item) =>
+            !obstacleGraph[item.rowIndex][item.colIndex] &&
+            !visitedGraph[item.rowIndex][item.colIndex]
+        )
+        // 转换为pathNode，记录pathNode
+        .sort((cellA, cellB) => {
+          return cellA.distanceFrom(target) - cellB.distanceFrom(target);
+        })
+        .forEach((item) => {
+          // 设置pathNode
+          let nextPathNode = new PathNode(
+            [item.rowIndex, item.colIndex],
+            currentPathNode
+          );
+          setPathNode(nextPathNode, item.rowIndex, item.colIndex);
+          if (!cellQueue.includes(item)) {
+            // 推入下个队列
+            cellQueue.push(item);
+          }
+        });
+      // 处理完成后，设置当前节点为已被访问
+      visitedGraph[cell.rowIndex][cell.colIndex] = 1;
+
+      if (cell !== source) {
+        model.visitCell([cell.rowIndex, cell.colIndex]);
+      }
+    }
+    let path = toCellPath(this, endPathNode);
+    model.markPath(path);
+    return path;
+  }
 }
+
+const openGraphModel = function (
+  map: Array<Array<number>>,
+  source: MeshGraphCell,
+  target: MeshGraphCell
+) {
+  let maskEl = document.createElement("div");
+  let timer = null;
+  maskEl.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  maskEl.style.position = "absolute";
+  maskEl.style.left = "0";
+  maskEl.style.top = "0";
+  maskEl.style.right = "0";
+  maskEl.style.bottom = "0";
+  maskEl.style.zIndex = "1000";
+  let rootEl = document.createElement("div");
+  rootEl.style.padding = "10px";
+  rootEl.style.position = "absolute";
+  rootEl.style.left = "200px";
+  rootEl.style.top = "100px";
+  // rootEl.style.marginLeft = "-50%";
+  // rootEl.style.marginTop = "-50%";
+  rootEl.style.width = "fit-content";
+  rootEl.style.height = "fit-content";
+  rootEl.style.borderRadius = "10px";
+  rootEl.style.backgroundColor = ColorEnum.White;
+  maskEl.appendChild(rootEl);
+  let headerEl = document.createElement("div");
+  rootEl.appendChild(headerEl);
+  headerEl.style.textAlign = "right";
+  headerEl.style.padding = "10px";
+  let closeEl = document.createElement("div");
+  closeEl.style.display = "inline-block";
+  closeEl.style.width = "20px";
+  closeEl.style.height = "20px";
+  closeEl.style.lineHeight = "20px";
+  closeEl.style.fontSize = "20px";
+  closeEl.style.cursor = "pointer";
+  closeEl.innerHTML = "X";
+  // 移除弹框
+  closeEl.onclick = function () {
+    maskEl.remove();
+    timer && clearInterval(timer);
+  };
+  headerEl.appendChild(closeEl);
+  let contentEl = document.createElement("div");
+  contentEl.style.boxSizing = "border-box";
+  contentEl.style.borderBlockColor = ColorEnum.White;
+  contentEl.style.border = "1px solid " + ColorEnum.Info;
+  rootEl.appendChild(contentEl);
+  let cellEls: Array<Array<HTMLElement>> = [];
+  map.forEach((row, i) => {
+    if (!cellEls[i]) {
+      cellEls[i] = [];
+    }
+    let rowEl = document.createElement("div");
+    rowEl.style.lineHeight = "0";
+    row.forEach((cell, j) => {
+      let cellEl = document.createElement("div");
+      cellEl.style.display = "inline-block";
+      cellEl.style.boxSizing = "border-box";
+      cellEl.style.borderBlockColor = ColorEnum.White;
+      cellEl.style.width = "12px";
+      cellEl.style.height = "12px";
+      cellEl.style.border = "1px solid " + ColorEnum.Info;
+      if (cell) {
+        cellEl.style.backgroundColor = ColorEnum.Danger;
+      }
+      cellEls[i][j] = cellEl;
+      rowEl.appendChild(cellEl);
+    });
+    contentEl.appendChild(rowEl);
+  });
+  cellEls[source.rowIndex][source.colIndex].style.backgroundColor =
+    ColorEnum.Primary;
+  cellEls[target.rowIndex][target.colIndex].style.backgroundColor =
+    ColorEnum.Success;
+  document.body.appendChild(maskEl);
+  let operateQueue = [];
+  timer = setInterval(() => {
+    let op = operateQueue.shift();
+    if (!op) {
+      return;
+    }
+    if (op["type"] === "changeCellBg") {
+      op["cellEl"].style.backgroundColor = op["bgColor"];
+    }
+  }, 1000 / 60 / 20);
+  return {
+    $el: maskEl,
+    $cellEls: cellEls,
+    setCellBgColor([rowIndex, colIndex]: PointArray, color: String) {
+      operateQueue.push({
+        type: "changeCellBg",
+        cellEl: this.$cellEls[rowIndex][colIndex],
+        bgColor: color,
+      });
+    },
+    visitCell([rowIndex, colIndex]: PointArray) {
+      operateQueue.push({
+        type: "changeCellBg",
+        cellEl: this.$cellEls[rowIndex][colIndex],
+        bgColor: ColorEnum.Warn,
+      });
+    },
+    markPath(cells: Array<MeshGraphCell>, color: ColorEnum = ColorEnum.Yellow) {
+      cells.forEach((item) => {
+        if (item !== source && item !== target) {
+          operateQueue.push({
+            type: "changeCellBg",
+            cellEl: this.$cellEls[item.rowIndex][item.colIndex],
+            bgColor: color,
+          });
+        }
+      });
+    },
+  };
+};
+
+class PathNode {
+  rowIndex: number;
+  colIndex: number;
+  parent: PathNode;
+  cost: number;
+  children: Array<PathNode>;
+
+  constructor(
+    [rowIndex, colIndex]: PointArray,
+    parent: PathNode = null,
+    cost = -1
+  ) {
+    this.rowIndex = rowIndex;
+    this.colIndex = colIndex;
+    this.parent = parent;
+    this.cost = cost;
+  }
+
+  push(child: PathNode) {
+    this.children.push(child);
+  }
+}
+
+export const printGraph = function (
+  graph: Array<Array<number>>,
+  name = "",
+  ...otherParams: Array<any>
+) {
+  let log = name + "\n";
+  graph.forEach((row) => {
+    row.forEach((cell) => {
+      log += cell + " ";
+    });
+    log += "\n";
+  });
+  console.log(log, otherParams);
+};
+
+const toCellPath = function (
+  graph: MeshGraph,
+  node: PathNode
+): Array<MeshGraphCell> {
+  let cells = [node];
+  while (node.parent) {
+    cells.unshift(node.parent);
+    node = node.parent;
+  }
+  return cells.map((item) => graph.get([item.rowIndex, item.colIndex]));
+};
 
 interface MeshGraphIndex extends Array<number> {
   [0]: number;
@@ -433,30 +967,22 @@ export function pathfindingByPoints(
   if (!source || !target) {
     return [];
   }
-  let path = pathfinding(source, target);
+  let path = graph.pathfinding(source, target);
   if (!path.length) {
     return [];
   }
-  console.log([].concat(path));
   // 转为点集合
-  let result: PointArray = [sourceP[0], sourceP[1]];
-  // 移除开始
-  path.splice(0, 1);
-  let cornerCell: MeshGraphCell = source;
-  let lastCell: MeshGraphCell = source;
+  let result: PointArray = [];
+  // 移除开始, 并记录开始为上一个单元格
+  let lastCell: MeshGraphCell = path.splice(0, 1)[0];
+  let lastDirection: DirectionEnum;
+  let directions: Array<DirectionEnum> = [];
+  // 计算转角
   path.forEach((nextCell) => {
-    let cornerChange;
-    if (cornerCell.rowIndex === lastCell.rowIndex) {
-      if (nextCell.rowIndex !== lastCell.rowIndex) {
-        cornerChange = true;
-      }
-    } else if (cornerCell.colIndex === lastCell.colIndex) {
-      if (nextCell.colIndex !== lastCell.colIndex) {
-        cornerChange = true;
-      }
-    }
-    if (cornerChange) {
-      cornerCell = lastCell;
+    let currentDirection = lastCell.directionWith(nextCell);
+    if (currentDirection !== lastDirection) {
+      directions.push(currentDirection);
+      lastDirection = currentDirection;
       let centerP = lastCell.centerPoint();
       result.push(centerP[0]);
       result.push(centerP[1]);
@@ -465,5 +991,34 @@ export function pathfindingByPoints(
   });
   result.push(targetP[0]);
   result.push(targetP[1]);
+  // 修正第一个和最后一个转角的坐标
+  if (result.length > 4 && directions.length > 0) {
+    let length = result.length;
+    let firstCornorD = directions[0];
+    if (
+      firstCornorD === DirectionEnum.Down ||
+      firstCornorD === DirectionEnum.Up
+    ) {
+      result[2] = result[0];
+    } else if (
+      firstCornorD === DirectionEnum.Left ||
+      firstCornorD === DirectionEnum.Right
+    ) {
+      result[3] = result[1];
+    }
+
+    let lastCornorD = directions[directions.length - 1];
+    if (
+      lastCornorD === DirectionEnum.Down ||
+      lastCornorD === DirectionEnum.Up
+    ) {
+      result[length - 4] = result[length - 2];
+    } else if (
+      lastCornorD === DirectionEnum.Left ||
+      lastCornorD === DirectionEnum.Right
+    ) {
+      result[length - 3] = result[length - 1];
+    }
+  }
   return result;
 }

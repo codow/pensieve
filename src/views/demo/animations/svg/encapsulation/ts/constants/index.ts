@@ -12,10 +12,22 @@ export enum DirectionEnum {
   Down,
   Left,
   Right,
+  // 组合方向，前面的方向近，后面的方向远
   LeftUp,
   LeftDown,
   RightUp,
   RightDown,
+  UpLeft,
+  UpRight,
+  DownLeft,
+  DownRight,
+  // 距离一致的组合方向
+  UpLeftCenter,
+  UpRightCenter,
+  DownLeftCenter,
+  DownRightCenter,
+  // 居中
+  Center,
 }
 
 /**
@@ -76,6 +88,7 @@ export enum ColorEnum {
   Danger = "#f5222d",
   Warn = "#fa8c16",
   Volcano = "#fa541c",
+  Yellow = "#fadb14",
   Cyan = "#13c2c2",
 }
 
