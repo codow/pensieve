@@ -165,58 +165,16 @@ class MeshGraphCell implements MeshGraphArea {
    * @returns
    */
   directionWith(cell: MeshGraphCell): DirectionEnum {
-    let xVector = cell.colIndex - this.colIndex;
-    let xAbsVector = Math.abs(xVector);
-    let yVector = cell.rowIndex - this.rowIndex;
-    let yAbsVector = Math.abs(yVector);
-    if (yVector === 0) {
-      return xVector > 0 ? DirectionEnum.Right : DirectionEnum.Left;
-    }
-    if (xVector === 0) {
-      return yVector > 0 ? DirectionEnum.Down : DirectionEnum.Up;
-    }
-    // x向量 > 0 则在右边，否则在左边
-    if (xVector > 0) {
-      // y向量 > 0 则在右边，否则在左边
-      if (yVector > 0) {
-        // 下边
-        if (yAbsVector === xAbsVector) {
-          return DirectionEnum.DownRightCenter;
-        } else if (yAbsVector > xAbsVector) {
-          return DirectionEnum.RightDown;
-        } else {
-          return DirectionEnum.DownRight;
-        }
-      } else {
-        if (yAbsVector === xAbsVector) {
-          return DirectionEnum.UpRightCenter;
-        } else if (yAbsVector > xAbsVector) {
-          return DirectionEnum.RightUp;
-        } else {
-          return DirectionEnum.UpRight;
-        }
+    return directionWith(
+      {
+        x: this.colIndex,
+        y: this.rowIndex,
+      },
+      {
+        x: cell.colIndex,
+        y: cell.rowIndex,
       }
-    } else {
-      // 左边
-      if (yVector > 0) {
-        // 上边
-        if (yAbsVector === xAbsVector) {
-          return DirectionEnum.UpLeftCenter;
-        } else if (yAbsVector > xAbsVector) {
-          return DirectionEnum.LeftUp;
-        } else {
-          return DirectionEnum.UpLeft;
-        }
-      } else {
-        if (yAbsVector === xAbsVector) {
-          return DirectionEnum.UpLeftCenter;
-        } else if (yAbsVector > xAbsVector) {
-          return DirectionEnum.LeftUp;
-        } else {
-          return DirectionEnum.UpLeft;
-        }
-      }
-    }
+    );
   }
 
   isUnreachable() {
@@ -738,6 +696,18 @@ export class MeshGraph implements MeshGraphArea {
     let result: Array<Point> = path.map((cell) => cell.centerPoint());
     result.unshift(sourceP);
     result.push(targetP);
+    // 参考起始点平移位置
+    parallelTranslation(
+      result[1],
+      sourceP,
+      directionWith(result[1], result[2])
+    );
+    // 参考结束点平移位置
+    parallelTranslation(
+      result[result.length - 2],
+      targetP,
+      directionWith(result[result.length - 3], result[result.length - 2])
+    );
     console.log(result);
     result = reducePoints(result);
     console.log(result);
@@ -963,16 +933,71 @@ export const printGraph = function (graph, name) {
   console.log(log);
 };
 
+export const directionWith = function (sourceP: Point, targetP: Point) {
+  let xVector = targetP.x - sourceP.x;
+  let xAbsVector = Math.abs(xVector);
+  let yVector = targetP.y - sourceP.y;
+  let yAbsVector = Math.abs(yVector);
+  if (yVector === 0) {
+    return xVector > 0 ? DirectionEnum.Right : DirectionEnum.Left;
+  }
+  if (xVector === 0) {
+    return yVector > 0 ? DirectionEnum.Down : DirectionEnum.Up;
+  }
+  // x向量 > 0 则在右边，否则在左边
+  if (xVector > 0) {
+    // y向量 > 0 则在右边，否则在左边
+    if (yVector > 0) {
+      // 下边
+      if (yAbsVector === xAbsVector) {
+        return DirectionEnum.DownRightCenter;
+      } else if (yAbsVector > xAbsVector) {
+        return DirectionEnum.RightDown;
+      } else {
+        return DirectionEnum.DownRight;
+      }
+    } else {
+      if (yAbsVector === xAbsVector) {
+        return DirectionEnum.UpRightCenter;
+      } else if (yAbsVector > xAbsVector) {
+        return DirectionEnum.RightUp;
+      } else {
+        return DirectionEnum.UpRight;
+      }
+    }
+  } else {
+    // 左边
+    if (yVector > 0) {
+      // 上边
+      if (yAbsVector === xAbsVector) {
+        return DirectionEnum.UpLeftCenter;
+      } else if (yAbsVector > xAbsVector) {
+        return DirectionEnum.LeftUp;
+      } else {
+        return DirectionEnum.UpLeft;
+      }
+    } else {
+      if (yAbsVector === xAbsVector) {
+        return DirectionEnum.UpLeftCenter;
+      } else if (yAbsVector > xAbsVector) {
+        return DirectionEnum.LeftUp;
+      } else {
+        return DirectionEnum.UpLeft;
+      }
+    }
+  }
+};
+
 export const isAlign = function (sourceP, targetP, direction) {
   switch (direction) {
     // 竖直方向对齐，需要向左右平移
     case DirectionEnum.Up:
     case DirectionEnum.Down:
-      return sourceP.x === targetP.y;
+      return sourceP.x === targetP.x;
     // 水平方向对齐，需要向上下平移
     case DirectionEnum.Left:
     case DirectionEnum.Right:
-      return sourceP.x === targetP.y;
+      return sourceP.y === targetP.y;
   }
 };
 
@@ -1028,23 +1053,22 @@ function reducePoints(path) {
   return optimizedPath;
 }
 
-// 直线路径优化
-export function optimizePath(path) {
+// 折线路径优化
+export function reduceCorners(path) {
   const optimizedPath = [path[0]]; // 创建路径的副本
 
-  let currentIndex = 0;
-  while (currentIndex < path.length - 2) {
+  let currentIndex = 1;
+  while (currentIndex < path.length - 1) {
     const current = path[currentIndex];
-    const next = path[currentIndex + 2];
+    const previous = path[currentIndex - 1];
+    const next = path[currentIndex + 1];
 
-    if (isStraightPath(current, next)) {
+    // 不是同一条线，则是转角，那么就移除转角，并平移
+    if (!isSameLine(current, previous, next)) {
       // 如果当前节点与下一个节点之间没有障碍物，则移除中间的节点
-      optimizedPath.push(next);
-      currentIndex += 2;
-    } else {
-      optimizedPath.push(path[currentIndex + 1]);
-      currentIndex++;
+      optimizedPath.push(current);
     }
+    currentIndex++;
   }
 
   // 将终点添加到优化后的路径中
