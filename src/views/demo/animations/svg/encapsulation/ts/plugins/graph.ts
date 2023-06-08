@@ -34,7 +34,40 @@ const maxArea: MeshGraphArea = {
   y2: MathSize,
 };
 
+interface MeshGraphOptions extends MeshGraphArea {
+  size: number;
+  showGraphMap: boolean;
+  [name: number | string | symbol]: any;
+}
+
+class PathNode {
+  rowIndex: number;
+  colIndex: number;
+  parent: PathNode;
+  cost: number;
+  children: Array<PathNode>;
+  direction: DirectionEnum;
+
+  constructor(
+    [rowIndex, colIndex]: PointArray,
+    parent: PathNode = null,
+    cost = -1,
+    direction: DirectionEnum = DirectionEnum.Center
+  ) {
+    this.rowIndex = rowIndex;
+    this.colIndex = colIndex;
+    this.parent = parent;
+    this.cost = cost;
+    this.direction = direction;
+  }
+
+  push(child: PathNode) {
+    this.children.push(child);
+  }
+}
+
 class MeshGraphCell implements MeshGraphArea {
+  id: string;
   x1: number;
   y1: number;
   x2: number;
@@ -51,6 +84,7 @@ class MeshGraphCell implements MeshGraphArea {
     colIndex: number,
     options: MeshGraphArea = emptyArea
   ) {
+    this.id = rowIndex + "x" + colIndex;
     this.rowIndex = rowIndex;
     this.colIndex = colIndex;
     this.x1 = options.x1;
@@ -81,25 +115,18 @@ class MeshGraphCell implements MeshGraphArea {
   }
 
   nextCells(target?: MeshGraphCell) {
-    let graph = this.graph;
-    let { rowIndex, colIndex } = this;
-    // 上 右 下 左
+    // 上 下 左 右
     let cells = [
-      graph.get([rowIndex - 1, colIndex]),
-      graph.get([rowIndex, colIndex + 1]),
-      graph.get([rowIndex + 1, colIndex]),
-      graph.get([rowIndex, colIndex - 1]),
+      this.nextCell(DirectionEnum.Up),
+      this.nextCell(DirectionEnum.Down),
+      this.nextCell(DirectionEnum.Left),
+      this.nextCell(DirectionEnum.Right),
     ].filter((item) => !!item);
-    // console.log(this);
-    // console.log("cells", cells);
     if (target) {
       cells.sort((cellA, cellB) => {
-        // console.log(cellA.distanceFrom(target), cellB.distanceFrom(target));
         return cellA.distanceFrom(target) - cellB.distanceFrom(target);
       });
     }
-    // console.log("cells", cells);
-    // debugger;
     return cells;
   }
 
@@ -198,7 +225,7 @@ class MeshGraphCell implements MeshGraphArea {
   }
 
   // 距离目标网格有多远
-  distanceFrom(target: MeshGraphCell, directionWeight = true) {
+  distanceFrom(target: MeshGraphCell, directionWeight = false) {
     let xAbsVector = Math.abs(target.rowIndex - this.rowIndex);
     let yAbsVector = Math.abs(target.colIndex - this.colIndex);
     let xWeight = 1;
@@ -262,11 +289,11 @@ class MeshGraphCell implements MeshGraphArea {
     );
   }
 
-  centerPoint(): PointArray {
-    return [
-      toFixed(this.x1 + (this.x2 - this.x1) / 2, 1),
-      toFixed(this.y1 + (this.y2 - this.y1) / 2, 1),
-    ];
+  centerPoint(): Point {
+    return {
+      x: toFixed(this.x1 + (this.x2 - this.x1) / 2, 1),
+      y: toFixed(this.y1 + (this.y2 - this.y1) / 2, 1),
+    };
   }
 }
 
@@ -274,23 +301,63 @@ class MeshGraphRow extends Array<MeshGraphCell> {
   [index: number]: MeshGraphCell;
 }
 
-class MeshGraph implements MeshGraphArea {
+export class MeshGraph implements MeshGraphArea {
   x1 = 0;
   y1 = 0;
   x2 = 0;
   y2 = 0;
   size: number = DefaultSize;
+  showGraphMap = false;
   cells: Array<MeshGraphRow>;
 
-  constructor(options: MeshGraphArea) {
+  constructor(options: MeshGraphOptions, obstacles: Array<MeshGraphArea> = []) {
     this.x1 = options.x1;
     this.y1 = options.y1;
     this.x2 = options.x2;
     this.y2 = options.y2;
+    this.size = options.size || DefaultSize;
+    this.showGraphMap = !!options.showGraphMap;
     defineInnerProps(this, {
       cells: {
         value: [],
       },
+    });
+    this.init(obstacles);
+  }
+
+  init(obstacles: Array<MeshGraphArea> = []) {
+    let rowCount = Math.ceil(toFixed(this.y2 - this.y1, 1) / this.size);
+    let colCount = Math.ceil(toFixed(this.x2 - this.x1, 1) / this.size);
+    let row, cell, x, y;
+    for (let i = 0; i < rowCount; i++) {
+      row = new MeshGraphRow();
+      for (let j = 0; j < colCount; j++) {
+        x = this.x1 + this.size * j;
+        y = this.y1 + this.size * i;
+        cell = new MeshGraphCell(this, i, j, {
+          x1: x,
+          y1: y,
+          x2: x + this.size,
+          y2: y + this.size,
+        });
+        row.push(cell);
+      }
+      this.push(row);
+    }
+    // 遍历障碍，并给每个网格设置障碍大小
+    obstacles.forEach((obstacle) => {
+      // 查询涉及的区域
+      let cells = this.getCellsByArea(obstacle);
+      cells.forEach((cell) => {
+        let iArea = intersectArea(cell, obstacle);
+        if (!iArea) {
+          return;
+        }
+        if (cell.obstacle) {
+          iArea = mergeArea(cell.obstacle, iArea);
+        }
+        cell.setObstacle(iArea);
+      });
     });
   }
 
@@ -422,10 +489,7 @@ class MeshGraph implements MeshGraphArea {
     this.cells.push(row);
   }
 
-  get(
-    [rowIndex, colIndex]: MeshGraphIndex,
-    ignoreOverflow = false
-  ): MeshGraphCell {
+  get([rowIndex, colIndex]: PointArray, ignoreOverflow = false): MeshGraphCell {
     let rowLength = this.rowLength();
     let colLength = this.colLength();
     // 超出范围
@@ -449,9 +513,66 @@ class MeshGraph implements MeshGraphArea {
     return this.cells[rowIndex][colIndex];
   }
 
+  getCellByPosition(
+    p: Point | PointArray,
+    ignoreOverflow?: boolean
+  ): MeshGraphCell {
+    let x, y;
+    if (isPoint(p)) {
+      x = p.x;
+      y = p.y;
+    } else {
+      x = p[0];
+      y = p[1];
+    }
+    // 根据map的值判断
+    let size = this.size;
+    let offsetX = this.x1;
+    let offsetY = this.y1;
+    x = x - offsetX;
+    y = y - offsetY;
+    // (x % size === 0 ? 1 : 0)避免取边界值
+    let colIndex = Math.floor(x / size) - (x > 0 && x % size === 0 ? 1 : 0);
+    let rowIndex = Math.floor(y / size) - (y > 0 && y % size === 0 ? 1 : 0);
+
+    return this.get([rowIndex, colIndex], ignoreOverflow);
+  }
+
+  getCellsByArea(area: MeshGraphArea): Array<MeshGraphCell> {
+    let result: Array<MeshGraphCell> = [];
+    // 取区域与网格图的相交部分
+    let iArea = intersectArea(this, area);
+    if (!iArea) {
+      return result;
+    }
+    let { x1, y1, x2, y2 } = iArea;
+    let leftTopCell = this.getCellByPosition([x1, y1]);
+    let rightBottomCell = this.getCellByPosition([x2, y2]);
+    // 取得一个行/索引范围
+    let minRowIndex = -1,
+      maxRowIndex = -1,
+      minColIndex = -1,
+      maxColIndex = -1;
+    if (leftTopCell) {
+      minRowIndex = leftTopCell.rowIndex;
+      minColIndex = leftTopCell.colIndex;
+    }
+    if (rightBottomCell) {
+      maxRowIndex = rightBottomCell.rowIndex;
+      maxColIndex = rightBottomCell.colIndex;
+    }
+    for (let i = minRowIndex; i <= maxRowIndex; i++) {
+      for (let j = minColIndex; j <= maxColIndex; j++) {
+        result.push(this.get([i, j]));
+      }
+    }
+    return result;
+  }
+
   pathfinding(
     source: MeshGraphCell,
-    target: MeshGraphCell
+    target: MeshGraphCell,
+    showGraphMap = this.showGraphMap
   ): Array<MeshGraphCell> {
     // 开始和目标为同一个区域
     if (source.equals(target)) {
@@ -463,9 +584,11 @@ class MeshGraph implements MeshGraphArea {
     let visitedGraph = this.createVisitedGraph();
     // 路径节点缓存
     let pathNodeGraph: Array<Array<PathNode>> = [];
-
-    let model = openGraphModel(obstacleGraph, source, target);
-
+    // 显示图示
+    let model;
+    if (showGraphMap) {
+      model = openGraphModel(obstacleGraph, source, target);
+    }
     const setPathNode = function (
       node: PathNode,
       rowIndex: number,
@@ -484,90 +607,161 @@ class MeshGraph implements MeshGraphArea {
       return pathNodeGraph[rowIndex] && pathNodeGraph[rowIndex][colIndex];
     };
 
+    const findLessCostPathNodeIndex = function (cIndex) {
+      // 查找后续是否存在更有
+      let cpn =
+        pathNodeGraph[cellQueue[cIndex].rowIndex][cellQueue[cIndex].colIndex];
+      let nextPn;
+      for (let i = cIndex + 1; i < cellQueue.length; i++) {
+        nextPn = pathNodeGraph[cellQueue[i].rowIndex][cellQueue[i].colIndex];
+        if (nextPn.cost < cpn.cost) {
+          return i;
+        }
+      }
+      return cIndex;
+    };
+
     // 用来记录到目标节点的位置
-    let endPathNodes: Array<PathNode> = [];
     let endPathNode = null;
     // 用来遍历是否还有未走的单元格
     let cellQueue: Array<MeshGraphCell> = [];
     // 加入开始节点
     cellQueue.push(source);
-    // 设置当前父节点为起始节点
-    let parentNode = new PathNode([source.rowIndex, source.colIndex]);
+    // 设置当前父节点为起始节点, 开始节点的父节点为null, 开销为0
+    let parentNode = new PathNode([source.rowIndex, source.colIndex], null, 0);
     // 记录PathNode，重复使用
     setPathNode(parentNode, source.rowIndex, source.colIndex);
+    let nextCells: Array<MeshGraphCell>;
+    let nextCellDirctionMap: { [id: string]: DirectionEnum };
+    let nextCellCostMap: { [id: string]: number };
 
     while (cellQueue.length > 0) {
-      // 获取队列中的第一个位置
-      let cell = cellQueue.shift();
+      // 获取更少开销的点
+      let currentIndex = findLessCostPathNodeIndex(0);
+      // 获取当前队列最小开销的点
+      let cell = cellQueue[currentIndex];
       // 获取或生成路径节点
       let currentPathNode = getPathNode(cell.rowIndex, cell.colIndex);
-      // 计算开销
-      if (parentNode === currentPathNode) {
-        currentPathNode.cost = 0;
-      } else {
-        let cost =
-          parentNode.cost +
-          this.get([
-            currentPathNode.rowIndex,
-            currentPathNode.colIndex,
-          ]).distanceFrom(target);
-        if (currentPathNode.cost === -1) {
-          currentPathNode.cost = cost;
-        } else if (currentPathNode.cost > cost) {
-          // 更新开销，并修改父节点
-          currentPathNode.cost = cost;
-          currentPathNode.parent = parentNode;
-        }
-      }
+      // 移除队列
+      cellQueue.splice(currentIndex, 1);
       // 如果是结束节点, 则不再需要往下找
       if (cell === target) {
-        endPathNodes.push(currentPathNode);
-        if (!endPathNode || currentPathNode.cost < endPathNode.cost) {
-          if (!endPathNode) {
-            model.markPath(toCellPath(this, currentPathNode), ColorEnum.Cyan);
-          }
-          endPathNode = currentPathNode;
-        }
-        continue;
+        endPathNode = currentPathNode;
+        break;
       }
       // 处理周围节点
-      cell
+      nextCells = cell
         .nextCells()
         // 过来掉障碍物和已经被处理过的节点
         .filter(
           (item) =>
             !obstacleGraph[item.rowIndex][item.colIndex] &&
             !visitedGraph[item.rowIndex][item.colIndex]
-        )
-        // 转换为pathNode，记录pathNode
-        .sort((cellA, cellB) => {
-          return cellA.distanceFrom(target) - cellB.distanceFrom(target);
-        })
-        .forEach((item) => {
-          // 设置pathNode
-          let nextPathNode = new PathNode(
+        );
+      // 初始化开销和方向缓存
+      nextCellDirctionMap = {};
+      nextCellCostMap = {};
+      nextCells.forEach((item) => {
+        // 判断当前方向
+        let direction = cell.directionWith(item);
+        let changeDirectionCost = 0; // direction !== currentPathNode.direction ? 10 : 0;
+        // 计算开销
+        let cost =
+          currentPathNode.cost +
+          this.get([item.rowIndex, item.colIndex]).distanceFrom(target) +
+          changeDirectionCost;
+        nextCellDirctionMap[item.id] = direction;
+        nextCellCostMap[item.id] = cost;
+      });
+      // 按照开销排序
+      nextCells.sort((cellA, cellB) => {
+        // 带上改变方向的开销
+        let costA = nextCellCostMap[cellA.id];
+        let costB = nextCellCostMap[cellB.id];
+        return costA - costB;
+      });
+      // 处理后续节点，生成路径节点对象，记录开销、方向等信息
+      nextCells.forEach((item) => {
+        // 设置pathNode
+        let cost = nextCellCostMap[item.id];
+        let direction = nextCellDirctionMap[item.id];
+        let nextPathNode = getPathNode(item.rowIndex, item.colIndex);
+        if (!nextPathNode) {
+          nextPathNode = new PathNode(
             [item.rowIndex, item.colIndex],
-            currentPathNode
+            currentPathNode,
+            cost,
+            direction
           );
-          setPathNode(nextPathNode, item.rowIndex, item.colIndex);
-          if (!cellQueue.includes(item)) {
-            // 推入下个队列
-            cellQueue.push(item);
-          }
-        });
+        } else if (nextPathNode.cost > cost) {
+          // 路线修正, 更新开销，并修改父节点
+          nextPathNode.cost = cost;
+          nextPathNode.parent = currentPathNode;
+          nextPathNode.direction = direction;
+        }
+        setPathNode(nextPathNode, item.rowIndex, item.colIndex);
+        if (!cellQueue.includes(item)) {
+          // 推入队列
+          cellQueue.push(item);
+        }
+      });
       // 处理完成后，设置当前节点为已被访问
       visitedGraph[cell.rowIndex][cell.colIndex] = 1;
 
-      if (cell !== source) {
+      if (showGraphMap && cell !== source) {
         model.visitCell([cell.rowIndex, cell.colIndex]);
+        model.setCellText([cell.rowIndex, cell.colIndex], currentPathNode.cost);
       }
     }
-    let path = toCellPath(this, endPathNode);
-    model.markPath(path);
+    let path = this.toCellPath(endPathNode);
+    if (showGraphMap) {
+      model.markPath(path);
+    }
     return path;
+  }
+
+  pathfindingByPoints(
+    sourceP: Point,
+    targetP: Point,
+    showGraphMap: boolean = this.showGraphMap
+  ): Array<Point> {
+    let source = this.getCellByPosition(sourceP);
+    let target = this.getCellByPosition(targetP);
+    if (!source || !target) {
+      return [];
+    }
+    let path = this.pathfinding(source, target, showGraphMap);
+    if (!path.length) {
+      return [];
+    }
+    // 转为点集合
+    let result: Array<Point> = path.map((cell) => cell.centerPoint());
+    result.unshift(sourceP);
+    result.push(targetP);
+    console.log(result);
+    result = reducePoints(result);
+    console.log(result);
+
+    return result;
+  }
+
+  toCellPath(node: PathNode): Array<MeshGraphCell> {
+    let cells = [node];
+    while (node.parent) {
+      cells.unshift(node.parent);
+      node = node.parent;
+    }
+    return cells.map((item) => this.get([item.rowIndex, item.colIndex]));
   }
 }
 
+/**
+ * 创建图示
+ * @param map 障碍图
+ * @param source 开始点
+ * @param target 结束点
+ * @returns 图示对象
+ */
 const openGraphModel = function (
   map: Array<Array<number>>,
   source: MeshGraphCell,
@@ -585,10 +779,11 @@ const openGraphModel = function (
   let rootEl = document.createElement("div");
   rootEl.style.padding = "10px";
   rootEl.style.position = "absolute";
-  rootEl.style.left = "200px";
-  rootEl.style.top = "100px";
-  // rootEl.style.marginLeft = "-50%";
-  // rootEl.style.marginTop = "-50%";
+  rootEl.style.left = "0";
+  rootEl.style.top = "0";
+  rootEl.style.right = "0";
+  rootEl.style.bottom = "0";
+  rootEl.style.margin = "auto";
   rootEl.style.width = "fit-content";
   rootEl.style.height = "fit-content";
   rootEl.style.borderRadius = "10px";
@@ -629,9 +824,14 @@ const openGraphModel = function (
       cellEl.style.display = "inline-block";
       cellEl.style.boxSizing = "border-box";
       cellEl.style.borderBlockColor = ColorEnum.White;
-      cellEl.style.width = "12px";
-      cellEl.style.height = "12px";
+      cellEl.style.width = "18px";
+      cellEl.style.height = "18px";
+      cellEl.style.overflow = "hidden";
+      cellEl.style.fontSize = "12px";
+      cellEl.style.lineHeight = "18px";
       cellEl.style.border = "1px solid " + ColorEnum.Info;
+      cellEl.dataset.row = i + "";
+      cellEl.dataset.col = j + "";
       if (cell) {
         cellEl.style.backgroundColor = ColorEnum.Danger;
       }
@@ -647,14 +847,19 @@ const openGraphModel = function (
   document.body.appendChild(maskEl);
   let operateQueue = [];
   timer = setInterval(() => {
-    let op = operateQueue.shift();
-    if (!op) {
-      return;
+    for (let i = 0; i < 4; i++) {
+      let op = operateQueue.shift();
+      if (!op) {
+        return;
+      }
+      if (op["type"] === "changeCellBg") {
+        op["cellEl"].style.backgroundColor = op["bgColor"];
+      } else if (op["type"] === "changeCellText") {
+        op["cellEl"].innerHTML = op["text"];
+        op["cellEl"].title = op["text"];
+      }
     }
-    if (op["type"] === "changeCellBg") {
-      op["cellEl"].style.backgroundColor = op["bgColor"];
-    }
-  }, 1000 / 60 / 20);
+  });
   return {
     $el: maskEl,
     $cellEls: cellEls,
@@ -672,6 +877,13 @@ const openGraphModel = function (
         bgColor: ColorEnum.Warn,
       });
     },
+    setCellText([rowIndex, colIndex]: PointArray, text: any) {
+      operateQueue.push({
+        type: "changeCellText",
+        cellEl: this.$cellEls[rowIndex][colIndex],
+        text: JSON.stringify(text),
+      });
+    },
     markPath(cells: Array<MeshGraphCell>, color: ColorEnum = ColorEnum.Yellow) {
       cells.forEach((item) => {
         if (item !== source && item !== target) {
@@ -685,61 +897,6 @@ const openGraphModel = function (
     },
   };
 };
-
-class PathNode {
-  rowIndex: number;
-  colIndex: number;
-  parent: PathNode;
-  cost: number;
-  children: Array<PathNode>;
-
-  constructor(
-    [rowIndex, colIndex]: PointArray,
-    parent: PathNode = null,
-    cost = -1
-  ) {
-    this.rowIndex = rowIndex;
-    this.colIndex = colIndex;
-    this.parent = parent;
-    this.cost = cost;
-  }
-
-  push(child: PathNode) {
-    this.children.push(child);
-  }
-}
-
-export const printGraph = function (
-  graph: Array<Array<number>>,
-  name = "",
-  ...otherParams: Array<any>
-) {
-  let log = name + "\n";
-  graph.forEach((row) => {
-    row.forEach((cell) => {
-      log += cell + " ";
-    });
-    log += "\n";
-  });
-  console.log(log, otherParams);
-};
-
-const toCellPath = function (
-  graph: MeshGraph,
-  node: PathNode
-): Array<MeshGraphCell> {
-  let cells = [node];
-  while (node.parent) {
-    cells.unshift(node.parent);
-    node = node.parent;
-  }
-  return cells.map((item) => graph.get([item.rowIndex, item.colIndex]));
-};
-
-interface MeshGraphIndex extends Array<number> {
-  [0]: number;
-  [1]: number;
-}
 
 /**
  * 取一组区域相交的区域
@@ -792,233 +949,119 @@ const mergeArea = function (...areas: Array<MeshGraphArea>): MeshGraphArea {
   return _area;
 };
 
-/**
- * 生成网格
- * @param area
- * @param obstacles
- * @param size
- */
-export function generateMeshGraph(
-  area: MeshGraphArea,
-  obstacles: Array<MeshGraph> = [],
-  size: number = DefaultSize
-): MeshGraph {
-  let graph = new MeshGraph(area);
-  graph.size = size;
-  let rowCount = Math.ceil(toFixed(graph.y2 - graph.y1, 1) / size);
-  let colCount = Math.ceil(toFixed(graph.x2 - graph.x1, 1) / size);
-  let row, cell, x, y;
-  for (let i = 0; i < rowCount; i++) {
-    row = new MeshGraphRow();
-    for (let j = 0; j < colCount; j++) {
-      x = graph.x1 + size * j;
-      y = graph.y1 + size * i;
-      cell = new MeshGraphCell(graph, i, j, {
-        x1: x,
-        y1: y,
-        x2: x + size,
-        y2: y + size,
-      });
-      row.push(cell);
-    }
-    graph.push(row);
+export const printGraph = function (graph, name) {
+  let log = "";
+  if (name) {
+    log += name + "\n";
   }
-  // 遍历障碍，并给每个网格设置障碍大小
-  obstacles.forEach((obstacle) => {
-    // 查询涉及的区域
-    let cells = getCellsByArea(graph, obstacle);
-    cells.forEach((cell) => {
-      let iArea = intersectArea(cell, obstacle);
-      if (!iArea) {
-        return;
-      }
-      if (cell.obstacle) {
-        iArea = mergeArea(cell.obstacle, iArea);
-      }
-      cell.setObstacle(iArea);
+  graph.forEach((row) => {
+    row.forEach((cell) => {
+      log += "\t" + cell;
     });
+    log += "\n";
   });
-  return graph;
-}
-
-export function getCellByPosition(
-  graph: MeshGraph,
-  p: Point | PointArray,
-  ignoreOverflow?: boolean
-): MeshGraphCell {
-  let x, y;
-  if (isPoint(p)) {
-    x = p.x;
-    y = p.y;
-  } else {
-    x = p[0];
-    y = p[1];
-  }
-  // 根据map的值判断
-  let size = graph.size;
-  let offsetX = graph.x1;
-  let offsetY = graph.y1;
-  x = x - offsetX;
-  y = y - offsetY;
-  // (x % size === 0 ? 1 : 0)避免取边界值
-  let colIndex = Math.floor(x / size) - (x > 0 && x % size === 0 ? 1 : 0);
-  let rowIndex = Math.floor(y / size) - (y > 0 && y % size === 0 ? 1 : 0);
-
-  return graph.get([rowIndex, colIndex], ignoreOverflow);
-}
-
-export function getCellsByArea(
-  graph: MeshGraph,
-  area: MeshGraphArea
-): Array<MeshGraphCell> {
-  let result: Array<MeshGraphCell> = [];
-  // 取区域与网格图的相交部分
-  let iArea = intersectArea(graph, area);
-  if (!iArea) {
-    return result;
-  }
-  let { x1, y1, x2, y2 } = iArea;
-  let leftTopCell = getCellByPosition(graph, [x1, y1]);
-  let rightBottomCell = getCellByPosition(graph, [x2, y2]);
-  // 取得一个行/索引范围
-  let minRowIndex = -1,
-    maxRowIndex = -1,
-    minColIndex = -1,
-    maxColIndex = -1;
-  if (leftTopCell) {
-    minRowIndex = leftTopCell.rowIndex;
-    minColIndex = leftTopCell.colIndex;
-  }
-  if (rightBottomCell) {
-    maxRowIndex = rightBottomCell.rowIndex;
-    maxColIndex = rightBottomCell.colIndex;
-  }
-  for (let i = minRowIndex; i <= maxRowIndex; i++) {
-    for (let j = minColIndex; j <= maxColIndex; j++) {
-      result.push(graph.get([i, j]));
-    }
-  }
-  return result;
-}
-
-const getPathsByCells = function (
-  source: MeshGraphCell,
-  target: MeshGraphCell,
-  onlyPassable = true,
-  prePath: Array<MeshGraphCell> = []
-): Array<Array<MeshGraphCell>> {
-  // 当前路径
-  let path: Array<MeshGraphCell> = [source];
-  let nextCells = source.nextCells(target);
-  let nextCell: MeshGraphCell = nextCells.find((item) => item.equals(target));
-  // 下一个包含目标
-  if (nextCell) {
-    // 只记录一个当前节点到目标节点的路径
-    path.push(nextCell);
-    return [path];
-  }
-  let allUnpassabled = nextCells.every((cell) => !cell.passable);
-  let nextPaths: Array<Array<MeshGraphCell>> = [];
-  nextCells.some((item) => {
-    // 不能走回头路
-    if (prePath.includes(item)) {
-      return false;
-    }
-    if (onlyPassable && !allUnpassabled && !item.passable) {
-      return false;
-    }
-    // 递归查询后续节点是否有可达
-    nextPaths = getPathsByCells(
-      item,
-      target,
-      onlyPassable,
-      prePath.concat(path)
-    );
-    return nextPaths.length > 0;
-  });
-  // 给所有后续路径拼接前面的路径
-  return nextPaths.map((nextPath) => {
-    return path.concat(nextPath);
-  });
+  console.log(log);
 };
 
-export function pathfinding(
-  source: MeshGraphCell,
-  target: MeshGraphCell
-): Array<MeshGraphCell> {
-  // 开始和目标为同一个区域
-  if (source.equals(target)) {
-    return [source];
+export const isAlign = function (sourceP, targetP, direction) {
+  switch (direction) {
+    // 竖直方向对齐，需要向左右平移
+    case DirectionEnum.Up:
+    case DirectionEnum.Down:
+      return sourceP.x === targetP.y;
+    // 水平方向对齐，需要向上下平移
+    case DirectionEnum.Left:
+    case DirectionEnum.Right:
+      return sourceP.x === targetP.y;
   }
-  let paths = getPathsByCells(source, target, !target.isUnreachable());
-  if (!paths || !paths.length) {
-    paths = getPathsByCells(source, target);
+};
+
+export const alignPoint = function (sourceP, targetP, direction) {
+  switch (direction) {
+    // 竖直方向对齐，需要向左右平移
+    case DirectionEnum.Up:
+    case DirectionEnum.Down:
+      return parallelTranslation(sourceP, targetP, DirectionEnum.Left);
+    // 水平方向对齐，需要向上下平移
+    case DirectionEnum.Left:
+    case DirectionEnum.Right:
+      return parallelTranslation(sourceP, targetP, DirectionEnum.Up);
   }
-  return paths[0];
+  return sourceP;
+};
+
+export const genAlignPoint = function (sourceP, targetP) {
+  return { x: targetP.x, y: sourceP.y };
+};
+
+const parallelTranslation = function (sourceP, targetP, direction) {
+  switch (direction) {
+    case DirectionEnum.Up:
+    case DirectionEnum.Down:
+      sourceP.y = targetP.y;
+      break;
+    case DirectionEnum.Left:
+    case DirectionEnum.Right:
+      sourceP.x = targetP.x;
+      break;
+  }
+  return sourceP;
+};
+
+// 直线路径优化
+function reducePoints(path) {
+  const optimizedPath = [...path]; // 创建路径的副本
+
+  let currentIndex = 0;
+  while (currentIndex < optimizedPath.length - 2) {
+    const current = optimizedPath[currentIndex];
+    const next = optimizedPath[currentIndex + 2];
+
+    if (isStraightPath(current, next)) {
+      // 如果当前节点与下一个节点之间没有障碍物，则移除中间的节点
+      optimizedPath.splice(currentIndex + 1, 1);
+    } else {
+      currentIndex++;
+    }
+  }
+
+  return optimizedPath;
 }
 
-export function pathfindingByPoints(
-  graph: MeshGraph,
-  sourceP: PointArray,
-  targetP: PointArray
-): PointArray {
-  let source = getCellByPosition(graph, sourceP);
-  let target = getCellByPosition(graph, targetP);
-  if (!source || !target) {
-    return [];
-  }
-  let path = graph.pathfinding(source, target);
-  if (!path.length) {
-    return [];
-  }
-  // 转为点集合
-  let result: PointArray = [];
-  // 移除开始, 并记录开始为上一个单元格
-  let lastCell: MeshGraphCell = path.splice(0, 1)[0];
-  let lastDirection: DirectionEnum;
-  let directions: Array<DirectionEnum> = [];
-  // 计算转角
-  path.forEach((nextCell) => {
-    let currentDirection = lastCell.directionWith(nextCell);
-    if (currentDirection !== lastDirection) {
-      directions.push(currentDirection);
-      lastDirection = currentDirection;
-      let centerP = lastCell.centerPoint();
-      result.push(centerP[0]);
-      result.push(centerP[1]);
-    }
-    lastCell = nextCell;
-  });
-  result.push(targetP[0]);
-  result.push(targetP[1]);
-  // 修正第一个和最后一个转角的坐标
-  if (result.length > 4 && directions.length > 0) {
-    let length = result.length;
-    let firstCornorD = directions[0];
-    if (
-      firstCornorD === DirectionEnum.Down ||
-      firstCornorD === DirectionEnum.Up
-    ) {
-      result[2] = result[0];
-    } else if (
-      firstCornorD === DirectionEnum.Left ||
-      firstCornorD === DirectionEnum.Right
-    ) {
-      result[3] = result[1];
-    }
+// 直线路径优化
+export function optimizePath(path) {
+  const optimizedPath = [path[0]]; // 创建路径的副本
 
-    let lastCornorD = directions[directions.length - 1];
-    if (
-      lastCornorD === DirectionEnum.Down ||
-      lastCornorD === DirectionEnum.Up
-    ) {
-      result[length - 4] = result[length - 2];
-    } else if (
-      lastCornorD === DirectionEnum.Left ||
-      lastCornorD === DirectionEnum.Right
-    ) {
-      result[length - 3] = result[length - 1];
+  let currentIndex = 0;
+  while (currentIndex < path.length - 2) {
+    const current = path[currentIndex];
+    const next = path[currentIndex + 2];
+
+    if (isStraightPath(current, next)) {
+      // 如果当前节点与下一个节点之间没有障碍物，则移除中间的节点
+      optimizedPath.push(next);
+      currentIndex += 2;
+    } else {
+      optimizedPath.push(path[currentIndex + 1]);
+      currentIndex++;
     }
   }
-  return result;
+
+  // 将终点添加到优化后的路径中
+  optimizedPath.push(path[path.length - 1]);
+
+  return optimizedPath;
+}
+
+// 判断两个节点之间是否为直线路径
+function isStraightPath(node1, node2) {
+  return node1.x === node2.x || node1.y === node2.y;
+}
+
+// 判断三个节点是否在同一条直线上
+export function isSameLine(node1, node2, node3) {
+  return (
+    (node1.x === node2.x && node2.x === node3.x) || // 在同一列上
+    (node1.y === node2.y && node2.y === node3.y) // 在同一行上
+  );
 }

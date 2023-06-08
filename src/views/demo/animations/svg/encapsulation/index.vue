@@ -5,11 +5,14 @@
       <div class="padding__small">
         <div style="width: 200px; height: 200px; border: 10px solid red; border-radius: 30px; box-sizing: border-box;">我是内容</div>
       </div>
-      <el-form>
+      <el-form inline>
         <el-form-item label="线绘制">
           <el-input v-model="points"
                     style="width: 400px;">
           </el-input>
+        </el-form-item>
+        <el-form-item label="显示连线图示">
+          <el-switch v-model="showGraphMap"></el-switch>
         </el-form-item>
         <el-form-item label="">
           <el-button type="primary"
@@ -58,9 +61,8 @@ import { SvgModel, SvgLineModel, SvgRectModel, SvgRectPathModel } from './ts/ind
 import SvgCanvasModel from './ts/models/components/Canvas'
 import VueSvgCanvas from './vue/canvas.vue'
 import VueSvgRect from './vue/rect.vue'
-import * as MeshGraphUtils from './ts/plugins/graph'
-
-window.MeshGraphUtils = MeshGraphUtils
+import { MeshGraph } from './ts/plugins/graph'
+import { flatten } from 'lodash'
 
 const onBodyClick = function (e) {
   window.clickEvent = e
@@ -79,6 +81,7 @@ export default {
       canvas: null,
       canvasGraph: null,
       points: "[200, 100, 700, 300]",
+      showGraphMap: false,
       line: null,
       models: [],
       formData: {
@@ -114,8 +117,8 @@ export default {
       this.canvas = canvas
       this.$refs.container.appendChild(canvas.$el)
       let model = new SvgRectModel({
-        x: 20,
-        y: 20,
+        x: 600,
+        y: 80,
         width: 160,
         height: 64,
         border: '2 solid #2461ef',
@@ -168,12 +171,11 @@ export default {
     },
     createCanvasGraph () {
       // 创建图
-      this.canvasGraph = MeshGraphUtils.generateMeshGraph({
+      this.canvasGraph = new MeshGraph({
         x1: 0,
         y1: 0,
         x2: 800,
         y2: 400,
-        size: 50
       }, this.models.map(model => {
         let { x = 0, y = 0, width = 0, height = 0 } = model.$options
         // 向外扩展10像素，避免挨得太近
@@ -207,7 +209,9 @@ export default {
     },
     onLineGenerateClick () {
       let points = JSON.parse(this.points) || []
-      points = MeshGraphUtils.pathfindingByPoints(this.canvasGraph, [points[0], points[1]], [points[2], points[3]])
+      points = this.canvasGraph.pathfindingByPoints({ x: points[0], y: points[1] }, { x: points[2], y: points[3] }, this.showGraphMap)
+      points = points.map(item => [item.x, item.y])
+      points = flatten(points)
       if (!this.line) {
         this.line = new SvgLineModel({
           points,
