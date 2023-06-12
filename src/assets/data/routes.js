@@ -237,10 +237,29 @@ export default [
             {
               name: 'demo-animation-svg-encapsulation',
               path: 'encapsulation',
-              component: () => import('@/views/demo/animations/svg/encapsulation'),
-              meta: {
-                title: '图形对象封装'
-              }
+              component: () => import('@/views/layout/empty.vue'),
+              children: [
+                {
+                  path: '',
+                  redirect: 'object'
+                },
+                {
+                  name: 'demo-animation-svg-encapsulation',
+                  path: 'object',
+                  component: () => import('@/views/demo/animations/svg/encapsulation/index'),
+                  meta: {
+                    title: '图形对象封装'
+                  }
+                },
+                {
+                  name: 'demo-animation-svg-encapsulation-icon',
+                  path: 'icon',
+                  component: () => import('@/views/demo/animations/svg/encapsulation/svgIconDraw'),
+                  meta: {
+                    title: 'Svg图标绘制'
+                  }
+                },
+              ]
             },
             {
               name: 'demo-animation-svg-demo',

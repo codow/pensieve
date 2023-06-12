@@ -527,17 +527,46 @@ export class MeshGraph implements MeshGraphArea {
     return result;
   }
 
+  hasObstacleByPoints(
+    points: Array<Point>,
+    obstacleGraph?: Array<Array<number>>
+  ) {
+    if (points.length === 0) {
+      return false;
+    }
+    let x1, y1, x2, y2;
+    // 初始化
+    x1 = x2 = points[0].x;
+    y1 = y2 = points[0].y;
+    let _x, _y;
+    for (let i = 1; i < points.length; i++) {
+      _x = points[i].x;
+      _y = points[i].y;
+      x1 = Math.min(x1, _x);
+      y1 = Math.min(y1, _y);
+      x2 = Math.max(x2, _x);
+      y2 = Math.max(y2, _y);
+    }
+    // 选取区域
+    return this.getCellsByArea({ x1, y1, x2, y2 }).some((item) =>
+      obstacleGraph
+        ? obstacleGraph[item.rowIndex][item.colIndex]
+        : item.obstacle
+    );
+  }
+
   pathfinding(
     source: MeshGraphCell,
     target: MeshGraphCell,
-    showGraphMap = this.showGraphMap
+    showGraphMap = this.showGraphMap,
+    obstacleGraph?: Array<Array<number>>
   ): Array<MeshGraphCell> {
     // 开始和目标为同一个区域
     if (source.equals(target)) {
       return [source];
     }
     // 障碍地图
-    let obstacleGraph = this.createObstacleGraph(source, target);
+    obstacleGraph = obstacleGraph || this.createObstacleGraph(source, target);
     // 已访问地图
     let visitedGraph = this.createVisitedGraph();
     // 路径节点缓存
@@ -688,7 +717,10 @@ export class MeshGraph implements MeshGraphArea {
     if (!source || !target) {
       return [];
     }
-    let path = this.pathfinding(source, target, showGraphMap);
+    // 障碍地图
+    let obstacleGraph = this.createObstacleGraph(source, target);
+    // 寻路
+    let path = this.pathfinding(source, target, showGraphMap, obstacleGraph);
     if (!path.length) {
       return [];
     }
@@ -709,9 +741,12 @@ export class MeshGraph implements MeshGraphArea {
       directionWith(result[result.length - 3], result[result.length - 2])
     );
     console.log(result);
+    // 减少点
     result = reducePoints(result);
     console.log(result);
-
+    // 减少转角
+    result = reduceCorners.call(this, result, obstacleGraph);
+    console.log(result);
     return result;
   }
 
@@ -884,9 +919,17 @@ const intersectArea = function (...areas: Array<MeshGraphArea>): MeshGraphArea {
     _area.x2 = Math.min(_area.x2, item.x2);
     _area.y2 = Math.min(_area.y2, item.y2);
   });
-  // 没有相交
-  if (_area.x1 >= _area.x2 || _area.y1 >= _area.y2) {
-    return null;
+  // 交换大小值
+  let temp;
+  if (_area.x1 > _area.x2) {
+    temp = _area.x2;
+    _area.x2 = _area.x1;
+    _area.x1 = temp;
+  }
+  if (_area.y1 > _area.y2) {
+    temp = _area.y2;
+    _area.y2 = _area.y1;
+    _area.y1 = temp;
   }
   return _area;
 };
@@ -912,9 +955,17 @@ const mergeArea = function (...areas: Array<MeshGraphArea>): MeshGraphArea {
     _area.x2 = Math.max(_area.x2, item.x2);
     _area.y2 = Math.max(_area.y2, item.y2);
   });
-  // 没有相交
-  if (_area.x1 >= _area.x2 || _area.y1 >= _area.y2) {
-    return null;
+  // 交换大小值
+  let temp;
+  if (_area.x1 > _area.x2) {
+    temp = _area.x2;
+    _area.x2 = _area.x1;
+    _area.x1 = temp;
+  }
+  if (_area.y1 > _area.y2) {
+    temp = _area.y2;
+    _area.y2 = _area.y1;
+    _area.y1 = temp;
   }
   return _area;
 };
@@ -1033,28 +1084,8 @@ const parallelTranslation = function (sourceP, targetP, direction) {
   return sourceP;
 };
 
-// 直线路径优化
-function reducePoints(path) {
-  const optimizedPath = [...path]; // 创建路径的副本
-
-  let currentIndex = 0;
-  while (currentIndex < optimizedPath.length - 2) {
-    const current = optimizedPath[currentIndex];
-    const next = optimizedPath[currentIndex + 2];
-
-    if (isStraightPath(current, next)) {
-      // 如果当前节点与下一个节点之间没有障碍物，则移除中间的节点
-      optimizedPath.splice(currentIndex + 1, 1);
-    } else {
-      currentIndex++;
-    }
-  }
-
-  return optimizedPath;
-}
-
-// 折线路径优化
-export function reduceCorners(path) {
+// 直线路径优化，减少中间的点
+export function reducePoints(path) {
   const optimizedPath = [path[0]]; // 创建路径的副本
 
   let currentIndex = 1;
@@ -1077,9 +1108,74 @@ export function reduceCorners(path) {
   return optimizedPath;
 }
 
-// 判断两个节点之间是否为直线路径
-function isStraightPath(node1, node2) {
-  return node1.x === node2.x || node1.y === node2.y;
+/**
+ * 减少转角
+ * 一定是对齐后的线
+ * 这种折线一定是间隔一条线后平行
+ * @param path 路径坐标数组
+ */
+export function reduceCorners(path, obstacleGraph?: Array<Array<number>>) {
+  // 创建路径的副本
+  const optimizedPath = path.map((item) => ({ x: item.x, y: item.y }));
+  let currentIndex = 1;
+  while (currentIndex < optimizedPath.length - 2) {
+    const current = optimizedPath[currentIndex];
+    const previous = optimizedPath[currentIndex - 1];
+    const next = optimizedPath[currentIndex + 1];
+    const final = optimizedPath[currentIndex + 2];
+    // 三条线条线
+    let firstLine = [previous, current];
+    let secondLine = [current, next];
+    let thirdLine = [next, final];
+    // 第二条线向第一条线或者第三条线横移
+    let shortLine, longLine;
+    if (previous.x === current.x) {
+      if (Math.abs(current.y - previous.y) - Math.abs(next.y - final.y) > 0) {
+        longLine = firstLine;
+        shortLine = thirdLine;
+      } else {
+        longLine = thirdLine;
+        shortLine = firstLine;
+      }
+    } else {
+      if (Math.abs(current.x - previous.x) - Math.abs(next.x - final.x) > 0) {
+        longLine = firstLine;
+        shortLine = thirdLine;
+      } else {
+        longLine = thirdLine;
+        shortLine = firstLine;
+      }
+    }
+    let moveDireciton = directionWith(firstLine[0], firstLine[1]);
+    // 先判断是否能向短线平移
+    let movePoint, targetPoint, removePointIndex;
+    [shortLine, longLine].some((line) => {
+      if (line === firstLine) {
+        movePoint = secondLine[1];
+        targetPoint = line[0];
+        removePointIndex = currentIndex;
+      } else {
+        movePoint = secondLine[0];
+        targetPoint = line[1];
+        removePointIndex = currentIndex + 1;
+      }
+      if (this.hasObstacleByPoints([targetPoint, movePoint], obstacleGraph)) {
+        movePoint = null;
+        targetPoint = null;
+        return false;
+      }
+      return true;
+    });
+    if (movePoint) {
+      // 平移节点
+      parallelTranslation(movePoint, targetPoint, moveDireciton);
+      // 移动当前节点
+      optimizedPath.splice(removePointIndex, 1);
+    } else {
+      currentIndex++;
+    }
+  }
+  return optimizedPath;
 }
 
 // 判断三个节点是否在同一条直线上

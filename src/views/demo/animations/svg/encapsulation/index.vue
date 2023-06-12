@@ -117,8 +117,8 @@ export default {
       this.canvas = canvas
       this.$refs.container.appendChild(canvas.$el)
       let model = new SvgRectModel({
-        x: 600,
-        y: 80,
+        x: 534,
+        y: 254,
         width: 160,
         height: 64,
         border: '2 solid #2461ef',
@@ -130,8 +130,8 @@ export default {
       canvas.appendChild(model)
       this.models.push(model)
       let options = {
-        x: 20,
-        y: 104,
+        x: 166,
+        y: 119,
         width: 160,
         height: 64,
         border: '2 solid transparent',
@@ -158,8 +158,8 @@ export default {
 
       model = new SvgRectPathModel({
         ...options,
-        x: 20,
-        y: 184,
+        x: 140,
+        y: 260,
         sideMode: 'multiple'
       })
       model.init()

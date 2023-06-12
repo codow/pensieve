@@ -71,7 +71,7 @@ class SvgLineModel extends SvgSelectableModel {
   }
 
   initShape(): void {
-    super.initShape();
+    // super.initShape();
     // 创建一个线段
     let line = createSvgElement("polyline", {
       "stroke-width": this.getOption("borderSize", 0),
@@ -80,7 +80,9 @@ class SvgLineModel extends SvgSelectableModel {
       stroke: this.getOption("borderColor", ColorEnum.Black),
       fill: "none",
     });
-    this.appendChild(line, "line");
+    // this.appendChild(line, "line");
+    this.$el = line;
+    this.bindRef("line", line);
   }
 
   render(): void {
