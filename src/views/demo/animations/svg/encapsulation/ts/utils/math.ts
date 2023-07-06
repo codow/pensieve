@@ -138,3 +138,15 @@ export function svgArcToCenterParam(
 
   return outputObj;
 }
+
+export function getFibonacciNumber(n: number) {
+  let ln1 = 1;
+  let ln2 = 1;
+  let cn = 0;
+  for (let i = 3; i <= n; i++) {
+    cn = ln2;
+    ln2 = ln1 + ln2;
+    ln1 = cn;
+  }
+  return ln2;
+}

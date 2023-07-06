@@ -172,6 +172,36 @@ export default [{
           },
         ]
       }]
+    },
+    {
+      id: "1011803",
+      label: 'Canvas',
+      icon: '',
+      children: [{
+        id: "101180302",
+        label: '示例',
+        icon: '',
+        children: [
+          {
+            id: "10118030201",
+            label: 'Canvas-Demo01示例',
+            icon: '',
+            url: '/demo/animation/canvas/demo01',
+          },
+          {
+            id: "10118030261",
+            label: 'Canvas-Bouncing-Balls示例',
+            icon: '',
+            url: '/demo/animation/canvas/bouncing-balls',
+          },
+          {
+            id: "10118030262",
+            label: 'Canvas-Walk-Right示例',
+            icon: '',
+            url: '/demo/animation/canvas/walk-right',
+          },
+        ]
+      }]
     }
   ]
 }, {

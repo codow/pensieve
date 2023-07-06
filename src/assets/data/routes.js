@@ -277,6 +277,28 @@ export default [
               ]
             }
           ]
+        },
+        {
+          name: 'demo-animation-canvas',
+          path: 'canvas',
+          component: () => import('@/views/layout/empty.vue'),
+          children: [
+            {
+              name: 'demo-animation-canvas-demo01',
+              path: 'demo01',
+              component: () => import('@/views/demo/animations/canvas/demo1'),
+            },
+            {
+              name: 'demo-animation-canvas-demo-bouncing-balls',
+              path: 'bouncing-balls',
+              component: () => import('@/views/demo/animations/canvas/bouncing-balls'),
+            },
+            {
+              name: 'demo-animation-canvas-demo-walk-right',
+              path: 'walk-right',
+              component: () => import('@/views/demo/animations/canvas/walk-right'),
+            }
+          ]
         }
       ]
     },

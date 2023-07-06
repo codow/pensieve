@@ -1,35 +1,35 @@
 <template>
   <el-container style="height: 100%;">
     <el-header height="40"
-      style="padding: 0px;">
+               style="padding: 0px;">
       <div class="fr-route-views-tabs-wrapper">
         <el-tabs :value="activeRouteTab"
-          type="border-card"
-          class="fr-route-views-tabs"
-          @tab-click="handleRouteTabClick"
-          @tab-remove="handleRouteTabRemove">
+                 type="border-card"
+                 class="fr-route-views-tabs"
+                 @tab-click="handleRouteTabClick"
+                 @tab-remove="handleRouteTabRemove">
           <el-tab-pane v-for="tab in routeTabs"
-            :key="tab.id"
-            :name="tab.id"
-            :label="tab.title"
-            :closable="!tab.fixed"></el-tab-pane>
+                       :key="tab.id"
+                       :name="tab.id"
+                       :label="tab.title"
+                       :closable="!tab.fixed"></el-tab-pane>
         </el-tabs>
         <div class="fr-route-views-tabs-operation">
           <fr-popover-button placement="bottom-end"
-            popover-width="200"
-            trigger="click"
-            :data="operations"
-            icon="el-icon-s-operation"
-            button-class="fr-route-view-tabs-operation-btn"
-            @command="handleCommand">
+                             popover-width="200"
+                             trigger="click"
+                             :data="operations"
+                             icon="el-icon-s-operation"
+                             button-class="fr-route-view-tabs-operation-btn"
+                             @command="handleCommand">
           </fr-popover-button>
         </div>
       </div>
     </el-header>
     <el-main ref="routerContainer"
-      style="padding: 0px;">
+             style="padding: 0px;">
       <keep-alive :include="$store.state.Route.cacheViewsName"
-        :max="20">
+                  :max="20">
         <router-view v-if="viewVisible && routeTabs.length"></router-view>
       </keep-alive>
     </el-main>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import FrPopoverButton from '../popover-button';
+import FrPopoverButton from '../popover-button'
 
 export default {
   name: 'fr-route-view-tabs',
@@ -45,16 +45,16 @@ export default {
     FrPopoverButton
   },
   computed: {
-    activeRouteTab() {
-      return this.$store.state.Route.activeRouteTab;
+    activeRouteTab () {
+      return this.$store.state.Route.activeRouteTab
     },
-    currentRouteTab() {
-      return this.routeTabs.find(item => item.id === this.activeRouteTab) || {};
+    currentRouteTab () {
+      return this.routeTabs.find(item => item.id === this.activeRouteTab) || {}
     },
-    routeTabs() {
-      return this.$store.state.Route.routeTabs;
+    routeTabs () {
+      return this.$store.state.Route.routeTabs
     },
-    operations() {
+    operations () {
       return [{
         label: '刷新',
         id: 'refresh',
@@ -82,80 +82,80 @@ export default {
         id: 'close-all',
         command: 'close-all',
         is_disabled: !!this.currentRouteTab.fixed
-      }];
+      }]
     }
   },
-  data() {
+  data () {
     return {
       viewVisible: true,
-    };
+    }
   },
-  created() {
-    this.initRouteTab();
+  created () {
+    this.initRouteTab()
   },
   methods: {
-    initRouteTab() {
-      const route = this.$route;
+    initRouteTab () {
+      const route = this.$route
       // 如果是错误页面
       if (route.fullPath === this.$store.state.Route.unknownPath) {
-        return;
+        return
       }
-      this.$router.replace(route);
+      this.$router.replace(route)
     },
-    handleRouteTabClick(tab) {
-      let tabId = tab.name;
+    handleRouteTabClick (tab) {
+      let tabId = tab.name
       if (this.activeRouteTab === tabId) {
-        return;
+        return
       }
-      this.$store.commit('Route/openRouteTab', tabId);
+      this.$store.commit('Route/openRouteTab', tabId)
     },
-    handleRouteTabRemove(tabId) {
-      this.closeRouteTab(tabId);
+    handleRouteTabRemove (tabId) {
+      this.closeRouteTab(tabId)
     },
-    handleCommand(command) {
+    handleCommand (command) {
       if (command === 'refresh') {
-        this.refresh();
+        this.refresh()
       } else if (command === 'close') {
-        this.closeRouteTab(this.activeRouteTab);
+        this.closeRouteTab(this.activeRouteTab)
 
       } else if (command === 'close-right') {
-        let index = this.routeTabs.findIndex(item => item.id === this.activeRouteTab);
-        let tabs = [];
+        let index = this.routeTabs.findIndex(item => item.id === this.activeRouteTab)
+        let tabs = []
         this.routeTabs.forEach((item, i) => {
           if (i > index) {
-            tabs.push(item.id);
+            tabs.push(item.id)
           }
-        });
-        this.closeRouteTabs(tabs);
+        })
+        this.closeRouteTabs(tabs)
       } else if (command === 'close-other') {
-        let tabs = [];
+        let tabs = []
         this.routeTabs.forEach(item => {
           if (!item.fixed && item.id !== this.activeRouteTab) {
-            tabs.push(item.id);
+            tabs.push(item.id)
           }
-        });
-        this.closeRouteTabs(tabs);
+        })
+        this.closeRouteTabs(tabs)
       } else if (command === 'close-all') {
-        let tabs = [];
+        let tabs = []
         this.routeTabs.forEach(item => {
           if (!item.fixed) {
-            tabs.push(item.id);
+            tabs.push(item.id)
           }
-        });
-        this.closeRouteTabs(tabs);
+        })
+        this.closeRouteTabs(tabs)
       }
     },
-    closeRouteTab(tabId) {
-      this.$store.commit('Route/closeRouteTab', tabId);
+    closeRouteTab (tabId) {
+      this.$store.commit('Route/closeRouteTab', tabId)
     },
-    closeRouteTabs(tabIds) {
-      this.$store.commit('Route/closeRouteTabs', tabIds);
+    closeRouteTabs (tabIds) {
+      this.$store.commit('Route/closeRouteTabs', tabIds)
     },
-    refresh() {
-      this.viewVisible = false;
+    refresh () {
+      this.viewVisible = false
       this.$nextTick(() => {
-        this.viewVisible = true;
-      });
+        this.viewVisible = true
+      })
     }
   }
 }
