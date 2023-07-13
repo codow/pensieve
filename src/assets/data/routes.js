@@ -297,6 +297,11 @@ export default [
               name: 'demo-animation-canvas-demo-walk-right',
               path: 'walk-right',
               component: () => import('@/views/demo/animations/canvas/walk-right'),
+            },
+            {
+              name: 'demo-animation-canvas-demo-frame-rate',
+              path: 'frame-rate',
+              component: () => import('@/views/demo/animations/canvas/frame-rate-test'),
             }
           ]
         }
@@ -413,6 +418,37 @@ export default [
         title: '数字生成',
         keepAlive: true
       }
+    },
+    {
+      name: 'Games',
+      path: 'games',
+      component: () => import('@/views/layout/empty.vue'),
+      meta: {
+        title: '游戏',
+        keepAlive: true
+      },
+      children: [
+        {
+          name: 'GamesFramework',
+          path: 'framework',
+          component: () => import('@/views/layout/empty.vue'),
+          meta: {
+            title: '游戏世界观',
+            keepAlive: true
+          },
+          children: [
+            {
+              name: 'GamesFrameworkWuxing',
+              path: 'wuxing',
+              component: () => import('@/views/games/framework/wuxing'),
+              meta: {
+                title: '五行',
+                keepAlive: true
+              }
+            }
+          ]
+        }
+      ]
     },
     // 错误页面
     {

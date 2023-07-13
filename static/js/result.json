@@ -1,0 +1,117 @@
+{
+  "STATUS": {
+    "CODE": "00",
+    "TEXT": "接口调用成功或返回成功"
+  },
+  "CUSTOM": {
+    "CATALOGLIST": [
+      {
+        "CATALOG_ID": "8fc12fbb-9edb-4d04-b9ed-86c86afa8b63",
+        "TASK_NAME": "水利基建项目初步设计文件审批",
+        "BUSINESSCODES": "19",
+        "IS_COUNTRYDR": "50",
+        "TASK_CODE": "500119045000",
+        "TASK_TYPE": "01",
+        "TASK_VERSION": 1,
+        "AUDIT_LAW": [
+          {
+            "LAWNAME": "《国务院对确需保留的行政审批项目设定行政许可的决定》",
+            "ROWGUID": "ad864fcc-722e-41c8-a04b-c6c9b5265eb5"
+          }
+        ],
+        "ROWGUID": "4e82b888-1810-4721-87d9-419feec48223",
+        "PARENTID": "self",
+        "OPERATEDATE": 1688532121000
+      },
+      {
+        "CATALOG_ID": "2c0096be-77fc-4ef6-8d2b-9174acf740f8",
+        "TASK_NAME": "取水许可",
+        "BUSINESSCODES": "19",
+        "IS_COUNTRYDR": "50",
+        "TASK_CODE": "500119044000",
+        "TASK_TYPE": "01",
+        "TASK_VERSION": 1,
+        "AUDIT_LAW": [
+          {
+            "LAWNAME": "《取水许可和水资源费征收管理条例》",
+            "ROWGUID": "805d587c-d13a-4d32-ae6e-5ae60b418cd9"
+          },
+          {
+            "LAWNAME": "《中华人民共和国水法》",
+            "ROWGUID": "95fe7c7d-4670-42ca-b350-2b2ab1321252"
+          },
+          {
+            "LAWNAME": "《取水许可和水资源费征收管理条例》",
+            "ROWGUID": "c41c3aba-1548-4050-a902-3581baa7a9de"
+          },
+          {
+            "LAWNAME": "《中华人民共和国水法》",
+            "ROWGUID": "e993bed5-11af-489f-9f00-cd1b9d6ade6c"
+          }
+        ],
+        "ROWGUID": "a41f8393-18e0-40f3-8e92-ae441ee3dd9a",
+        "PARENTID": "self",
+        "OPERATEDATE": 1688529397000
+      },
+      {
+        "CATALOG_ID": "8104180d-6f26-4d3b-bd55-d8bba95873e5",
+        "TASK_NAME": "生产建设项目水土保持方案审批",
+        "BUSINESSCODES": "19",
+        "IS_COUNTRYDR": "50",
+        "TASK_CODE": "500119043000",
+        "TASK_TYPE": "01",
+        "TASK_VERSION": 1,
+        "AUDIT_LAW": [
+          {
+            "LAWNAME": "《中华人民共和国水土保持法》",
+            "ROWGUID": "73f14e45-7955-4adb-baec-eb8261735bd8"
+          },
+          {
+            "LAWNAME": "《中华人民共和国水土保持法》",
+            "ROWGUID": "e1354ebc-cd65-4fe2-8a1a-c1892933c1e6"
+          }
+        ],
+        "ROWGUID": "a4707583-4a0d-4ae3-b374-35131124e61c",
+        "PARENTID": "self",
+        "OPERATEDATE": 1688478573000
+      },
+      {
+        "CATALOG_ID": "a5578499-4eaf-43ad-966d-b7d61e1df39f",
+        "TASK_NAME": "普通护照签发",
+        "BUSINESSCODES": "09",
+        "IS_COUNTRYDR": "50",
+        "TASK_CODE": "501009048000",
+        "TASK_TYPE": "10",
+        "TASK_VERSION": 1,
+        "AUDIT_LAW": [
+          {
+            "LAWNAME": "法律法规名称",
+            "ROWGUID": "afcdb408-8acc-4de5-9a42-d3517be47dab"
+          }
+        ],
+        "ROWGUID": "baf499aa-effb-4d46-a2ba-893c9eb9dd07",
+        "PARENTID": "self",
+        "OPERATEDATE": 1688477951000
+      },
+      {
+        "CATALOG_ID": "5f402b49-3f0c-442b-8383-2cfaa6c76761",
+        "TASK_NAME": "主项名称-测试-2023-7-4",
+        "BUSINESSCODES": "19",
+        "IS_COUNTRYDR": "50",
+        "TASK_CODE": "500119042000",
+        "TASK_TYPE": "01",
+        "TASK_VERSION": 1,
+        "AUDIT_LAW": [
+          {
+            "LAWNAME": "法律法规名称",
+            "ROWGUID": "f22d4b2e-e123-4b2e-9e9d-016334c3f22e"
+          }
+        ],
+        "ROWGUID": "577c911e-cc54-4e53-a2b6-9f24e2220be8",
+        "PARENTID": "self",
+        "OPERATEDATE": 1688475683000
+      }
+    ],
+    "RETURNITEMSUNNUM": 5
+  }
+}

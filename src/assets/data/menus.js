@@ -200,9 +200,32 @@ export default [{
             icon: '',
             url: '/demo/animation/canvas/walk-right',
           },
+          {
+            id: "10118030263",
+            label: 'Canvas-Frame-Rate-Test示例',
+            icon: '',
+            url: '/demo/animation/canvas/frame-rate',
+          },
         ]
       }]
     }
+  ]
+}, {
+  id: "10299",
+  label: '游戏',
+  icon: '',
+  children: [
+    {
+      id: "1029901",
+      label: '世界观',
+      icon: '',
+      children: [{
+        id: "102990101",
+        label: '五行',
+        icon: '',
+        url: '/games/framework/wuxing',
+      }]
+    },
   ]
 }, {
   id: '997',
