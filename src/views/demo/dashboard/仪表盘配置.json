@@ -1,0 +1,31 @@
+{
+  // 栅格分为24份
+  "grid": 24,
+  // 栅格的间隔
+  "gutter": 16,
+  "boards": [
+    {
+      // 刷新频率，单位秒
+      "interval": 10,
+      // 查询条件
+      "queries": [
+        {
+          // 关联哪一个组件
+          "refId": "a",
+          // 通用的参数
+          "application": {
+            "filter": "系统Code" // 查询哪些应用
+          },
+          "resouce": {
+            "filter": "资源code"
+          },
+          "instance": {
+            "filter": "实例名称"
+          }
+        }
+      ],
+      //
+      "series": []
+    }
+  ]
+}

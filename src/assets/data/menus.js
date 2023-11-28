@@ -157,6 +157,12 @@ export default [{
             icon: '',
             url: '/demo/animation/svg/encapsulation/icon',
           },
+          {
+            id: "10118020103",
+            label: 'SVG虚拟滚动',
+            icon: '',
+            url: '/demo/animation/svg/encapsulation/virtual-scroll',
+          },
         ]
       },
       {

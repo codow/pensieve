@@ -36,22 +36,41 @@
         <template #default>
           hahahaha
         </template>
-        asdfasdf
       </component>
+      <div>
+        文件上传
+        <div>
+          <gz-upload></gz-upload>
+        </div>
+        <div>
+          <gz-upload type="tag"></gz-upload>
+        </div>
+        <div>
+          <gz-upload type="image-group"></gz-upload>
+        </div>
+        <div>
+          <gz-upload type="image-card"></gz-upload>
+        </div>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script>
+import GzUpload from '@/components/upload'
+
 export default {
   name: 'fr-home',
-  data () {
+  components: {
+    GzUpload
+  },
+  data() {
     return {
       tag: 'div'
     }
   },
   methods: {
-    openAllField () {
+    openAllField() {
       this.setSysAppOptions({
         name: 'myApp',
         options: {
@@ -63,7 +82,7 @@ export default {
         }
       })
     },
-    closeField () {
+    closeField() {
       this.setSysAppOptions({
         name: 'myApp',
         options: {

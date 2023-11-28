@@ -63,6 +63,7 @@ import VueSvgCanvas from './vue/canvas.vue'
 import VueSvgRect from './vue/rect.vue'
 import { MeshGraph } from './ts/plugins/graph'
 import { flatten } from 'lodash'
+import './ts/plugins/graphV2'
 
 const onBodyClick = function (e) {
   window.clickEvent = e

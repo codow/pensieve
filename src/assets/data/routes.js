@@ -259,6 +259,14 @@ export default [
                     title: 'Svg图标绘制'
                   }
                 },
+                {
+                  name: 'demo-animation-svg-encapsulation-virtual-scroll',
+                  path: 'virtual-scroll',
+                  component: () => import('@/views/demo/animations/svg/encapsulation/virtualScroll.vue'),
+                  meta: {
+                    title: 'Svg虚拟滚动'
+                  }
+                },
               ]
             },
             {
