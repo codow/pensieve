@@ -1,6 +1,5 @@
 <template>
-  <div ref="container"
-       style="width: 100%; height: 100%;"></div>
+  <div ref="container" style="width: 100%; height: 100%;"></div>
 </template>
 
 <script>
@@ -47,7 +46,7 @@ export default {
       scene.add(line)
 
       // 增加一个点光源
-      const pointLight = new THREE.PointLight(0xffffff, 1.5)
+      const pointLight = new THREE.PointLight(0xffffff, 5)
       pointLight.color.setHSL(Math.random(), 1, 0.5)
       pointLight.position.set(-30, 10, 30)
       scene.add(pointLight)
