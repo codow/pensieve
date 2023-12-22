@@ -37,26 +37,28 @@
 
 <script>
 export default {
-  name: 'login',
-  data () {
+  name: 'Login',
+  data() {
     return {
       formData: {}
     }
   },
   methods: {
-    login () {
+    login() {
       // 登录
-      this.$http.post('/login', this.formData, {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded'
-        }
-      }).then(res => {
-        if (res.statusText !== 'ok') {
-          this.$message.error('登录失败')
-        } else {
-          this.$message.success('登录成功')
-        }
-      })
+      this.$http
+        .post('/login', this.formData, {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        })
+        .then((res) => {
+          if (res.statusText !== 'ok') {
+            this.$message.error('登录失败')
+          } else {
+            this.$message.success('登录成功')
+          }
+        })
     }
   }
 }

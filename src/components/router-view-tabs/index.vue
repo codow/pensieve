@@ -40,61 +40,69 @@
 import FrPopoverButton from '../popover-button'
 
 export default {
-  name: 'fr-route-view-tabs',
+  name: 'FrRouteViewTabs',
   components: {
     FrPopoverButton
   },
   computed: {
-    activeRouteTab () {
+    activeRouteTab() {
       return this.$store.state.Route.activeRouteTab
     },
-    currentRouteTab () {
-      return this.routeTabs.find(item => item.id === this.activeRouteTab) || {}
+    currentRouteTab() {
+      return (
+        this.routeTabs.find((item) => item.id === this.activeRouteTab) || {}
+      )
     },
-    routeTabs () {
+    routeTabs() {
       return this.$store.state.Route.routeTabs
     },
-    operations () {
-      return [{
-        label: '刷新',
-        id: 'refresh',
-        command: 'refresh'
-      }, {
-        // 分割
-        divide: {
-          position: 'left',
-          icon: 'el-icon-delete'
+    operations() {
+      return [
+        {
+          label: '刷新',
+          id: 'refresh',
+          command: 'refresh'
         },
-        label: '关闭',
-        id: 'close',
-        command: 'close',
-        is_disabled: !!this.currentRouteTab.fixed
-      }, {
-        label: '关闭其他',
-        id: 'close-other',
-        command: 'close-other'
-      }, {
-        label: '关闭到右侧',
-        id: 'close-right',
-        command: 'close-right'
-      }, {
-        label: '全部关闭',
-        id: 'close-all',
-        command: 'close-all',
-        is_disabled: !!this.currentRouteTab.fixed
-      }]
+        {
+          // 分割
+          divide: {
+            position: 'left',
+            icon: 'el-icon-delete'
+          },
+          label: '关闭',
+          id: 'close',
+          command: 'close',
+          is_disabled: !!this.currentRouteTab.fixed
+        },
+        {
+          label: '关闭其他',
+          id: 'close-other',
+          command: 'close-other'
+        },
+        {
+          label: '关闭到右侧',
+          id: 'close-right',
+          command: 'close-right'
+        },
+        {
+          label: '全部关闭',
+          id: 'close-all',
+          command: 'close-all',
+          is_disabled: !!this.currentRouteTab.fixed
+        }
+      ]
     }
   },
-  data () {
+  data() {
     return {
-      viewVisible: true,
+      viewVisible: true
     }
   },
-  created () {
+  created() {
     this.initRouteTab()
   },
   methods: {
-    initRouteTab () {
+    initRouteTab() {
       const route = this.$route
       // 如果是错误页面
       if (route.fullPath === this.$store.state.Route.unknownPath) {
@@ -102,24 +110,25 @@ export default {
       }
       this.$router.replace(route)
     },
-    handleRouteTabClick (tab) {
+    handleRouteTabClick(tab) {
       let tabId = tab.name
       if (this.activeRouteTab === tabId) {
         return
       }
       this.$store.commit('Route/openRouteTab', tabId)
     },
-    handleRouteTabRemove (tabId) {
+    handleRouteTabRemove(tabId) {
       this.closeRouteTab(tabId)
     },
-    handleCommand (command) {
+    handleCommand(command) {
       if (command === 'refresh') {
         this.refresh()
       } else if (command === 'close') {
         this.closeRouteTab(this.activeRouteTab)
-
       } else if (command === 'close-right') {
-        let index = this.routeTabs.findIndex(item => item.id === this.activeRouteTab)
+        let index = this.routeTabs.findIndex(
+          (item) => item.id === this.activeRouteTab
+        )
         let tabs = []
         this.routeTabs.forEach((item, i) => {
           if (i > index) {
@@ -129,7 +138,7 @@ export default {
         this.closeRouteTabs(tabs)
       } else if (command === 'close-other') {
         let tabs = []
-        this.routeTabs.forEach(item => {
+        this.routeTabs.forEach((item) => {
           if (!item.fixed && item.id !== this.activeRouteTab) {
             tabs.push(item.id)
           }
@@ -137,7 +146,7 @@ export default {
         this.closeRouteTabs(tabs)
       } else if (command === 'close-all') {
         let tabs = []
-        this.routeTabs.forEach(item => {
+        this.routeTabs.forEach((item) => {
           if (!item.fixed) {
             tabs.push(item.id)
           }
@@ -145,13 +154,13 @@ export default {
         this.closeRouteTabs(tabs)
       }
     },
-    closeRouteTab (tabId) {
+    closeRouteTab(tabId) {
       this.$store.commit('Route/closeRouteTab', tabId)
     },
-    closeRouteTabs (tabIds) {
+    closeRouteTabs(tabIds) {
       this.$store.commit('Route/closeRouteTabs', tabIds)
     },
-    refresh () {
+    refresh() {
       this.viewVisible = false
       this.$nextTick(() => {
         this.viewVisible = true

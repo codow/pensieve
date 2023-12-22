@@ -10,7 +10,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="　">
+          <el-form-item label="">
             <div class="margin-horizontal__medium align__center">
               <el-button type="primary"
                          icon="el-icon-d-arrow-left"
@@ -55,7 +55,7 @@ import { fillStr } from '../../../utils/packages/string'
 
 export default {
   name: 'TreeDataHandler',
-  data () {
+  data() {
     return {
       originalData: null,
       exportData: null,
@@ -67,7 +67,7 @@ export default {
     }
   },
   methods: {
-    generateTestData (level) {
+    generateTestData(level) {
       // 生成多少层数据
       level = level || 3
       // 生成第一层数据
@@ -77,7 +77,7 @@ export default {
       // 取每一层的数据宽度
       for (let i = 1; i < level; i++) {
         nextLevelData = []
-        levelData.forEach(item => {
+        levelData.forEach((item) => {
           let next = this.generateLevelData(item.id, item.label)
           nextLevelData = nextLevelData.concat(next)
           data = data.concat(next)
@@ -86,7 +86,7 @@ export default {
       }
       this.originalData = JSONBeautify(data, null, 2, 100)
     },
-    generateLevelData (parentId, parentLabel) {
+    generateLevelData(parentId, parentLabel) {
       parentId = parentId || ''
       parentLabel = parentLabel || ''
       let levelWidth = this.generateRandomNumber(5)
@@ -105,7 +105,7 @@ export default {
       }
       return data
     },
-    generateTreeData () {
+    generateTreeData() {
       let originalData = this.getOriginalData()
       if (!originalData) {
         return
@@ -116,11 +116,11 @@ export default {
       this.exportTreeData = exportData
       this.exportData = JSONBeautify(exportData, null, 2, 100)
     },
-    toTreeData (list) {
+    toTreeData(list) {
       let result = []
       // 缓存有哪些数据
       let itemMap = {}
-      list = list.map(item => {
+      list = list.map((item) => {
         item = Object.assign({}, item)
         itemMap[item.id] = item
         return item
@@ -128,7 +128,7 @@ export default {
       let childrenMap = {}
       let children
       // 将每个数据分配到对应的集合中
-      list.forEach(item => {
+      list.forEach((item) => {
         // 查询当前属于那个列表
         if (!itemMap[item.parentId]) {
           result.push(item)
@@ -148,14 +148,14 @@ export default {
       }
       return result
     },
-    generateRandomNumber (maxNumber) {
+    generateRandomNumber(maxNumber) {
       // 取 1 ~ maxNumber 之间的随机数
       return Math.random() * (maxNumber - 1) + 1
     },
-    rightToLeft () {
+    rightToLeft() {
       this.originalData = this.exportData
     },
-    getOriginalData () {
+    getOriginalData() {
       let { originalData } = this
       originalData = originalData || ''
       originalData = originalData.trim()

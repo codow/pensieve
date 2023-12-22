@@ -7,7 +7,7 @@ Vue.use(Router)
 
 // 加入路由的动态module创建
 
-export function createRouter (app, options) {
+export function createRouter(app, options) {
   const store = app.$store
   const findRouteTab = store.getters['Route/findRouteTab']
 
@@ -15,7 +15,11 @@ export function createRouter (app, options) {
     if (!route) return
     location = location || {}
     tab.id = location.id || route.fullPath
-    tab.title = location.title || (route.meta && route.meta.title) || route.name || '访问失败'
+    tab.title =
+      location.title ||
+      (route.meta && route.meta.title) ||
+      route.name ||
+      '访问失败'
     if (location.componentId && location.keepAlive) {
       // 创建缓存
       store.commit('Route/addCacheView', location.componentId)
@@ -33,7 +37,11 @@ export function createRouter (app, options) {
     location = location || {}
     let tabId = location.id || route.fullPath
     // 获取title
-    let title = location.title || (route.meta && route.meta.title) || route.name || '访问失败'
+    let title =
+      location.title ||
+      (route.meta && route.meta.title) ||
+      route.name ||
+      '访问失败'
     if (location.componentId && location.keepAlive) {
       // 创建缓存
       store.commit('Route/addCacheView', location.componentId)
@@ -41,7 +49,7 @@ export function createRouter (app, options) {
     // 创建tab
     store.commit('Route/addRouteTab', {
       id: tabId,
-      title: title,
+      title,
       componentId: location.componentId,
       target: 'tab',
       path: route.path,
@@ -57,13 +65,17 @@ export function createRouter (app, options) {
       // 查找窗口
       let matched = [].concat(route.matched)
       matched.reverse()
-      let tabRoute = matched.find(item => item.meta.target === 'tab')
+      let tabRoute = matched.find((item) => item.meta.target === 'tab')
       if (tabRoute) {
         // 查询当前tab是否已经有
         let tab = findRouteTab(tabRoute.path)
         let updateParams = {
           id: tabRoute.path,
-          title: location.title || (tabRoute.meta && tabRoute.meta.title) || tabRoute.name || '访问失败'
+          title:
+            location.title ||
+            (tabRoute.meta && tabRoute.meta.title) ||
+            tabRoute.name ||
+            '访问失败'
         }
         if (typeof tabRoute.components.default !== 'function') {
           updateParams.componentId = tabRoute.components.default.name
@@ -84,7 +96,10 @@ export function createRouter (app, options) {
         id: location.id,
         title: location.title
       }
-      if (matchedRoute.components && typeof matchedRoute.components.default !== 'function') {
+      if (
+        matchedRoute.components &&
+        typeof matchedRoute.components.default !== 'function'
+      ) {
         updateParams.componentId = matchedRoute.components.default.name
         updateParams.keepAlive = matchedRoute.meta.keepAlive
       }
@@ -92,12 +107,17 @@ export function createRouter (app, options) {
     }
   }
 
-  const router = new Router(Object.assign({
-    mode: 'history',
-    base: __dirname,
-    linkActiveClass: 'is-active',
-    routes: []
-  }, options))
+  const router = new Router(
+    Object.assign(
+      {
+        mode: 'history',
+        base: __dirname,
+        linkActiveClass: 'is-active',
+        routes: []
+      },
+      options
+    )
+  )
 
   router._push = router.push
 
@@ -161,7 +181,11 @@ export function createRouter (app, options) {
     // matchResult.matched.splice(0, 1)
     // 根据实际需要来替换matched
     if (matchResult.matched.length) return matchResult
-    matchResult = router.match(store.state.Route.unknownPath, current, redirectedFrom)
+    matchResult = router.match(
+      store.state.Route.unknownPath,
+      current,
+      redirectedFrom
+    )
     if (!matchResult.matched.length) return matchResult
     matchResult.matched[matchResult.matched.length - 1].path = path
     matchResult.matched[matchResult.matched.length - 1].name = name

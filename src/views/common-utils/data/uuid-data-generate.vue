@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-form label-position="top" class="padding__medium">
+    <el-form label-position="top"
+             class="padding__medium">
       <el-row>
         <el-col :span="4">
           <el-form-item label="生成个数">
@@ -30,8 +31,8 @@
 import * as stringUtils from '../../../utils/packages/string'
 
 export default {
-  name: 'number-data-generate-view',
-  data () {
+  name: 'NumberDataGenerateView',
+  data() {
     return {
       size: 10,
       separator: null,
@@ -40,7 +41,7 @@ export default {
     }
   },
   methods: {
-    generate () {
+    generate() {
       let { size, separator } = this
       // 处理默认数据
       size = size || 10

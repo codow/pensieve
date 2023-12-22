@@ -1,0 +1,98 @@
+/* 整合各种可以调整的配色 */
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+$--font-size: 14px;
+
+/* 整合各种可以调整的配色 */
+
+// 定义层级颜色
+$--color-primary-level-1: #e6f7ff;
+$--color-primary-level-2: #bae7ff;
+$--color-primary-level-3: #91d5ff;
+$--color-primary-level-4: #69c0ff;
+$--color-primary-level-5: #40a9ff;
+$--color-primary-level-6: #1890ff;
+$--color-primary-level-7: #096dd9;
+$--color-primary-level-8: #0050b3;
+$--color-primary-level-9: #003a8c;
+$--color-primary-level-10: #002766;
+$--color-success-level-1: #f6ffed;
+$--color-success-level-2: #d9f7be;
+$--color-success-level-3: #b7eb8f;
+$--color-success-level-4: #95de64;
+$--color-success-level-5: #73d13d;
+$--color-success-level-6: #52c41a;
+$--color-success-level-7: #389e0d;
+$--color-success-level-8: #237804;
+$--color-success-level-9: #135200;
+$--color-success-level-10: #092b00;
+$--color-danger-level-1: #fff1f0;
+$--color-danger-level-2: #ffccc7;
+$--color-danger-level-3: #ffa39e;
+$--color-danger-level-4: #ff7875;
+$--color-danger-level-5: #ff4d4f;
+$--color-danger-level-6: #f5222d;
+$--color-danger-level-7: #cf1322;
+$--color-danger-level-8: #a8071a;
+$--color-danger-level-9: #820014;
+$--color-danger-level-10: #5c0011;
+$--color-warning-level-1: #fffbe6;
+$--color-warning-level-2: #fff1b8;
+$--color-warning-level-3: #ffe58f;
+$--color-warning-level-4: #ffd666;
+$--color-warning-level-5: #ffc53d;
+$--color-warning-level-6: #faad14;
+$--color-warning-level-7: #d48806;
+$--color-warning-level-8: #ad6800;
+$--color-warning-level-9: #874d00;
+$--color-warning-level-10: #613400;
+$--color-info-level-1: #ffffff;
+$--color-info-level-2: #fafafa;
+$--color-info-level-3: #f5f5f5;
+$--color-info-level-4: #e8e8e8;
+$--color-info-level-5: #d9d9d9;
+$--color-info-level-6: #bfbfbf;
+$--color-info-level-7: #8c8c8c;
+$--color-info-level-8: #595959;
+$--color-info-level-9: #262626;
+$--color-info-level-10: #000000;
+
+// 定义颜色
+$--color-primary: $--color-primary-level-6;
+$--color-success: $--color-success-level-6;
+$--color-danger: $--color-danger-level-6;
+$--color-warning: $--color-warning-level-6;
+$--color-info: $--color-info-level-7;
+
+// 区域颜色
+$--color-header-bg: $--color-info-level-1;
+$--color-aside-bg: $--color-info-level-1;
+$--color-main-bg: $--color-info-level-1;
+$--color-page-content-bg: #eff1f4;
+
+// 字体颜色
+$--color-font: $--color-info-level-9;
+$--color-placeholder: $--color-info-level-6;
+
+// 边框颜色
+$--color-border: $--color-info-level-6;
+
+// 默认背景颜色
+$BG_DEFAULT_DEEP_COLOR: #f6f6f6;
+$BG_DEFAULT_MEDIUM_COLOR: #f5f7fa;
+$BG_DEFAULT_LIGHT_COLOR: #ffffff;
+$BG_PRIMARY_DEEP_COLOR: #409eff;
+$BG_PRIMARY_MEDIUM_COLOR: #b3d8ff;
+$BG_PRIMARY_LIGHT_COLOR: #ecf5ff;
+$BG_SUCCESS_DEEP_COLOR: #67c23a;
+$BG_SUCCESS_MEDIUM_COLOR: #c2e7b0;
+$BG_SUCCESS_LIGHT_COLOR: #f0f9eb;
+
+// 边框样式
+$BORDER_DEFAULT_DEEP_COLOR: #dcdfe6;
+$BORDER_DEFAULT_LIGHT_COLOR: #e4e7ed;
+
+// 字体颜色
+$FONT_DEEP_COLOR: #1f2f3d;
+$FONT_MEDIUM_COLOR: #909399;

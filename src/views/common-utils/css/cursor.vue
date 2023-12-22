@@ -6,7 +6,7 @@
           :key="icon"
           class="cursor-list-item">
         <span :style="{ cursor: icon }"
-              @click="handleIconClick(icon)">{{icon}}</span>
+              @click="handleIconClick(icon)">{{ icon }}</span>
       </li>
     </ul>
   </div>
@@ -17,13 +17,58 @@ import { copyToClipboard } from '@/utils/packages/dom'
 
 export default {
   name: 'DemoCssCursor',
-  data () {
+  data() {
     return {
-      cursors: ['alias', 'all-scroll', 'auto', 'cell', 'col-resize', 'context-menu', 'copy', 'crosshair', 'default', 'e-resize', 'ew-resize', 'grab', 'grabbing', 'help', 'inherit', 'initial', 'move', 'n-resize', 'ne-resize', 'nesw-resize', 'no-drop', 'none', 'not-allowed', 'ns-resize', 'nw-resize', 'nwse-resize', 'pointer', 'progress', 'revert', 'row-resize', 's-resize', 'se-resize', 'sw-resize', 'text', 'unset', 'vertical-text', 'w-resize', 'wait', 'zoom-in', 'zoom-out', '-webkit-grab', '-webkit-grabbing', '-Webkit-zoom-in', '-webkit-zoom-out']
+      cursors: [
+        'alias',
+        'all-scroll',
+        'auto',
+        'cell',
+        'col-resize',
+        'context-menu',
+        'copy',
+        'crosshair',
+        'default',
+        'e-resize',
+        'ew-resize',
+        'grab',
+        'grabbing',
+        'help',
+        'inherit',
+        'initial',
+        'move',
+        'n-resize',
+        'ne-resize',
+        'nesw-resize',
+        'no-drop',
+        'none',
+        'not-allowed',
+        'ns-resize',
+        'nw-resize',
+        'nwse-resize',
+        'pointer',
+        'progress',
+        'revert',
+        'row-resize',
+        's-resize',
+        'se-resize',
+        'sw-resize',
+        'text',
+        'unset',
+        'vertical-text',
+        'w-resize',
+        'wait',
+        'zoom-in',
+        'zoom-out',
+        '-webkit-grab',
+        '-webkit-grabbing',
+        '-Webkit-zoom-in',
+        '-webkit-zoom-out'
+      ]
     }
   },
   methods: {
-    handleIconClick (item) {
+    handleIconClick(item) {
       copyToClipboard(item)
       this.$message.success('复制成功')
     }

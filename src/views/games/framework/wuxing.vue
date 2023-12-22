@@ -5,10 +5,10 @@
         <div>五行颜色</div>
         <p v-for="item in wuxing"
            :key="item"
-           style="line-height: 24px; height: 24px;">
-          <span>{{wuxingNames[item]}}({{ wuxing[item] }})</span>
-          <span style="display: inline-block; width: 24px; height: 24px;"
-                :style="{backgroundColor: wuxingColors[item]}"></span>
+           style="line-height: 24px; height: 24px">
+          <span>{{ wuxingNames[item] }}({{ wuxing[item] }})</span>
+          <span style="display: inline-block; width: 24px; height: 24px"
+                :style="{ backgroundColor: wuxingColors[item] }"></span>
         </p>
       </li>
     </ul>
@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
 const WuxingEnum = {
   Metal: 'Metal',
   Wood: 'Wood',
@@ -30,7 +29,7 @@ const WuxingNameEnum = {
   [WuxingEnum.Wood]: '木',
   [WuxingEnum.Water]: '水',
   [WuxingEnum.Fire]: '火',
-  [WuxingEnum.Soil]: '土',
+  [WuxingEnum.Soil]: '土'
 }
 
 const WuxingColorEnum = {
@@ -38,12 +37,12 @@ const WuxingColorEnum = {
   [WuxingEnum.Wood]: '#a0d911',
   [WuxingEnum.Water]: '#002766',
   [WuxingEnum.Fire]: '#fa541c',
-  [WuxingEnum.Soil]: '#614700',
+  [WuxingEnum.Soil]: '#614700'
 }
 
 export default {
   name: 'GamesFrWuxing',
-  data () {
+  data() {
     return {
       wuxing: WuxingEnum,
       wuxingNames: WuxingNameEnum,

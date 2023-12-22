@@ -4,18 +4,21 @@
  * @createTime 2021-05-27 09:44:12
  */
 
-export function uuid (retainDashed, smallLetter) {
+export function uuid(retainDashed, smallLetter) {
   retainDashed = !!retainDashed
   smallLetter = !!smallLetter
-  var d = new Date().getTime()
+  let d = new Date().getTime()
   if (window.performance && typeof window.performance.now === 'function') {
     d += performance.now() // use high-precision timer if available
   }
-  var id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (d + Math.random() * 16) % 16 | 0
-    d = Math.floor(d / 16)
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16).toUpperCase()
-  })
+  let id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    /[xy]/g,
+    function (c) {
+      let r = (d + Math.random() * 16) % 16 | 0
+      d = Math.floor(d / 16)
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16).toUpperCase()
+    }
+  )
   if (!retainDashed) {
     id = id.replace(/-/g, '')
   }
@@ -27,13 +30,13 @@ export function uuid (retainDashed, smallLetter) {
 
 /**
  * 填充字符串
- * @param {*} src 
- * @param {*} length 
- * @param {*} char 
- * @param {*} direction 
+ * @param {*} src
+ * @param {*} length
+ * @param {*} char
+ * @param {*} direction
  * @return 填充后的字符串
  */
-export function fillStr (src, length, char, direction) {
+export function fillStr(src, length, char, direction) {
   src = (src || '') + ''
   length = length || src.length
   char = (char || '') + ''

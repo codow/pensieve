@@ -13,25 +13,24 @@ import './plugins/element'
 import './plugins/http'
 
 // 引入样式
-import './assets/css/index.less'
+import './assets/css/index.scss'
 import Vue from 'vue'
-// import './assets/css/dark.less';
 
 import utils from './utils'
 import { isArray, isObject } from './utils/packages/validator'
 
 import draggable from './components/draggable'
 
-Vue.component('draggable', draggable)
+Vue.component('Draggable', draggable)
 
 Vue.prototype.$utils = utils
 
 /**
-   * 给对象设置指定的数据，支持嵌套和数组
-   * @param {Object|Array} obj 需要检索的对象或数组
-   * @param {String} path 属性的路径
-   * @param {*} value 数据
-   */
+ * 给对象设置指定的数据，支持嵌套和数组
+ * @param {Object|Array} obj 需要检索的对象或数组
+ * @param {String} path 属性的路径
+ * @param {*} value 数据
+ */
 Vue.prototype.$setByPath = function (obj, path, value) {
   if (!path || !(isArray(obj) || isObject(obj))) return value
   // 替换数组标志
@@ -97,12 +96,17 @@ Vue.prototype.$getByPath = function (obj, path) {
 }
 
 /**
-   * 从对象中获取指定的数据，支持嵌套和数组
-   * @param {Object|Array} obj 需要检索的对象或数组
-   * @param {String} path 属性的路径
-   */
+ * 从对象中获取指定的数据，支持嵌套和数组
+ * @param {Object|Array} obj 需要检索的对象或数组
+ * @param {String} path 属性的路径
+ */
 Vue.prototype.$deleteByPath = function (obj, path) {
-  if (!path || !(utils.validator.isArray(obj) || utils.validator.isObject(obj))) return false
+  if (
+    !path ||
+    !(utils.validator.isArray(obj) || utils.validator.isObject(obj))
+  ) {
+    return false
+  }
   // 替换数组标志
   const p = path.replace(/\[([0-9]+)\]/g, (str, $1) => {
     return '.$_$' + $1 + '$_$'
@@ -152,10 +156,10 @@ const appMixin = {
 }
 Vue.mixin(appMixin)
 
-var app = new Vue({
+let app = new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount('#app')
 
 // 创建一个替换router实例的逻辑
@@ -182,7 +186,6 @@ store.commit('Apps/registApp', {
     }
   }
 })
-
 
 // 异步加载routes
 setTimeout(() => {

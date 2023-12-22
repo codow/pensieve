@@ -15,10 +15,11 @@
       </thead>
     </table>
     <div>
-      <el-button type="" @click="generate">生成</el-button>
+      <el-button type=""
+                 @click="generate">生成</el-button>
     </div>
     <div style="max-height: 400px;">
-      {{result}}
+      {{ result }}
     </div>
   </div>
 </template>
@@ -42,7 +43,9 @@ const generateInteger = function (row, col, table, result, options) {
 
 const DEFAULT_DATE_RANGE = 1000 * 60 * 60 * 24 * 365 * 5
 const generateDate = function (row, col, table, result, options) {
-  return new Date(new Date().getTime() - Math.floor(Math.random() * DEFAULT_DATE_RANGE))
+  return new Date(
+    new Date().getTime() - Math.floor(Math.random() * DEFAULT_DATE_RANGE)
+  )
 }
 
 const generateText = function (row, col, table, result, options) {
@@ -57,11 +60,12 @@ const chooseTableData = function (row, col, table, result, options) {
   table.cache = table.cache || {}
   let cache = table.cache
   let type = options.type || 'all'
-  let data = null, index
+  let data = null,
+    index
   let relationTable = options.table
   let relationField = options.field
   let pId = options.pId || ''
-  let key = 'choose_' + table.name +'_' + col.name + pId
+  let key = 'choose_' + table.name + '_' + col.name + pId
   if (type === 'all') {
     // 按序获取
     index = cache[col.name] || 0
@@ -74,7 +78,7 @@ const chooseTableData = function (row, col, table, result, options) {
     index = Math.floor(Math.random() * l)
     let choosedRow = result[relationTable][index]
     if (choosedRow[key]) {
-      for (let nextIndex = index + 1;;nextIndex ++) {
+      for (let nextIndex = index + 1; ; nextIndex++) {
         if (nextIndex >= l) {
           nextIndex = nextIndex % l
         }
@@ -97,8 +101,8 @@ const chooseTableData = function (row, col, table, result, options) {
 }
 
 export default {
-  name: 'big-data-generate-view',
-  data () {
+  name: 'BigDataGenerateView',
+  data() {
     return {
       tables: [
         {
@@ -106,10 +110,34 @@ export default {
           type: 'default',
           lines: 10,
           cols: [
-            { name: 'id', options: {}, type: 'UUID', mode: 'GENERATE', handler: generateUUID },
-            { name: 'no', options: {}, type: 'INTEGER', mode: 'GENERATE', handler: generateInteger },
-            { name: 'name', options: { prefix: 'video_' }, type: 'TEXT', mode: 'GENERATE', handler: generateText },
-            { name: 'create_time', options: {}, type: 'CURRENT-DATE', mode: 'GENERATE', handler: generateDate }
+            {
+              name: 'id',
+              options: {},
+              type: 'UUID',
+              mode: 'GENERATE',
+              handler: generateUUID
+            },
+            {
+              name: 'no',
+              options: {},
+              type: 'INTEGER',
+              mode: 'GENERATE',
+              handler: generateInteger
+            },
+            {
+              name: 'name',
+              options: { prefix: 'video_' },
+              type: 'TEXT',
+              mode: 'GENERATE',
+              handler: generateText
+            },
+            {
+              name: 'create_time',
+              options: {},
+              type: 'CURRENT-DATE',
+              mode: 'GENERATE',
+              handler: generateDate
+            }
           ]
         },
         {
@@ -117,10 +145,34 @@ export default {
           type: 'default',
           lines: 10,
           cols: [
-            { name: 'id', options: {}, type: 'UUID', mode: 'GENERATE', handler: generateUUID },
-            { name: 'no', options: {}, type: 'INTEGER', mode: 'GENERATE', handler: generateInteger },
-            { name: 'name', options: { prefix: 'tag_' }, type: 'TEXT', mode: 'GENERATE', handler: generateText },
-            { name: 'create_time', options: {}, type: 'CURRENT-DATE', mode: 'GENERATE', handler: generateDate }
+            {
+              name: 'id',
+              options: {},
+              type: 'UUID',
+              mode: 'GENERATE',
+              handler: generateUUID
+            },
+            {
+              name: 'no',
+              options: {},
+              type: 'INTEGER',
+              mode: 'GENERATE',
+              handler: generateInteger
+            },
+            {
+              name: 'name',
+              options: { prefix: 'tag_' },
+              type: 'TEXT',
+              mode: 'GENERATE',
+              handler: generateText
+            },
+            {
+              name: 'create_time',
+              options: {},
+              type: 'CURRENT-DATE',
+              mode: 'GENERATE',
+              handler: generateDate
+            }
           ]
         },
         {
@@ -128,11 +180,34 @@ export default {
           type: 'relation', // 笛卡尔集关联
           relation_cols: [1, 2],
           cols: [
-            { name: 'id', options: {}, type: 'INTEGER', mode: 'GENERATE', handler: generateInteger },
-            { name: 'video_id', options: { table: 'test_video', field: 'id', type: 'all' }, type: 'OTHER', mode: 'CHOOSE', handler: chooseTableData },
-            { name: 'tag_id', options: { table: 'test_tag', field: 'id', type: 'random', max: 5 }, type: 'OTHER', mode: 'CHOOSE', handler: chooseTableData }
+            {
+              name: 'id',
+              options: {},
+              type: 'INTEGER',
+              mode: 'GENERATE',
+              handler: generateInteger
+            },
+            {
+              name: 'video_id',
+              options: { table: 'test_video', field: 'id', type: 'all' },
+              type: 'OTHER',
+              mode: 'CHOOSE',
+              handler: chooseTableData
+            },
+            {
+              name: 'tag_id',
+              options: {
+                table: 'test_tag',
+                field: 'id',
+                type: 'random',
+                max: 5
+              },
+              type: 'OTHER',
+              mode: 'CHOOSE',
+              handler: chooseTableData
+            }
           ]
-        },
+        }
         // {
         //   name: 'test_video_tag_map',
         //   lines: 1000,
@@ -146,16 +221,20 @@ export default {
         { label: 'UUID', handler: generateUUID },
         { label: 'INTEGER', handler: generateInteger },
         { label: 'DATE', handler: generateDate },
-        { label: 'CURRENT-DATE', options: { isNow: true }, handler: generateDate },
+        {
+          label: 'CURRENT-DATE',
+          options: { isNow: true },
+          handler: generateDate
+        },
         { label: 'TEXT', handler: generateText }
       ],
       result: {}
     }
   },
   methods: {
-    generate () {
+    generate() {
       let result = {}
-      this.tables.forEach(table => {
+      this.tables.forEach((table) => {
         let data
         if (table.type === 'relation') {
           data = this.generateRelationTable(table, result)
@@ -167,14 +246,15 @@ export default {
       this.result = result
     },
 
-    generateTable (table, result) {
-      let i = 0, l = table.lines
+    generateTable(table, result) {
+      let i = 0,
+        l = table.lines
       let tableName = table.name
       let data = []
       let row
       for (; i < l; i++) {
         row = {}
-        table.cols.forEach(col => {
+        table.cols.forEach((col) => {
           this.generateRow(row, col, table, result)
         })
         data.push(row)
@@ -182,8 +262,8 @@ export default {
       return data
     },
 
-    generateRelationTable (table, result) {
-      let relationCols = table.relation_cols.map(i => {
+    generateRelationTable(table, result) {
+      let relationCols = table.relation_cols.map((i) => {
         return table.cols[i]
       })
       let cols = table.cols.filter((item, i) => {
@@ -192,12 +272,12 @@ export default {
       return this.generateRelationRows(relationCols, table, result, cols) || []
     },
 
-    generateRow (row, col, table, result, options) {
+    generateRow(row, col, table, result, options) {
       if (!col.handler) return
       row[col.name] = col.handler(row, col, table, result, options)
     },
 
-    generateRelationRows (relationCols, table, result, cols, pRow, pId, index) {
+    generateRelationRows(relationCols, table, result, cols, pRow, pId, index) {
       pId = pId || ''
       index = index || 0
       let relationCol = relationCols[index]
@@ -207,8 +287,12 @@ export default {
       let relationField = options.field
       let relationType = options.type
       let min = Math.max(options.min || 0, 0)
-      let max = Math.min(options.max || result[relationTable].length, result[relationTable].length)
-      let i = 0, l = max
+      let max = Math.min(
+        options.max || result[relationTable].length,
+        result[relationTable].length
+      )
+      let i = 0,
+        l = max
       if (relationType === 'random') {
         l = Math.floor(min + Math.random() * (max - min))
       }
@@ -218,21 +302,29 @@ export default {
         row = Object.assign({}, pRow)
         // 生成当前行的数据
         this.generateRow(row, relationCol, table, result, {
-          pId: pId
+          pId
         })
         if (lastRelationCol) {
-          cols.forEach(col => this.generateRow(row, col, table, result))
+          cols.forEach((col) => this.generateRow(row, col, table, result))
           data.push(row)
         } else {
-          data = data.concat(this.generateRelationRows(relationCols, table, result, cols, row, pId + '_' + row[relationCol.name], index + 1))
+          data = data.concat(
+            this.generateRelationRows(
+              relationCols,
+              table,
+              result,
+              cols,
+              row,
+              pId + '_' + row[relationCol.name],
+              index + 1
+            )
+          )
         }
       }
       return data
     },
 
-    handleColumnClick () {
-
-    }
+    handleColumnClick() {}
   }
 }
 </script>

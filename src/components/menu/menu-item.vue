@@ -12,7 +12,7 @@
               :class="{
                 'sp-menu-content__with-badge': props.item[props.props.messageNumber] > 0
               }"
-              :title="props.item.label">{{props.item.label}}</span>
+              :title="props.item.label">{{ props.item.label }}</span>
         <el-badge slot="title"
                   v-if="props.item[props.props.messageNumber] > 0"
                   :value="props.item[props.props.messageNumber]"
@@ -42,7 +42,7 @@
             :class="{
               'sp-menu-content__with-badge': props.item[props.props.messageNumber] > 0
             }"
-            :title="props.item.label">{{props.item.label}}</span>
+            :title="props.item.label">{{ props.item.label }}</span>
       <el-badge slot="title"
                 v-if="props.item[props.props.messageNumber] > 0"
                 :value="props.item[props.props.messageNumber]"

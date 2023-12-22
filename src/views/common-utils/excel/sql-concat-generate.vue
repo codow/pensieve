@@ -56,8 +56,8 @@
 import { numberToName } from '../../../utils/packages/excel'
 
 export default {
-  name: 'excel-sql-concat-generate',
-  data () {
+  name: 'ExcelSqlConcatGenerate',
+  data() {
     return {
       options: {
         startCol: 1,
@@ -71,8 +71,16 @@ export default {
     }
   },
   methods: {
-    generate () {
-      const { startCol, colNumber, rowIndex, tableName, constColumnNames, constColumnValues, replaceEnter } = this.options
+    generate() {
+      const {
+        startCol,
+        colNumber,
+        rowIndex,
+        tableName,
+        constColumnNames,
+        constColumnValues,
+        replaceEnter
+      } = this.options
       const fieldRowIndex = rowIndex - 1
       let col
       let valueOutData = '="('
@@ -83,12 +91,26 @@ export default {
       if (constColumnValues) {
         valueOutData = valueOutData + constColumnValues + ','
       }
-      for (var i = 0; i < colNumber; i++) {
+      for (let i = 0; i < colNumber; i++) {
         col = numberToName(startCol + i)
         if (replaceEnter) {
-          valueOutData += '"&IF(ISBLANK(' + col + rowIndex + '), "NULL", "\'"&SUBSTITUTE(SUBSTITUTE(' + col + rowIndex + ',CHAR(10),"\\n"), CHAR(39), "\\\'")&"\'")&", '
+          valueOutData +=
+            '"&IF(ISBLANK(' +
+            col +
+            rowIndex +
+            '), "NULL", "\'"&SUBSTITUTE(SUBSTITUTE(' +
+            col +
+            rowIndex +
+            ',CHAR(10),"\\n"), CHAR(39), "\\\'")&"\'")&", '
         } else {
-          valueOutData += '"&IF(ISBLANK(' + col + rowIndex + '), "NULL", "\'"&' + col + rowIndex + '&"\'")&", '
+          valueOutData +=
+            '"&IF(ISBLANK(' +
+            col +
+            rowIndex +
+            '), "NULL", "\'"&' +
+            col +
+            rowIndex +
+            '&"\'")&", '
         }
         fieldOutData += '"&' + col + fieldRowIndex + '&", '
       }

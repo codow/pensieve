@@ -10,11 +10,11 @@
 <script>
 export default {
   name: 'CanvasDemoBouncingBall',
-  data () {
+  data() {
     return {}
   },
   methods: {
-    init () {
+    init() {
       // set up canvas
       const { canvas } = this.$refs
       const ctx = canvas.getContext('2d')
@@ -26,18 +26,17 @@ export default {
       this.height = height
 
       // function to generate random number
-      function random (min, max) {
+      function random(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min
       }
 
       // function to generate random RGB color value
 
-      function randomRGB () {
+      function randomRGB() {
         return `rgb(${random(0, 255)},${random(0, 255)},${random(0, 255)})`
       }
 
       class Ball {
-
         constructor(x, y, velX, velY, color, size) {
           this.x = x
           this.y = y
@@ -47,27 +46,27 @@ export default {
           this.size = size
         }
 
-        draw () {
+        draw() {
           ctx.beginPath()
           ctx.fillStyle = this.color
           ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI)
           ctx.fill()
         }
 
-        update () {
-          if ((this.x + this.size) >= width) {
-            this.velX = -(Math.abs(this.velX))
+        update() {
+          if (this.x + this.size >= width) {
+            this.velX = -Math.abs(this.velX)
           }
 
-          if ((this.x - this.size) <= 0) {
+          if (this.x - this.size <= 0) {
             this.velX = Math.abs(this.velX)
           }
 
-          if ((this.y + this.size) >= height) {
-            this.velY = -(Math.abs(this.velY))
+          if (this.y + this.size >= height) {
+            this.velY = -Math.abs(this.velY)
           }
 
-          if ((this.y - this.size) <= 0) {
+          if (this.y - this.size <= 0) {
             this.velY = Math.abs(this.velY)
           }
 
@@ -75,7 +74,7 @@ export default {
           this.y += this.velY
         }
 
-        collisionDetect () {
+        collisionDetect() {
           for (const ball of balls) {
             if (!(this === ball)) {
               const dx = this.x - ball.x
@@ -109,10 +108,9 @@ export default {
       }
       this.balls = balls
 
-
       this.loop()
     },
-    loop () {
+    loop() {
       this.ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'
       this.ctx.fillRect(0, 0, this.width, this.height)
 
@@ -125,10 +123,10 @@ export default {
       requestAnimationFrame(this.loop)
     }
   },
-  mounted () {
+  mounted() {
     this.init()
   },
-  destroyed () {
+  destroyed() {
     cancelAnimationFrame(this.loop)
   }
 }

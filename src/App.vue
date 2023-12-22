@@ -15,11 +15,10 @@ body,
 </style>
 
 <script>
-
 export default {
-  name: 'app',
+  name: 'App',
   computed: {
-    appStyle () {
+    appStyle() {
       return {
         height: this.$store.state.Canvas.screen.height + 'px'
       }

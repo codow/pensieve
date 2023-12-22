@@ -10,7 +10,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="　">
+          <el-form-item label="">
             <div class="margin-horizontal__medium align__center">
               <el-button type="primary"
                          icon="el-icon-d-arrow-left"
@@ -118,8 +118,8 @@
 import _camelCase from 'lodash/camelCase'
 
 export default {
-  name: 'data-string-filter',
-  data () {
+  name: 'DataStringFilter',
+  data() {
     return {
       activeName: '1',
       originalData: null,
@@ -132,24 +132,24 @@ export default {
     }
   },
   methods: {
-    rightToLeft () {
+    rightToLeft() {
       this.originalData = this.exportData
     },
-    getOriginalData () {
+    getOriginalData() {
       let { originalData } = this
       originalData = originalData || ''
       originalData = originalData.trim()
       return originalData
     },
-    toCamelCase () {
+    toCamelCase() {
       const originalData = this.getOriginalData()
       if (!originalData) return
       const originalDataArr = originalData.split(/\n/)
-      const exportDataArr = originalDataArr.map(item => _camelCase(item))
+      const exportDataArr = originalDataArr.map((item) => _camelCase(item))
       this.exportData = exportDataArr.join('\n')
     },
-    lineNumberFilter () {
-      //获取原始数据
+    lineNumberFilter() {
+      // 获取原始数据
       const originalData = this.getOriginalData()
       if (!originalData) return
       let { baseNumber, remainder } = this.options
@@ -157,78 +157,82 @@ export default {
       baseNumber = !baseNumber ? 1 : baseNumber
       remainder = +remainder
       remainder = !remainder ? 0 : remainder
-      //格式化数据
-      const originaDataArray = originalData.split("\n")
+      // 格式化数据
+      const originaDataArray = originalData.split('\n')
       const exportDataArray = originaDataArray.filter((item, i) => {
         if ((i + 1) % baseNumber == remainder) {
           return true
         }
       })
-      this.exportData = exportDataArray.join("\n")
+      this.exportData = exportDataArray.join('\n')
     },
-    regexReplace () {
-      const originalData = this.getOriginalData() //原始数据
+    regexReplace() {
+      const originalData = this.getOriginalData() // 原始数据
       if (!originalData) return
       let { regexStr, replaceStr, splitStr, replaceFuncStr } = this.options
       if (!regexStr) return
-      //处理正则表达式
+      // 处理正则表达式
       const opt = 'gi'
       let strArray = []
       let splitArray = []
       if (splitStr) {
-        // 创建分割正则表达式
-        const splitRegexObj = eval("new RegExp('" + splitStr + "', '" + opt + "')")
-        // 记录分割符
+        //  创建分割正则表达式
+        const splitRegexObj = eval(
+          "new RegExp('" + splitStr + "', '" + opt + "')"
+        )
+        //  记录分割符
         splitArray = [].concat(originalData.match(splitRegexObj))
-        // 替换分隔符
+        //  替换分隔符
         strArray = [].concat(originalData.split(splitRegexObj))
       } else {
         strArray = [originalData]
       }
       const regexObj = eval("new RegExp('" + regexStr + "', '" + opt + "')")
-      // 处理替换的字符串
+      //  处理替换的字符串
       if (!replaceStr) {
         replaceStr = ''
       } else {
         replaceStr = eval("'" + replaceStr + "'")
       }
-      var replaceFunc = null
+      let replaceFunc = null
       if (replaceFuncStr) {
-        replaceFunc = eval("(function() {return " + replaceFuncStr + "})()")
+        replaceFunc = eval('(function() {return ' + replaceFuncStr + '})()')
       }
       strArray = strArray.map(function (subStr) {
         return subStr.replace(regexObj, replaceFunc || replaceStr)
       })
-      let exportData = ""
+      let exportData = ''
       strArray.forEach((subStr, index) => {
         exportData += subStr + (splitArray[index] || '')
       })
       this.exportData = exportData
     },
-    regexScreen () {
-      const originalData = this.getOriginalData() //原始数据
+    regexScreen() {
+      const originalData = this.getOriginalData() // 原始数据
       if (!originalData) return
       let { screenRegexStr, screenStr } = this.options
       if (!screenRegexStr) return
-      //处理正则表达式
+      // 处理正则表达式
       const opt = 'g'
-      screenRegexStr = screenRegexStr.replaceAll("\\", "\\\\")
-      const regexObj = eval("new RegExp('" + screenRegexStr + "', '" + opt + "')")
-      // 处理替换的字符串
+      screenRegexStr = screenRegexStr.replaceAll('\\', '\\\\')
+      const regexObj = eval(
+        "new RegExp('" + screenRegexStr + "', '" + opt + "')"
+      )
+      //  处理替换的字符串
       screenStr = eval("'" + screenStr + "'")
-      //执行match
+      // 执行match
       const resultArray = originalData.match(regexObj) || []
       this.exportData = resultArray.join(screenStr)
     },
-    eliminateDuplication () {
-      const originalData = this.getOriginalData() //原始数据
+    eliminateDuplication() {
+      const originalData = this.getOriginalData() // 原始数据
       if (!originalData) return
       let { eliminateDuplicationStr } = this.options
       if (!eliminateDuplicationStr) return
       eliminateDuplicationStr = eval("'" + eliminateDuplicationStr + "'")
       const array = originalData.split(eliminateDuplicationStr)
       const map = {}
-      const resultArray = array.filter(item => {
+      const resultArray = array.filter((item) => {
         if (!map[item]) {
           map[item] = true
           return true
@@ -236,26 +240,26 @@ export default {
       })
       this.exportData = resultArray.join(eliminateDuplicationStr)
     },
-    sortASC () {
+    sortASC() {
       const originalData = this.getOriginalData()
       if (!originalData) return
-      // 分割数据
+      //  分割数据
       let originaDataArray = originalData.split('\n')
-      // 排序
+      //  排序
       originaDataArray = originaDataArray.sort()
       this.exportData = originaDataArray.join('\n')
     },
-    sortDESC () {
+    sortDESC() {
       const originalData = this.getOriginalData()
       if (!originalData) return
-      // 分割数据
+      //  分割数据
       let originaDataArray = originalData.split('\n')
       originaDataArray = originaDataArray.sort((a, b) => {
         return -a.localeCompare(b)
       })
       this.exportData = originaDataArray.join('\n')
     },
-    urlEncode () {
+    urlEncode() {
       const originalData = this.getOriginalData()
       if (!originalData) return
       this.exportData = window.encodeURI(originalData)
@@ -272,7 +276,7 @@ export default {
 
 .border-collapse.el-collapse
   > .el-collapse-item:first-child
-  > div[role="tab"]
+  > div[role='tab']
   > .el-collapse-item__header {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -280,7 +284,7 @@ export default {
 
 .border-collapse.el-collapse
   > .el-collapse-item:last-child
-  > div[role="tab"]
+  > div[role='tab']
   > .el-collapse-item__header {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -288,7 +292,7 @@ export default {
 
 .border-collapse.el-collapse
   > .el-collapse-item
-  > div[role="tab"]
+  > div[role='tab']
   > .el-collapse-item__header {
   padding-left: 10px;
   background-color: #f5f7fa;
@@ -296,7 +300,7 @@ export default {
 
 .border-collapse.el-collapse
   > .el-collapse-item
-  > div[role="tab"]
+  > div[role='tab']
   > .el-collapse-item__header.is-active {
   border-bottom: 1px solid #ebeef5;
 }

@@ -68,7 +68,7 @@ const cancelFrame = function (func) {
 
 export default {
   name: 'CanvasFrameRateTest',
-  data () {
+  data() {
     return {
       raf: {
         interval: 5,
@@ -82,19 +82,19 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.initAnimationDemo()
     this.initCustomFrame()
   },
-  destroyed () {
+  destroyed() {
     window.cancelAnimationFrame(this.animationLoop)
     cancelFrame(this.customLoop)
   },
   methods: {
-    initAnimationDemo () {
+    initAnimationDemo() {
       window.requestAnimationFrame(this.animationLoop)
     },
-    async animationLoop (currentTime) {
+    async animationLoop(currentTime) {
       const { interval, lastTime } = this.raf
       if (lastTime !== 0) {
         // 计算帧率
@@ -104,10 +104,10 @@ export default {
       await sleep(interval)
       window.requestAnimationFrame(this.animationLoop)
     },
-    initCustomFrame () {
+    initCustomFrame() {
       runFrame(this.customLoop)
     },
-    async customLoop (currentTime) {
+    async customLoop(currentTime) {
       const { interval, lastTime } = this.caf
       if (lastTime !== 0) {
         // 计算帧率
@@ -116,7 +116,7 @@ export default {
       this.caf.lastTime = currentTime
       await sleep(interval)
       runFrame(this.customLoop)
-    },
+    }
   }
 }
 </script>

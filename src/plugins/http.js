@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Vue from 'vue'
 
 axios.defaults.withCredentials = true
 // Set config defaults when creating the instance
@@ -23,8 +24,11 @@ instance.post = async function (url, data, config) {
     data[csrfParameterName] = csrfToken
   }
   // 数据处理
-  if (config.headers && config.headers['content-type'] === 'application/x-www-form-urlencoded') {
-    // 
+  if (
+    config.headers &&
+    config.headers['content-type'] === 'application/x-www-form-urlencoded'
+  ) {
+    //
     let params = new URLSearchParams()
     for (let key in data) {
       params.set(key, data[key])
@@ -64,6 +68,5 @@ instance.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
 
 Vue.prototype.$http = instance

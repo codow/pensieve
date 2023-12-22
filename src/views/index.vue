@@ -6,12 +6,10 @@
         <el-aside class="home-header-title"
                   :width="leftAsideWidth">
           <img class="home-header-title__logo"
-               src="/static/img/logo.png" />
+               src="/img/logo.png" />
           <span>后端管理</span>
         </el-aside>
         <el-main class="padding__small">
-          全文检索 / 常用功能 / 快捷菜单 / <span style="cursor: pointer;"
-                @click="loadRoute">加载路由</span>
         </el-main>
         <el-aside class="padding__small"
                   :width="rightAsideWidth"
@@ -42,15 +40,13 @@ import FrRouterViewTabs from '../components/router-view-tabs'
 
 import MenuData from '../assets/data/menus'
 
-import systemRoutes from '../assets/data/routes_system'
-
 export default {
-  name: 'home',
+  name: 'Home',
   components: {
     FrMenu,
     FrRouterViewTabs
   },
-  data () {
+  data() {
     return {
       leftAsideWidth: '300px',
       rightAsideWidth: '300px',
@@ -58,7 +54,7 @@ export default {
     }
   },
   methods: {
-    handleMenuClick (menu) {
+    handleMenuClick(menu) {
       this.$router.push({
         target: menu.target,
         title: menu.label,
@@ -66,12 +62,6 @@ export default {
         query: menu.query,
         params: menu.params
       })
-    },
-
-    loadRoute () {
-      setTimeout(() => {
-        this.$store.commit('Route/setRoutes', systemRoutes)
-      }, 300)
     }
   }
 }

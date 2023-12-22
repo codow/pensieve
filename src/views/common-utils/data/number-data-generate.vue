@@ -57,8 +57,8 @@
 import * as numberUtils from '../../../utils/packages/number'
 
 export default {
-  name: 'number-data-generate-view',
-  data () {
+  name: 'NumberDataGenerateView',
+  data() {
     return {
       size: 10,
       startNumber: 0,
@@ -71,13 +71,17 @@ export default {
     }
   },
   methods: {
-    generate () {
-      let { size, startNumber, basicNumber, precision, inputData, separator } = this
+    generate() {
+      let { size, startNumber, basicNumber, precision, inputData, separator } =
+        this
       // 处理默认数据
       size = size || 10
-      startNumber = startNumber === null || startNumber === undefined ? 0 : startNumber
-      basicNumber = basicNumber === null || startNumber === undefined ? 1000 : basicNumber
-      precision = basicNumber === null || startNumber === undefined ? 2 : precision
+      startNumber =
+        startNumber === null || startNumber === undefined ? 0 : startNumber
+      basicNumber =
+        basicNumber === null || startNumber === undefined ? 1000 : basicNumber
+      precision =
+        basicNumber === null || startNumber === undefined ? 2 : precision
       inputData = (inputData || '').trim()
       if (!separator) {
         if (this.type === 'line') {
@@ -98,7 +102,9 @@ export default {
       let increment
       let lastNumber
       for (let i = 0; i < size; i++) {
-        lastNumber = numberUtils.isNumber(inputData[i]) ? +inputData[i] : startNumber
+        lastNumber = numberUtils.isNumber(inputData[i])
+          ? +inputData[i]
+          : startNumber
         increment = Math.random() * basicNumber
         result += numberUtils.toFixed(lastNumber + increment, precision)
         if (i !== size - 1) {
